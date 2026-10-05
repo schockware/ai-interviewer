@@ -1,0 +1,31 @@
+{
+  "name": "simulation-off",
+  "description": "One short exchange with no simulation: the interviewer asks, the user answers in two spoken pieces, the interviewer asks again. No perceived times and no dropped markers, so perceived equals true.",
+  "covers": ["CUE-STA-001", "CUE-STA-003", "CUE-MOD-003", "EVT-SIM-003", "CUE conformance vector 1"],
+  "session_id": "mock-simulation-off",
+  "events": [
+    { "type": "session", "t_true_ms": 0, "phase": "started", "config": { "cue_mode": "perceived", "preset": "clean", "interface": "both" } },
+    { "type": "condition", "t_true_ms": 0, "preset": "clean", "params": {}, "seed": 42 },
+    { "type": "state", "t_true_ms": 100, "state": "thinking" },
+
+    { "type": "state", "t_true_ms": 1400, "state": "talking" },
+    { "type": "interviewer_text", "t_true_ms": 1400, "id": "q1", "text": "Tell me about a project you are proud of.", "frames": { "from_seq": 0, "to_seq": 124 } },
+    { "type": "audio_run", "stream": "voice", "start_ms": 1400, "seq_from": 0, "count": 125, "dur_ms": 20 },
+    { "type": "state", "t_true_ms": 3900, "state": "listening" },
+
+    { "type": "speech_activity", "t_true_ms": 5500, "activity": "started" },
+    { "type": "transcript", "t_true_ms": 6500, "id": "u1", "text": "I led a migration", "final": false },
+    { "type": "transcript", "t_true_ms": 7500, "id": "u2", "text": "I led a migration of our billing system", "final": false },
+    { "type": "speech_activity", "t_true_ms": 9000, "activity": "stopped" },
+    { "type": "turn_decision", "t_true_ms": 9200, "confidence": 0.93 },
+    { "type": "transcript", "t_true_ms": 9400, "id": "u3", "text": "I led a migration of our billing system to a new provider.", "final": true, "replaces": ["u1", "u2"] },
+    { "type": "state", "t_true_ms": 9400, "state": "thinking" },
+
+    { "type": "state", "t_true_ms": 10600, "state": "talking" },
+    { "type": "interviewer_text", "t_true_ms": 10600, "id": "q2", "text": "What was the hardest part of that migration?", "frames": { "from_seq": 125, "to_seq": 239 } },
+    { "type": "audio_run", "stream": "voice", "start_ms": 10600, "seq_from": 125, "count": 115, "dur_ms": 20 },
+    { "type": "state", "t_true_ms": 12900, "state": "listening" },
+
+    { "type": "session", "t_true_ms": 13500, "phase": "ended" }
+  ]
+}
