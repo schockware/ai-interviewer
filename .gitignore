@@ -2,3 +2,7 @@
 testing/results/
 benchmarking/results/
 *.sqlite
+
+# Prompt history: original prompts and audit lines stay local. See PROMPT_HISTORY/README.MD.
+PROMPT_HISTORY/*.REDACTED
+PROMPT_HISTORY/*.AUDIT

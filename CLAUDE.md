@@ -24,6 +24,7 @@ Rules:
 - **Order:** newest entry first in every file. Prepend directly under the header line; never append and never rewrite older entries.
 - **New month:** if the month's file does not exist, create it with a one-line header (`PROMPT HISTORY {YYYY-MM} (newest first; see PROMPT_HISTORY/README.MD)`, and the `REDACTED` or `AUDIT` equivalent), then a line of `---`. Never touch earlier months' files.
 - **Every prompt:** log each prompt, including questions and discussion. When no files changed, the action is `no code changes`. Skip only prompts whose purpose is to change the logging process itself (the `PROMPT_HISTORY/` files, their rules, or this section). Record such a change under "Process changes" in `PROMPT_HISTORY/README.MD`.
+- **Transcription exception:** when the chat is only transcribing for the user (no contribution from Claude), prompts are not logged. If Claude offers a suggestion and the user takes it, that prompt is logged like any other. Record this change under "Process changes" in `PROMPT_HISTORY/README.MD`.
 - **When:** write the entry at the end of handling a prompt, before the final reply. If several prompts arrive in one turn, write one entry per prompt. Include the log in the same commit as the work when a commit is made.
 - **Time:** get the local time from the shell: `date "+%Y-%m-%d %H:%M:%S"` for the heading and `date "+%Y-%m"` for the file name. Do not guess it.
 - **Gitignore check:** before writing to a `.REDACTED` or `.AUDIT` file, confirm `git check-ignore` reports it. If it does not, fix `.gitignore` first.
