@@ -42,8 +42,21 @@ Pulled from `SPEC.md` and [decision 0001](../../docs/decisions/0001-minimum-spec
 
 Layers with no model choice (simulator, cues, event stream, session, audio I/O, fit) have no entry yet.
 
+## Prototype briefs
+
+Before a layer is designed in full, it is prototyped alone. The briefs are for implementer chats. Read [PROTOTYPES.MD](PROTOTYPES.MD) first, then the brief for the layer.
+
+| Order | Layer | Brief |
+|---|---|---|
+| 1 | Event stream | [events/PROTOTYPE.MD](events/PROTOTYPE.MD) |
+| 2 | Listening | [listening/PROTOTYPE.MD](listening/PROTOTYPE.MD) |
+| 3 | Transcription | [transcription/PROTOTYPE.MD](transcription/PROTOTYPE.MD) |
+| 3 | Speech synthesis | [speech/PROTOTYPE.MD](speech/PROTOTYPE.MD) |
+
+Transcription and speech synthesis are independent and can run in parallel. Briefs for the interviewer, follow-up, evaluator, simulator, cues, session and fit layers come next.
+
 ## Open items
 
-1. Which layer to design first. The suggested order in `specs/README.MD` applies: event stream, then listening.
+1. The briefs set a layout for throwaway prototype code (`src/prototypes/`). The layout of the real code is still open (`src/README.MD`).
 2. Whether designs are one file per layer or split once they grow.
 3. A template for a design, once there is a first one to learn from.
