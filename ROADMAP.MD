@@ -64,6 +64,13 @@ Why the author does not approve of language/framework trivia: it rewards people 
   - Also linked to system debugging/triage (section 2): the generator could produce reproducible bugs plus logs, instead of hand-curated scenarios.
 - **The Creepy Crypt Client** (a play on words for scope creep and the Crypt Keeper): the user designs a system based on a client request. New requirements are then added incrementally, and the user practices redesigning as they arrive.
 
+## 6. Desktop client (later)
+
+The first client runs in an ordinary browser, which gives the feel of a web chat. A desktop version comes later, for the feel of a Zoom or Teams call.
+
+- It must emulate the classic chat setups (headsets, speakers, device selection, echo), so the practice stays as realistic as the browser version.
+- The browser version is built so a desktop client can be added without redoing the interviewer.
+
 ## Open questions
 
 - Do the whiteboard and code review ideas belong inside the 45-60 minute interview as segments, or are they separate modes?

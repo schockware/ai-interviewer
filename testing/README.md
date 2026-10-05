@@ -16,6 +16,10 @@ Status: **framework design, no code yet.** Anything here is a proposal until `SP
 | **Golden-file tests** | Does the event stream, including `perceived` timestamps, match recorded output for a seeded run? | `integration/` |
 | **Accessibility checks** | Keyboard-only use, screen-reader announcements, reduced motion, caption contrast (SPEC §11). | `integration/` |
 
+## Where the checks come from
+
+Each layer is specified in [`specs/`](../specs/README.MD), technology-agnostic. The contract tests run the **conformance vectors** that sit beside each layer's spec (`specs/{layer}/conformance/`) against every implementation, and the seam checks run each layer's stated assumptions about its neighbours. Specs define what must be true. Testing proves it.
+
 ## Model experimentation is built in
 
 Contract tests are written once per slot and run against **every registered candidate** for that slot. Adding a model to the candidate list adds it to the test matrix with no new test code. A model that fails its slot's contract tests cannot be entered in a benchmark.
@@ -45,7 +49,7 @@ Fixtures come from mock interviews written and recorded by Steven, who plays bot
 
 ## Open items
 
-1. Test runner and language: Python is assumed from SPEC §3.3. Confirm.
+1. Test runner and language. The project uses several languages (decision 0002), so conformance vectors have to be data files that each language's harness reads. Decide whether there is one runner or one per language.
 2. The candidate list lives in [`ai-models/`](../ai-models/README.md), shared with `benchmarking/` and the fit calculator.
 3. Fixture format and naming for the mock interviews: audio, a reference transcript, and labeled turn boundaries.
 4. How to run contract tests on machines without a GPU, in CI.

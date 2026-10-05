@@ -4,6 +4,8 @@ A local-first, open-source AI interviewer for practicing interviews by voice or 
 
 > **Status:** design draft. Items marked **[unverified]** come from secondary sources or memory and must be confirmed before they are promised in public docs. See [Open Questions](#12-open-questions--unverified-items).
 
+> **Layer specs:** each layer of the pipeline is being specified on its own, technology-agnostic, in [`specs/`](specs/README.MD). Once a layer has a spec, that spec governs what must be true, and this document keeps the technology choices and the overall vision.
+
 ---
 
 ## 1. Goals and Non-Goals
@@ -114,7 +116,7 @@ Open checks: (a) rule 1 is a hypothesis, so `benchmark` should compare p50 and p
 ### 3.3 Integration contract
 
 - **LLM slots** use **OpenAI-compatible endpoints** (`base_url`, `model`, optional `api_key`), so Ollama, llama.cpp server, LM Studio, vLLM, or a cloud API all work through config. **[unverified: confirm current endpoint support per runtime]**
-- **STT, TTS, and turn detector** slots implement small Python interfaces (`transcribe_stream`, `synthesize_stream`, `is_turn_complete`).
+- **STT, TTS, and turn detector** slots implement small interfaces (`transcribe_stream`, `synthesize_stream`, `is_turn_complete`). The project uses several languages (see `docs/decisions/0002-implementation-languages.md`), so these are language-neutral contracts. Python is where the model-backed slots are expected to be hosted. **[the transport between languages is not decided]**
 - A slot implementation must not need to know whether simulation is active.
 
 ### 3.4 Example configuration
