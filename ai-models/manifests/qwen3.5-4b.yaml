@@ -1,0 +1,29 @@
+# Example manifest, shape only. Facts from docs/research/llm-size-ladders.md (read 2026-10-02).
+# Hashes and download URLs are not filled in yet.
+id: qwen3.5-4b
+family: qwen3.5
+slots: [interviewer, follow-up-decider, evaluator]
+license: Apache-2.0
+license_status: clear
+ungated: true
+params: { total: 4.66e9, active: 4.66e9, note: "includes vision tower" }
+architecture:
+  type: hybrid-linear-attention
+  layers: 32
+  full_attention_layers: 8       # only these carry a context-length KV cache
+  kv_heads: 4
+  head_dim: 256
+  max_context: 262144
+variants:
+  - { quant: Q4_K_M, file_gb: 2.74, source: unsloth-gguf, sha256: null, url: null }
+  - { quant: Q5_K_M, file_gb: 3.14, source: unsloth-gguf, sha256: null, url: null }
+  - { quant: Q6_K,   file_gb: 3.53, source: unsloth-gguf, sha256: null, url: null }
+  - { quant: Q8_0,   file_gb: 4.48, source: unsloth-gguf, sha256: null, url: null }
+runtimes: [llama.cpp]
+streaming: true
+languages: unverified
+notes:
+  - "Thinking mode may default on; the interviewer must turn it off."
+  - "Unsloth UD- quants are mixed precision and not identical to plain Q4_K_M."
+sources:
+  - { url: "docs/research/llm-size-ladders.md", read: 2026-10-02 }

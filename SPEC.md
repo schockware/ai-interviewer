@@ -54,14 +54,62 @@ Everything is **streaming**: transcribe while the user speaks, stream LLM tokens
 
 ### 3.2 Pluggable slots
 
-| Slot | Job | Latency-sensitive? | Default | Alternatives |
-|---|---|---|---|---|
-| **Listening** | VAD plus end-of-turn detection | Yes | Silero VAD + Smart Turn v3.2 | LiveKit turn detector, custom |
-| **Transcription** | Speech to text | Yes | Parakeet TDT 0.6B v3 | Moonshine (lowest tier), faster-whisper, whisper.cpp, Nemotron streaming |
-| **Follow-up decider** | "Probe deeper or move on?" | Yes | Small fast LLM | Any |
-| **Interviewer** | Writes the next question | Yes | Tier-appropriate LLM (see section 8) | Any |
-| **Evaluator** ("thinking") | Scoring, STAR analysis, report | **No** | Same as interviewer, or larger | Larger local model or cloud API |
-| **Speech** | Text to speech | Yes | Kokoro (82M) | Piper (see licensing note) |
+Every slot is swappable. The candidates listed here are the models that fit the **Tier 1 minimum** (section 8): speech stack of about 2 GB, 4 CPU cores, and LLM of about 3.5 GB. Defaults are in 3.2.1 (minimum spec) and 3.2.2 (reference dev machine). Models that need more than the minimum, such as Parakeet, Nemotron, Kokoro and larger Whisper sizes, are not listed here. They may appear as higher-tier choices in 3.2.2 or section 8, and the reasons for each removal are in `docs/decisions/0001-minimum-spec-model-defaults.md`.
+
+| Slot | Job | Latency-sensitive? | Candidates (meet the minimum) |
+|---|---|---|---|
+| **Listening** | VAD plus end-of-turn detection | Yes | Silero VAD + Smart Turn v3.2 (int8), custom |
+| **Transcription** | Speech to text | Yes | whisper.cpp (tiny, base) |
+| **Follow-up decider** | "Probe deeper or move on?" | Yes | The interviewer LLM, with its own short prompt |
+| **Interviewer** | Writes the next question | Yes | Qwen3.5 ladder (0.8B, 2B, 4B, 9B), Tier-appropriate otherwise (section 8) |
+| **Evaluator** ("thinking") | Scoring, STAR analysis, report | **No** | Same as interviewer, or larger; larger local model or cloud API |
+| **Speech** | Text to speech | Yes | Kokoro (82M), Inflect-Nano-v1 (Tier 0 only, quality-limited) |
+
+**License filter:** a model is also left out of this list if its code or weights carry a license question that could affect the license of this repo or the users of the app. All candidates here are MIT, Apache-2.0, BSD or CC-BY. Models removed for this reason (Piper, Supertonic 3, Moonshine v2, LiveKit's detector) can return once the question is settled.
+
+#### 3.2.1 Defaults for the minimum supported spec
+
+Chosen so that a Tier 1 machine (4 cores, at least 6 GB free RAM, CPU only) can run the whole stack. Tier 0 uses the fallback column. All memory and speed figures are **[unverified]** until `benchmark` measures them on 4-core x86 (section 12 items 2 and 13).
+
+| Slot | Default | Tier 0 fallback | Why |
+|---|---|---|---|
+| **Listening** | Silero VAD v6 + Smart Turn v3.2 int8 (ONNX, CPU) | same | About 10 MB of weights and tens of ms per decision. Smart Turn latency is only measured on an Apple M5 Pro |
+| **Transcription** | whisper.cpp base (74M, multilingual, MIT) | whisper.cpp tiny (39M) | About 0.4 GB RAM (base) and 0.27 GB (tiny) per the whisper.cpp README. Not natively streaming, so it transcribes in chunks and finishes shortly after the turn ends, which adds latency. No 4-core x86 speed figure is published |
+| **Follow-up decider** | The interviewer LLM instance, with a short prompt | same | A second model does not fit in the minimum budget |
+| **Interviewer** | Qwen3.5 4B, Q4_K_M, thinking off, 8K context | Qwen3.5 2B, Q4_K_M | About 3.5 GB resident including a 256 MiB KV cache, because only 1 in 4 layers caches context. Apache-2.0 and ungated |
+| **Evaluator** | Same model, run between turns or after the session | same | It is not latency-sensitive, so thinking mode may be on for scoring |
+| **Speech** | Kokoro 82M, ONNX (Apache-2.0) | Kokoro, with Inflect-Nano-v1 (Apache-2.0, RTF 0.145, "buzzy" quality) as the lower-cost option | The best-quality Apache-licensed candidate. **This is the riskiest default:** its published RTF is 0.5-0.67 *alone* on 4 x86 cores, likely near 1.0 beside an LLM, and peak memory ranges from 0.4 to 2.0 GB across sources, which would exceed the 2 GB speech reserve |
+
+If a first-load measurement exceeds the budget, the fit calculator steps down one rung (section 8.3). If TTS cannot keep ahead of real time on a Tier 0 or Tier 1 machine, that machine falls back to spoken input with text and caption output.
+
+#### 3.2.2 Defaults for the reference dev machine
+
+Hardware: Windows 11, Intel Core i9-14900KF (hybrid: 8 performance cores and 16 efficiency cores, 32 threads), 64 GB DDR5-6000, RTX 5080 (16 GB VRAM, Blackwell). This is a Tier 4 machine with plenty of spare RAM and CPU. The KF has no integrated graphics, so the RTX 5080 also drives the display and Windows uses part of the VRAM.
+
+**Hardware disclaimer:** these defaults are tuned to this machine and are not requirements. They are a reference configuration for developers and for benchmarking, and they use models that do not meet the minimum spec in 3.2.1.
+
+**"Most consistent"** is read here as predictable latency and behavior, not the highest benchmark score. The rules behind the choices:
+1. **Each heavy slot gets its own hardware.** The LLM owns the GPU. STT, TTS, VAD and the turn detector run on the CPU, so they never compete with the LLM for VRAM or GPU compute.
+2. **Everything stays resident.** Nothing is paged, swapped or reloaded between turns.
+3. **Dense or hybrid models, not MoE,** and a cheap KV cache so latency does not grow as the transcript grows.
+4. **Same families as 3.2.1 where possible,** so prompts and quirks carry across tiers.
+
+| Slot | Default | Placement | Why |
+|---|---|---|---|
+| **Listening** | Silero VAD v6 + Smart Turn v3.2 int8 | CPU | Same as 3.2.1. Pin real-time threads to the performance cores so Windows does not schedule them on efficiency cores |
+| **Transcription** | Parakeet TDT 0.6B v3, int8 ONNX (CC-BY-4.0) | CPU | Reported RTF 0.02-0.04 on 8 logical CPUs, so 32 leave wide margin. Best accuracy of the researched models, and captions benefit. Not natively streaming, so chunk at about 30 s windows and cap utterance length. whisper.cpp base (the 3.2.1 default) stays available as the cross-check |
+| **Follow-up decider** | The interviewer LLM instance | GPU | Avoids loading a second model |
+| **Interviewer** | Qwen3.5 9B, Q8_0, thinking off, 8K context | GPU | About 10.3 GB resident (9.5 GB weights, 0.27 GB KV, 0.5 GB overhead), leaving about 5.7 GB of VRAM for Windows, the CUDA context and spikes. Cheap hybrid KV keeps latency flat as context grows |
+| **Evaluator** | Same model with thinking on | GPU, after the session | Optional upgrade: Gemma 4 26B-A4B Q4 on CPU, using the 64 GB of RAM. It fits (about 17 GB) but speed on DDR5-6000 is unmeasured |
+| **Speech** | Kokoro 82M, ONNX | CPU | Reported RTF about 0.2 on 32 vCPUs. Apache-2.0. GPU Kokoro is much faster (36-96x real time on cloud GPUs) but shares the GPU with the LLM, which adds jitter |
+
+**Larger-model option.** More parameters should improve *behavioral* consistency (holding to one question at a time, short replies, and the persona over a long session), but not latency consistency, which is better with a smaller model. The behavioral benefit is a hypothesis that `benchmark` and user testing must confirm.
+- **Optional alternative: Gemma 4 12B, Q6_K, fully on the GPU.** About 10.7 GB predicted (9.8 GB weights, 0.4 GB KV at 8K, 0.5 GB overhead) against 10.3 GB for the default. It breaks rule 4 (different family from the minimum tier), and its KV size depends on runtime behavior that is unconfirmed (section 12 item 12).
+- **Q8_0 of the same model (about 13.6 GB) is not recommended.** With Windows using VRAM for the display, too little headroom remains.
+- **Not recommended for consistency:** Qwen3.5 27B, Gemma 4 31B or the 26B-A4B and 35B-A3B MoE models, because they do not fit in 16 GB VRAM and would need CPU offload. Offload makes latency depend on DDR5 bandwidth and expert routing, which breaks rules 1 and 2. They remain valid for the evaluator.
+- Any larger model needs the hardware disclaimer above, and the tested VRAM headroom must be stated next to it.
+
+Open checks: (a) rule 1 is a hypothesis, so `benchmark` should compare p50 and p95 turn latency with TTS on the CPU against TTS on the GPU; (b) Blackwell needs recent CUDA and PyTorch builds (section 12 item 6); (c) the Qwen3.5 9B memory figures are predictions, not measurements.
 
 ### 3.3 Integration contract
 
@@ -251,30 +299,59 @@ After simulation, each event also carries `t_perceived` (or `dropped: true`). Ev
 
 ## 8. Hardware Tiers and Model Sizes
 
-Figures are drawn from secondary roundups and **conflict between sources**. Treat them as recommendations and ship a `benchmark` command so users can measure their own machines.
+Figures are drawn from secondary roundups and **conflict between sources**. Treat every number here as **provisional** until the `benchmark` command has measured it. Supporting research is in `docs/research/` (LLM ladders, speech-stack footprints, and developer and non-technical hardware profiles).
 
-| Tier | Hardware | LLM size | Example models | Reported notes |
+### 8.1 How the minimum is defined
+
+- **Minimums are stated against free resources, not installed.** An 8 GB laptop with a browser and a video call open has roughly 1.5-3 GB free **[estimate, not measured]**. A 16 GB laptop has roughly 7-9 GB free. Setup reads *free* RAM and VRAM, and shows the user the number it used.
+- **Reserve the speech stack first, then fit the LLM into what remains.** Speech stack (VAD, turn detector, STT, TTS), excluding the LLM, is roughly 0.7-3.2 GB at the minimal configuration, 3.7-7.7 GB at mid, and 5-8 GB of VRAM at high. The ranges are wide because published figures conflict, so the fit calculator uses the high figure until `benchmark` measures the real one.
+- **Memory placement is per slot.** When VRAM is short, the LLM takes the GPU and speech runs on the CPU, if there is enough RAM. Apple silicon and integrated GPUs share one pool, so count them as RAM.
+- **Disk:** the downloaded stack is roughly 5-10 GB for small configurations. Setup checks free disk before downloading.
+- **Not supported for local mode:** Chromebooks and locked-down school or library machines, and any machine below the Tier 0 floor. These get a text-only or remote-backend mode, with a clear message, instead of a failed setup.
+
+### 8.2 Tiers
+
+Tiers come from the fit calculator's output. This table is the starting estimate for it, using the model-size ladders in `docs/research/llm-size-ladders.md`. "LLM budget" is the memory left for the LLM after the speech reserve.
+
+| Tier | Free memory and hardware | LLM budget | LLM size class | Example models (Q4_K_M unless noted) |
 |---|---|---|---|---|
-| **1: Minimum** | 4 CPU cores, ~8 GB RAM | 2-4B, Q4 | Qwen3.5 4B, Phi-4-mini 3.8B, Gemma 3 2B/4B, Llama 3.2 3B, SmolLM3 3B | One test: Phi-4 Mini ~2.3 GB at ~12 tok/s on CPU; Gemma 3 2B ~15 tok/s; Llama 3.2 3B ~10 tok/s |
-| **2: Comfortable CPU / entry GPU** | 8+ cores, 16 GB RAM, or 8 GB GPU | ~7-8B, Q4 | Qwen3 8B | ~5 GB at Q4_K_M; CPU speed claims range from ~5 to ~18 tok/s |
-| **3: GPU 12-16 GB** | RTX 4070 to 5080 class | 12-14B, Q4/Q5 | Qwen3 14B, Gemma 3 12B, Phi-4 14B | Qwen3 14B ~8.5 GB at Q4_K_M; Gemma 3 12B ~6.7 GB |
-| **4: GPU 24 GB+** | 3090/4090/5090 | 27-32B | Gemma 3 27B, Qwen3 30B/32B, MoE models such as Gemma 4 26B-A4B | A 32B model needs about 24 GB |
+| **0: Constrained** (best effort) | 4 cores, at least 4 GB free RAM, CPU only. Typically an 8 GB machine with other apps closed | ~2 GB | 0.8-2B | Qwen3.5 0.8B or 2B, Llama 3.2 1B. Speech limited to the smallest STT and TTS |
+| **1: Minimum** (supported) | 4 cores, at least 6 GB free RAM (typically 16 GB installed), CPU only | ~3.5 GB | 2-4B | Qwen3.5 4B (the default, see 3.2.1), Qwen3.5 2B at Q8 |
+| **2: Comfortable CPU** | 8+ cores, at least 10 GB free RAM | ~6 GB | 4-9B | Gemma 4 E2B or E4B, Phi-4-mini, Qwen3.5 9B (tight) |
+| **3: GPU 8 GB** | 8 GB VRAM, speech on CPU with 16 GB RAM | ~6 GB VRAM | 4-9B | Gemma 4 E4B, Qwen3.5 4B at Q8, Qwen3.5 9B at IQ4_XS (tight) |
+| **4: GPU 12-16 GB** | RTX 4070 to 5080 class, or Apple silicon with 24 GB+ | ~10-14 GB | 9-14B | Qwen3.5 9B at Q6/Q8, Gemma 4 12B at Q4/Q5 |
+| **5: GPU 24 GB+** | 3090/4090/5090, or 32 GB+ free on a large Mac | ~22 GB | 26-32B | Qwen3.5/3.8 27B, Gemma 4 31B, MoE such as Gemma 4 26B-A4B |
+
+Notes:
+- **CPU-only is tighter than the memory column suggests.** On 4 cores the LLM, STT, VAD and TTS compete for CPU time. Kokoro alone used about 50-67% of real time on 4 cores in the one published benchmark, and no 4-core x86 benchmark exists for the other components. Tier 1 and below therefore depend on `benchmark` results.
+- **MoE models need all weights in memory.** Gemma 4 26B-A4B and Qwen3.x 35B-A3B decode at small-model speed but need 17-22 GB at Q4. They suit Tier 5 and 32 GB RAM machines, not smaller tiers.
+- **Mixed GPU/CPU placement for MoE** (experts on CPU, attention on GPU) is possible in some runtimes **[unverified]** and is not assumed.
+- The previous model names in this section (Qwen3, Gemma 3, Phi-4, Llama 3.2) are now a generation behind, and Gemma 3 and Llama 3.2 are gated behind click-through licenses. Qwen3.5 and Gemma 4 are Apache-2.0 and ungated.
 
 Model generations move quickly, so documentation should describe tiers by **size class with example models** and avoid pinning to a single model name.
 
-### 8.1 Interview-specific guidance
+### 8.3 Fit calculator rules
+
+- The ladder is **data-driven per model**: layers, KV heads, head dimension, layer-type pattern (full, linear or sliding window), window size, total and active parameters, and the real file size of each quantization. KV-cache size varies by 10x or more between architectures at the same parameter count, so one global formula is not used.
+- Weights ≈ parameters × bits-per-weight / 8, with about 4.7-5.2 bits for Q4_K_M, 5.7 for Q5_K_M, 6.6 for Q6_K and 8.5 for Q8_0. The calculator uses the exact size of the file it will download.
+- KV cache = 2 × KV-carrying layers × KV heads × head dim × context × bytes per element.
+- Default planning assumptions, all configurable: 8K context, about 0.5 GB runtime overhead, about 2 GB headroom. All three are **[unverified]**.
+- **Verify on first load.** Read the runtime's reported model and KV buffer sizes, compare with the prediction, and step down one rung on failure.
+- Cap utterance length for STT. Parakeet v3 int8 peak memory is reported at 1.5 GB on short clips and 5.5 GiB on long audio.
+
+### 8.4 Interview-specific guidance
 - **Optimize time to first sentence, not tokens/sec.** Speech runs at roughly 3-4 tokens/sec, so even about 10 tok/s outpaces the voice if sentences are streamed to TTS as they finish.
 - **CPU contention is the real limiter on 4 cores:** LLM, STT, VAD, and TTS compete. Benchmark the whole pipeline, not each model alone.
 - **Cache the KV state** for static context (resume, job description) so only each new turn is processed. **[engineering reasoning; verify]**
-- **Disable "thinking" modes for live turns.** Reported to roughly halve tokens/sec.
+- **Disable "thinking" modes for live turns.** Reported to roughly halve tokens/sec. Qwen3.5 9B and 27B default to thinking on, so setup must pass the right chat-template flag.
 - **Keep interviewer replies to one or two sentences.**
-- **Leave VRAM headroom** (a couple of GB) for STT and TTS alongside the LLM.
+- **Leave headroom** (a couple of GB) for STT and TTS alongside the LLM, or run them on the CPU.
 
-### 8.2 Reference dev machine
-Windows 11, 32-logical-processor i9, RTX 5080 (16 GB, Blackwell). A guide for this class of card suggests a 14B model at Q4/Q5 as the best clean fit, using spare compute for latency rather than forcing a larger model. Blackwell cards need recent CUDA and PyTorch builds, so pin versions in setup docs **[verify exact minimums]**.
+### 8.5 Reference dev machine
+Windows 11, 32-logical-processor i9, RTX 5080 (16 GB, Blackwell). With speech running on the CPU, this is a Tier 4 machine. A guide for this class of card suggests a 12-14B model at Q4/Q5 as the best clean fit, using spare compute for latency rather than forcing a larger model. Blackwell cards need recent CUDA and PyTorch builds, so pin versions in setup docs **[verify exact minimums]**.
 
-### 8.3 Simulating the minimum tier
-Developers on larger machines can pin CPU affinity to 4 cores and limit RAM to approximate Tier 1. The `benchmark` command should support this.
+### 8.6 Simulating the minimum tier
+Developers on larger machines can pin CPU affinity to 4 cores and limit RAM to the Tier 1 free-memory figure (not the installed figure) to approximate it. The `benchmark` command should support this.
 
 ---
 
@@ -282,7 +359,7 @@ Developers on larger machines can pin CPU affinity to 4 cores and limit RAM to a
 
 ### STT
 - **Parakeet TDT 0.6B v3:** reported to beat Whisper large-v3 on accuracy at a quarter of the size and run much faster on CPU. Narrower language coverage than Whisper.
-- **Moonshine base (61.5M):** small CPU/streaming option for the lowest tier.
+- **Moonshine v2 (tiny 34M, small 123M):** small streaming models, but not adopted for now because the v2 paper and the repo word the weights license differently, and the legacy non-English models are non-commercial. Revisit once the license is confirmed.
 - **faster-whisper** is a safe default for a self-hosted server; **whisper.cpp** is the strongest portable CPU option and suits the non-CUDA path.
 - **Nemotron streaming** models are built for live text and are optional (useful for live captions of the *user's* speech).
 
@@ -292,8 +369,8 @@ Developers on larger machines can pin CPU affinity to 4 cores and limit RAM to a
 - One self-reported third-party benchmark shows LiveKit's turn detector with fewer false cutoffs than Smart Turn v3.2. Keep the detector swappable and tune with real testing.
 
 ### TTS
-- **Kokoro** (82M parameters, Apache 2.0) is the quality default and can run on CPU, but a real-time benchmark on 4 cores is unverified.
-- **Piper** is the speed choice for CPU but is now GPL-3.0-or-later, which affects how the repo can be licensed if it is bundled.
+- **Kokoro** (82M parameters, Apache 2.0) is the default for every tier (3.2.1 and 3.2.2). Its published 4-core x86 real-time factor is 0.5-0.67 with nothing else running, so on the minimum tier it is the riskiest default.
+- **Piper** is the fastest researched CPU option, but current releases are GPLv3, so it is left out until the repo license is decided. Supertonic 3 (OpenRAIL-M use restrictions) is left out for a similar reason.
 
 ### Orchestration
 - **Pipecat** is the leading candidate. A lean custom pipeline remains an option if its dependencies prove too heavy for the minimum tier.
@@ -304,12 +381,14 @@ Developers on larger machines can pin CPU affinity to 4 cores and limit RAM to a
 
 - **Do not bundle model weights.** Download them at setup, and display each model's license.
 - Qwen3 and Phi-4-mini are reported as permissive; **Gemma uses its own Terms of Use**.
-- Check the GPL implications of Piper before deciding the repo's license. Smart Turn is BSD-2-Clause; Kokoro is Apache 2.0.
+- Defaults are chosen so that nothing copyleft or use-restricted is needed (Piper and Supertonic 3 are out for now). Smart Turn is BSD-2-Clause, Kokoro and Qwen3.5 are Apache 2.0, whisper.cpp and Silero are MIT, and Parakeet is CC-BY-4.0.
 - Provide one-command setup and prebuilt environments for CPU and CUDA profiles. Add an open GPU path later (Vulkan/ROCm/Metal through llama.cpp and ONNX Runtime) **[unverified]**.
 
 ---
 
 ## 11. Testing and Benchmarks
+
+Testing and benchmarking are first-class and live at the repository root. [`testing/`](testing/README.md) checks that each model is implemented and integrated correctly (contract and integration tests). [`benchmarking/`](benchmarking/README.md) measures how well each model does its role (effectiveness plus resource cost). Both run against any registered candidate for a slot, so model experimentation is a config change. The list below is the required coverage.
 
 - `benchmark` command: per-stage and end-to-end latency (turn-end to first audio), CPU load, memory, with optional core pinning
 - Reproducible simulator runs via `seed`
@@ -329,7 +408,11 @@ Developers on larger machines can pin CPU affinity to 4 cores and limit RAM to a
 6. Minimum CUDA/PyTorch versions for RTX 50-series (Blackwell)
 7. Real-world packet-loss rates and codec concealment behavior for realistic presets
 8. The `perceived` to `true_state` transfer hypothesis (needs user testing)
-9. Piper licensing details (sources are inconsistent about MIT vs. GPL)
+9. Piper licensing details (sources are inconsistent about MIT vs. GPL). Research found the original `rhasspy/piper` is MIT but archived, and the maintained successor is GPLv3. Whether it is "or later" rests on package metadata only. Per-voice licenses are not audited. Piper is not a default, so this only matters if it is added back
+10. Measured free RAM and free disk on real 8 GB and 16 GB machines with a browser and a video call open (current figures are estimates)
+11. Time to first token for a 2-4K-token prompt on small GPUs and CPUs, with prefix caching
+12. How llama.cpp sizes the Gemma 4 KV cache (sliding-window trimming and shared KV layers), which changes Tier 3-5 estimates
+13. Combined CPU budget on 4 cores (LLM, STT, TTS, VAD, turn detector together). The Tier 0 and Tier 1 floors depend on it
 
 ---
 
