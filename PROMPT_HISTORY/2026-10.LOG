@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 13:22:37 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Raised that a screen reader's announcement of a cue change can collide with the interviewer's speech for blind users, and asked that the change be gated on a guaranteed signal.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: added a "Screen reader gating" artboard to the Design canvas (claude.ai artifact, not in the repo) beside the interview screen: one sequenced audio timeline, a per-transition table of gate signal, spoken announcement and earcon, and three open decisions. Gate and guard values are labeled proposals. Nothing rendered or checked visually. No repo files changed apart from this log.
+Tokens: ~9,800 (derived: counter 15,000,000 -> ~14,990,200)
+---
 ## 2026-10-06 13:16:36 | Claude Opus 5.5 (claude-opus-5-5)
 Summary prompt: Asked for a first draft of the interview cue UX/UI as a Design canvas, their first time using the feature.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
