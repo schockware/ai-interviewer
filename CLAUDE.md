@@ -67,4 +67,5 @@ The QA ledger and the per-feature QA contract are created with the first promoti
 
 ## Files
 
+- Design prototyping happens on a claude.ai Design canvas; only developer-ready iterations are committed, under `design/` at the root. See `design/README.MD`.
 - Follow the existing `README.MD` naming for READMEs. This file is `CLAUDE.md`, lowercase extension, because Claude Code looks for that exact name on case-sensitive filesystems.

@@ -4,7 +4,7 @@
 
 Design mockups for the interview screen's cues, from the 2026-10-06 design session. They are not code and are not in either code zone (`src/prototypes/`, `src/prod/`). Nothing here is verified.
 
-The live, editable version is a private Design canvas on claude.ai, "Interviewer Cue Design": https://claude.ai/artifact/WQvDtXFX6ZbXbqscJcuT3Q. These files are a snapshot of it at iteration 1. If the canvas changes, re-export it; the canvas is the source until then.
+Design prototyping happens on a private Design canvas on claude.ai, "Interviewer Cue Design": https://claude.ai/artifact/WQvDtXFX6ZbXbqscJcuT3Q. These files are the **developer-ready snapshot of iteration 1**; build from them, not from the live canvas, which may already hold later work in progress. See [the design lifecycle](../../README.MD).
 
 ## Boards
 

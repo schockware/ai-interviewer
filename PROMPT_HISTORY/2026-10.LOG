@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 14:05:22 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Set the design lifecycle: prototyping is owned on the Design canvas, and developer-ready designs are committed to the repository.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: created design/README.MD (lifecycle: prototype on the canvas, commit developer-ready snapshots under design/mockups/<area>/, developers build from the repo copy); reworded design/mockups/ui/README.MD to call iteration 1 the developer-ready snapshot; added a one-line pointer to the Files section of CLAUDE.md.
+Tokens: ~2,800 (estimated)
+---
 ## 2026-10-06 14:04:02 | Claude Opus 5.5 (claude-opus-5-5)
 Summary prompt: Agreed with the caption resolution, called iteration 1 of the design a good start, and asked whether it could be committed to a root-level design/mockups/ui folder.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
