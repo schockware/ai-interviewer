@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 14:04:02 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Agreed with the caption resolution, called iteration 1 of the design a good start, and asked whether it could be committed to a root-level design/mockups/ui folder.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: created design/mockups/ui with the six .dc.html boards and canvas.json copied from the Design canvas (byline comment added after the doctype in each board), plus README.MD (board list, canvas link, viewing note that ./support.js is not included so the files do not render standalone, caveats). Files were copied from the local publish folder, matching the last published version; not re-read from the canvas and not rendered.
+Tokens: ~6,600 (derived: counter 15,000,000 -> ~14,993,400)
+---
 ## 2026-10-06 13:55:35 | Claude Opus 5.5 (claude-opus-5-5)
 Summary prompt: Realized the caption in-progress question was already solved, because the Talking icon is the visual cue that the interviewer is speaking.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry

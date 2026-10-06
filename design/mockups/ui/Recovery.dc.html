@@ -1,0 +1,93 @@
+<!doctype html>
+<!-- Authored by Claude Opus 5.5 (Anthropic), with Steven Chock as co-author. Iteration 1; see README.MD. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Edge moments</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1280px; height: 640px; box-sizing: border-box; padding: 48px; background: #F3F5F7; color: #16202A; font-family: 'IBM Plex Sans', system-ui, sans-serif; display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h1 style="margin: 0; font-size: 30px; font-weight: 600">When the handoff wobbles</h1>
+<p style="margin: 0; font-size: 16px; color: #4A5562">Pauses and lag must never look like a finished turn. Each case gets its own cue.</p>
+</div>
+<span style="padding: 6px 10px; border-radius: 6px; background: #FFF1DC; color: #7A3E00; font-size: 13px; white-space: nowrap">Timings: proposals</span>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; flex: 1 1 auto">
+
+<article style="display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 600">1 · Long silence before you answer</h2>
+<div style="background: #FFFFFF; border: 1px solid #E1E5EA; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; align-items: center; gap: 12px">
+<div style="width: 44px; height: 44px; border-radius: 50%; background: #E3EBFC; box-shadow: 0 0 0 2px #1D4ED8; color: #1D4ED8; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8.5a6.5 6.5 0 1 1 13 0c0 6-6 6-6 10a3.5 3.5 0 1 1-7 0"></path><path d="M15 8.5a2.5 2.5 0 0 0-5 0v1a2 2 0 1 1 0 4"></path></svg></div>
+<span style="font-size: 18px; font-weight: 600; color: #1D4ED8">Your turn</span>
+</div>
+<p style="margin: 0; font-size: 15px; line-height: 1.5">Take your time. Would you like me to repeat the question?</p>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<button type="button" style="min-height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid #C5CCD3; background: #FFFFFF; font: inherit; font-size: 14px; color: #16202A">Repeat</button>
+<button type="button" style="min-height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid #C5CCD3; background: #FFFFFF; font: inherit; font-size: 14px; color: #16202A">I’m thinking</button>
+</div>
+</div>
+<p style="margin: 0; font-size: 13px; line-height: 1.5; color: #2B3540">After about 5–10 s of silence, the interviewer offers a soft prompt. It is spoken and also shown, and it never moves on to a new question.</p>
+</article>
+
+<article style="display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 600">2 · Interviewer cut in by mistake</h2>
+<div style="background: #FFFFFF; border: 1px solid #E1E5EA; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #4A5562">
+<span style="padding: 3px 8px; border-radius: 5px; background: #DDF2EC; color: #0F6B5C; text-decoration: line-through">Speaking</span>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+<span style="padding: 3px 8px; border-radius: 5px; background: #E3EBFC; color: #1D4ED8">Your turn</span>
+</div>
+<p style="margin: 0; font-size: 18px; font-weight: 600; color: #1D4ED8">Sorry, go ahead.</p>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #2B3540">The interviewer stopped because you kept talking.</p>
+</div>
+<p style="margin: 0; font-size: 13px; line-height: 1.5; color: #2B3540">With “interviewer yields”, the cue returns to Your turn with no chime. The session report counts it as a false cutoff by the interviewer, not a mistake by you.</p>
+</article>
+
+<article style="display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 600">3 · “Give me a sec”</h2>
+<div style="background: #FFFFFF; border: 1px solid #E1E5EA; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+<span style="font-size: 18px; font-weight: 600; color: #1D4ED8">Take your time</span>
+<span style="padding: 4px 10px; border-radius: 999px; background: #E3EBFC; color: #1D4ED8; font-family: 'IBM Plex Mono', monospace; font-size: 13px">holding 0:12</span>
+</div>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #2B3540">The interviewer will not respond until you start talking or press Ready.</p>
+<button type="button" style="min-height: 48px; border-radius: 10px; border: 0; background: #1D4ED8; color: #FFFFFF; font: inherit; font-size: 15px; font-weight: 600">I’m ready</button>
+</div>
+<p style="margin: 0; font-size: 13px; line-height: 1.5; color: #2B3540">This turns off end-of-turn detection. The control responds locally within 100 ms and is never delayed by the simulator.</p>
+</article>
+
+<article style="display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 600">4 · First time a preset is on</h2>
+<div role="dialog" aria-labelledby="simdlg" style="background: #FFFFFF; border: 1px solid #E1E5EA; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 8px 24px rgba(22, 32, 42, 0.12)">
+<span style="align-self: flex-start; padding: 5px 10px; border-radius: 999px; background: #FFF1DC; color: #7A3E00; border: 1px solid #F0C98E; font-size: 13px; font-weight: 500">Simulated: Laggy / clipped</span>
+<h3 id="simdlg" style="margin: 0; font-size: 17px; font-weight: 600">Cues will arrive late, like a real call</h3>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #2B3540">The interviewer’s voice and status lag on purpose. Your own buttons stay instant. Captions stay accurate unless you choose otherwise.</p>
+<button type="button" style="min-height: 44px; border-radius: 10px; border: 0; background: #16202A; color: #FFFFFF; font: inherit; font-size: 15px">Got it</button>
+</div>
+<p style="margin: 0; font-size: 13px; line-height: 1.5; color: #2B3540">Shown once and dismissable. After that, the badge stays in the header for as long as the preset is on.</p>
+</article>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":640}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

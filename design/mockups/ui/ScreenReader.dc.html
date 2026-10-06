@@ -1,0 +1,112 @@
+<!doctype html>
+<!-- Authored by Claude Opus 5.5 (Anthropic), with Steven Chock as co-author. Iteration 1; see README.MD. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Screen reader gating</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1280px; height: 900px; box-sizing: border-box; padding: 48px; background: #F3F5F7; color: #16202A; font-family: 'IBM Plex Sans', system-ui, sans-serif; display: flex; flex-direction: column; gap: 24px">
+
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h1 style="margin: 0; font-size: 30px; font-weight: 600">Screen reader mode: one audio timeline</h1>
+<p style="margin: 0; font-size: 16px; line-height: 1.5; color: #4A5562; max-width: 900px">The browser never tells us when a screen reader has finished speaking. So a spoken status may only be sent while the interviewer’s voice is truly silent, and it is gated on a signal we own: the moment the last voice frame has actually played.</p>
+</div>
+<span style="padding: 6px 10px; border-radius: 6px; background: #FFF1DC; color: #7A3E00; font-size: 13px; white-space: nowrap">Timings: proposals, close to research</span>
+</div>
+
+<section aria-label="Sequence" style="background: #FFFFFF; border: 1px solid #E1E5EA; border-radius: 16px; padding: 22px 24px; display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600">One handoff, in order. Nothing overlaps by construction.</h2>
+<div style="display: flex; align-items: stretch; gap: 6px; font-size: 13px">
+<div style="flex: 3 1 0; background: #0F6B5C; color: #FFFFFF; border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">Interviewer voice</span><span>“…what did you do first?”</span></div>
+<div style="flex: 1.2 1 0; background: #16202A; color: #FFFFFF; border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">Gate</span><span>last frame played</span></div>
+<div style="flex: 0.9 1 0; border: 1px dashed #4A5562; border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">Guard</span><span>250 ms silence</span></div>
+<div style="flex: 0.9 1 0; background: #E3EBFC; color: #1D4ED8; border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">Chime</span><span>200 ms earcon</span></div>
+<div style="flex: 1.4 1 0; background: #1D4ED8; color: #FFFFFF; border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">Screen reader</span><span>“Your turn”</span></div>
+<div style="flex: 2.4 1 0; background: #9DB6EE; color: #16202A; border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">You answer</span><span>no announcements</span></div>
+<div style="flex: 1.2 1 0; background: #FCEBD9; color: #7A3E00; border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">Thinking</span><span>earcon; “Thinking” if still current at 500 ms</span></div>
+<div style="flex: 1 1 0; background: #DDF2EC; color: #0F6B5C; border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">Lead-in tone</span><span>150 ms + 300 ms gap</span></div>
+<div style="flex: 1.4 1 0; background: #0F6B5C; color: #FFFFFF; border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">Voice</span><span>next question</span></div>
+</div>
+</section>
+
+<section aria-label="Rules per transition" style="background: #FFFFFF; border: 1px solid #E1E5EA; border-radius: 16px; padding: 8px 24px 12px">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.45">
+<thead>
+<tr style="text-align: left; color: #4A5562">
+<th scope="col" style="padding: 12px 12px 10px 0; font-weight: 600; width: 160px">Transition</th>
+<th scope="col" style="padding: 12px 12px 10px 0; font-weight: 600">Gate: the signal we wait for</th>
+<th scope="col" style="padding: 12px 12px 10px 0; font-weight: 600; width: 230px">Screen reader hears</th>
+<th scope="col" style="padding: 12px 0 10px 0; font-weight: 600; width: 220px">Earcon (our audio)</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-top: 1px solid #E1E5EA">
+<th scope="row" style="padding: 12px 12px 12px 0; text-align: left; font-weight: 600; color: #1D4ED8">Speaking → Your turn</th>
+<td style="padding: 12px 12px 12px 0">The player reports the last voice frame has left the speakers (scheduled end plus output latency), then a 250 ms guard. Never the pipeline’s “TTS done”.</td>
+<td style="padding: 12px 12px 12px 0">“Your turn”</td>
+<td style="padding: 12px 0">Chime, before the announcement</td>
+</tr>
+<tr style="border-top: 1px solid #E1E5EA">
+<th scope="row" style="padding: 12px 12px 12px 0; text-align: left; font-weight: 600; color: #9A4D00">Your turn → Thinking</th>
+<td style="padding: 12px 12px 12px 0">Turn detector says complete. Announcements are debounced 250–500 ms and only the state still displayed is spoken, so a false cutoff says nothing new.</td>
+<td style="padding: 12px 12px 12px 0">“Thinking”, only if still current after 500 ms. Shorter flips: earcon only.</td>
+<td style="padding: 12px 0">Soft scribble loop, ducked</td>
+</tr>
+<tr style="border-top: 1px solid #E1E5EA">
+<th scope="row" style="padding: 12px 12px 12px 0; text-align: left; font-weight: 600; color: #0F6B5C">Thinking → Speaking</th>
+<td style="padding: 12px 12px 12px 0">Voice audio is ready. If an announcement was sent in the last few seconds, hold the voice for its estimated length (words ÷ the user’s reader rate).</td>
+<td style="padding: 12px 12px 12px 0">Nothing. The voice is the signal.</td>
+<td style="padding: 12px 0">Lead-in tone, then a 300 ms gap</td>
+</tr>
+<tr style="border-top: 1px solid #E1E5EA">
+<th scope="row" style="padding: 12px 12px 12px 0; text-align: left; font-weight: 600; color: #4B5563">Any → Paused</th>
+<td style="padding: 12px 12px 12px 0">Your key press. The voice fades out over 100 ms first, then the announcement is sent.</td>
+<td style="padding: 12px 12px 12px 0">“Paused”</td>
+<td style="padding: 12px 0">None</td>
+</tr>
+<tr style="border-top: 1px solid #E1E5EA">
+<th scope="row" style="padding: 12px 12px 12px 0; text-align: left; font-weight: 600">Captions</th>
+<td style="padding: 12px 12px 12px 0">Not a live region by default. A navigable transcript (finished sentences only) is the main channel for braille and deafblind users. Opt-in live captions add one final sentence at a time.</td>
+<td style="padding: 12px 12px 12px 0">Only when you navigate to them</td>
+<td style="padding: 12px 0">—</td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<section aria-label="Open decisions" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+<div style="background: #FFFFFF; border: 1px solid #E1E5EA; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 6px">
+<h3 style="margin: 0; font-size: 15px; font-weight: 600">Two timing profiles</h3>
+<p style="margin: 0; font-size: 13px; line-height: 1.5; color: #2B3540">Natural timing matches human turn gaps. Accessible timing leaves room for screen reader speech. Accessible is the default for now; reconciling the two comes later.</p>
+</div>
+<div style="background: #FFFFFF; border: 1px solid #E1E5EA; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 6px">
+<h3 style="margin: 0; font-size: 15px; font-weight: 600">Turning the mode on</h3>
+<p style="margin: 0; font-size: 13px; line-height: 1.5; color: #2B3540">Pages cannot reliably detect a screen reader. The Accessibility button is always visible, and focus lands on it first when any screen loads. Every setting has a working default.</p>
+</div>
+<div style="background: #FFFFFF; border: 1px solid #E1E5EA; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 6px">
+<h3 style="margin: 0; font-size: 15px; font-weight: 600">Simulator presets</h3>
+<p style="margin: 0; font-size: 13px; line-height: 1.5; color: #2B3540">The gate reads the delayed, clipped audio the user actually hears, so it holds in perceived mode. The guard does not stretch with lag.</p>
+</div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
