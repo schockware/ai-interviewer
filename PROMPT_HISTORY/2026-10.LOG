@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 13:26:51 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Said they will run research on screen reader timing for real-time UI changes to set the defaults, asked for a required default plus a first-class Accessibility button that is always available and receives focus first when a screen loads, and asked to add this to SPEC.md.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: SPEC.md: Accessibility button added to the 4.1 controls and as a 4.2 bullet; new 4.3 "Screen reader mode" with the gating rules, timings marked as proposals pending research; open question 14 added in section 12. TASKS.MD: added the research task and a task to carry 4.2 and 4.3 into specs/cues as requirement IDs (specs/ not edited). Design canvas: Accessibility button placed first in the interview screen's header with autofocus; screen reader board updated. Nothing rendered or checked visually.
+Tokens: ~8,600 (derived: counter 15,000,000 -> ~14,991,400)
+---
 ## 2026-10-06 13:22:37 | Claude Opus 5.5 (claude-opus-5-5)
 Summary prompt: Raised that a screen reader's announcement of a cue change can collide with the interviewer's speech for blind users, and asked that the change be gated on a guaranteed signal.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
