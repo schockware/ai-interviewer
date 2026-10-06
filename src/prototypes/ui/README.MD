@@ -32,7 +32,7 @@ npx playwright install chromium firefox
 npm run dev
 ```
 
-Open http://localhost:5173. The page is a placeholder shell for now. The port is fixed at 5173 because the Playwright tests use it.
+Open http://localhost:5173. The page is the interview screen from `design/mockups/ui/Main.dc.html` (iteration 1) with the Accessibility panel from `Accessibility.dc.html`. The cue engine and the scripted mock interviewer are live. Drawn but not wired: the Controls buttons, the microphone row, the caption text (the mockup's sample lines), and every Accessibility setting except captions. The setup and hardware pages in `contracts/page-flow.md` have no mockups yet and are not built. The port is fixed at 5173 because the Playwright tests use it.
 
 ## Tests
 

@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 13:42:47 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked for a first pass at implementing the UI mockups in design/mockups/ui inside the prototype UI area, noting that contracts/page-flow.md should hold good draft contracts.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: src/prototypes/ui: rebuilt the interview screen from Main.dc.html (new CuePanel layout, SimulationBadge, CaptionsSection, MicrophoneRow, ControlsCard, CallConditions, AccessibilityDialog, icons, stateView; App.tsx and index.css rewritten); updated App.test.tsx, CuePanel.test.tsx and e2e/cues.spec.ts (cue-mode radios became the Cues follow select; Accessibility button is first focus; new captions and dialog tests). typecheck, lint, 100 vitest tests and 20 Playwright tests (Chromium and Firefox, axe WCAG 2.2 AA incl. captions on and dialog open) pass. One screenshot checked by eye. contracts/page-flow.md read but not used: the mockups cover only the interview screen, and no mockup exists for the setup or hardware pages. Controls, microphone row and caption text are drawn but not wired.
+Tokens: ~46,000 (derived: counter 15,000,000 -> ~14,954,000)
+---
 ## 2026-10-06 19:32:58 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Told that a pull request for this branch was created from the Claude Code UI and that no new one is needed; later commits to the branch update it.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry

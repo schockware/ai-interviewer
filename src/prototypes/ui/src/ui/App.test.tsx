@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import App from './App.tsx'
@@ -11,10 +11,11 @@ describe('App shell', () => {
     expect(screen.getByTestId('announcement')).toBeEmptyDOMElement()
   })
 
-  it('offers all three cue modes as radio buttons, with perceived chosen (CUE-MOD-001)', () => {
+  it('offers all three cue modes in "Cues follow", with perceived chosen (CUE-MOD-001)', () => {
     render(<App />)
-    expect(screen.getAllByRole('radio')).toHaveLength(3)
-    expect(screen.getByRole('radio', { name: /Perceived/ })).toBeChecked()
+    const select = screen.getByRole('combobox', { name: 'Cues follow' })
+    expect(within(select).getAllByRole('option')).toHaveLength(3)
+    expect(select).toHaveValue('perceived')
   })
 
   it('says the modes look the same while no simulation is active (CUE-MOD-003)', () => {
@@ -24,15 +25,27 @@ describe('App shell', () => {
 
   it('switching to debug draws both timelines at once (CUE-MOD-002)', async () => {
     render(<App />)
-    await userEvent.click(screen.getByRole('radio', { name: /Debug/ }))
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Cues follow' }), 'debug')
     expect(screen.getByTestId('lanes')).toBeInTheDocument()
   })
 
-  it('can be operated by keyboard: the controls are reachable in order', async () => {
+  it('puts the Accessibility button first in focus, as in the mockup', () => {
     render(<App />)
-    await userEvent.tab()
-    expect(screen.getByRole('combobox', { name: /Scenario/ })).toHaveFocus()
-    await userEvent.tab()
-    expect(screen.getByRole('button', { name: 'Start' })).toHaveFocus()
+    expect(screen.getByRole('button', { name: 'Accessibility' })).toHaveFocus()
+  })
+
+  it('shows captions off by default and turns them on from the button', async () => {
+    render(<App />)
+    expect(screen.getByRole('button', { name: 'Captions: off' })).toHaveAttribute('aria-pressed', 'false')
+    await userEvent.click(screen.getByRole('button', { name: 'Captions: off' }))
+    expect(screen.getByRole('region', { name: 'Captions' })).toBeInTheDocument()
+  })
+
+  it('says why captions are off when asked (and the help starts open, as in the mockup)', async () => {
+    render(<App />)
+    const why = screen.getByRole('button', { name: 'Why are captions off?' })
+    expect(why).toHaveAttribute('aria-expanded', 'true')
+    await userEvent.click(why)
+    expect(why).toHaveAttribute('aria-expanded', 'false')
   })
 })

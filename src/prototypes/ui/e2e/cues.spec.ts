@@ -28,9 +28,24 @@ test.describe('main page, simulation-off scenario, in a real browser', () => {
     expect(results.violations).toEqual([])
   })
 
+  test('has no axe violations with captions on', async ({ page }) => {
+    await page.goto('/')
+    await page.getByRole('button', { name: 'Captions: off' }).click()
+    const results = await new AxeBuilder({ page }).withTags(WCAG).analyze()
+    expect(results.violations).toEqual([])
+  })
+
+  test('has no axe violations with the Accessibility dialog open', async ({ page }) => {
+    await page.goto('/')
+    await page.getByRole('button', { name: 'Accessibility' }).click()
+    await expect(page.getByRole('dialog', { name: 'Accessibility' })).toBeVisible()
+    const results = await new AxeBuilder({ page }).withTags(WCAG).analyze()
+    expect(results.violations).toEqual([])
+  })
+
   test('has no axe violations in debug mode with both lanes showing', async ({ page }) => {
     await page.goto('/')
-    await page.getByRole('radio', { name: /Debug/ }).check()
+    await page.getByRole('combobox', { name: 'Cues follow' }).selectOption('debug')
     await expect(page.getByTestId('lanes')).toBeVisible()
     const results = await new AxeBuilder({ page }).withTags(WCAG).analyze()
     expect(results.violations).toEqual([])
@@ -38,26 +53,29 @@ test.describe('main page, simulation-off scenario, in a real browser', () => {
 
   test('every control can be reached and used with the keyboard alone (CUE-CTL-002)', async ({ page }) => {
     await page.goto('/')
-    await page.keyboard.press('Tab')
-    await expect(page.getByRole('combobox', { name: /Scenario/ })).toBeFocused()
-    await page.keyboard.press('Tab')
-    await expect(page.getByRole('button', { name: 'Start' })).toBeFocused()
+    await expect(page.getByRole('button', { name: 'Accessibility' })).toBeFocused()
+    // Open and close the Accessibility dialog by keyboard; focus returns to the button.
+    await page.keyboard.press('Enter')
+    await expect(page.getByRole('dialog', { name: 'Accessibility' })).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(page.getByRole('button', { name: 'Accessibility' })).toBeFocused()
+    // Start the scripted interview without the mouse.
+    await page.getByRole('button', { name: 'Start' }).focus()
     await page.keyboard.press('Enter')
     await expect(page.getByTestId('cue-label')).toHaveText('Interviewer is thinking', { timeout: 2000 })
-    await page.keyboard.press('Tab') // sound toggle
-    await page.keyboard.press('Tab') // first cue mode
+    await page.getByRole('combobox', { name: 'Cues follow' }).focus()
     await page.keyboard.press('ArrowDown')
     await page.keyboard.press('ArrowDown')
-    await expect(page.getByRole('radio', { name: /Debug/ })).toBeChecked()
+    await expect(page.getByRole('combobox', { name: 'Cues follow' })).toHaveValue('debug')
   })
 
   test('switching mode does not restart the session (CUE-MOD-002)', async ({ page }) => {
     await page.goto('/')
     await page.getByRole('button', { name: 'Start' }).click()
     await expect(page.getByTestId('cue-label')).toHaveText('Interviewer is speaking', { timeout: 3000 })
-    await page.getByRole('radio', { name: /True state/ }).check()
+    await page.getByRole('combobox', { name: 'Cues follow' }).selectOption('true_state')
     await expect(page.getByTestId('cue-label')).toHaveText('Interviewer is speaking')
-    await page.getByRole('radio', { name: /Perceived/ }).check()
+    await page.getByRole('combobox', { name: 'Cues follow' }).selectOption('perceived')
     await expect(page.getByTestId('cue-label')).toHaveText('Interviewer is speaking')
   })
 

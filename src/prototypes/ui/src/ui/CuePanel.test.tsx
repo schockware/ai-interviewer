@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { initialState, reduce, type CuePayload } from '../core/cues/index.ts'
 import { CuePanel } from './CuePanel.tsx'
+import { SimulationBadge } from './SimulationBadge.tsx'
 
 const payloadFor = (state: 'listening' | 'thinking' | 'talking' | 'paused'): CuePayload =>
   reduce(initialState('true_state'), {
@@ -35,19 +36,20 @@ describe('CuePanel renders the payload as received', () => {
     expect(region).toHaveAttribute('aria-live', 'polite')
   })
 
-  it('shows the simulation badge only while a condition is simulated (CUE-SIM-001)', () => {
-    const p = payloadFor('thinking')
-    const { rerender } = render(<CuePanel payload={p} />)
-    expect(screen.queryByTestId('simulation-badge')).toBeNull()
-    rerender(<CuePanel payload={{ ...p, simulation: { active: true, preset: 'laggy_clipped' } }} />)
-    expect(screen.getByTestId('simulation-badge')).toHaveTextContent('Simulated: laggy_clipped')
-  })
-
   it('draws both lanes only when given them (debug)', () => {
     const p = payloadFor('thinking')
     const { rerender } = render(<CuePanel payload={p} />)
     expect(screen.queryByTestId('lanes')).toBeNull()
     rerender(<CuePanel payload={{ ...p, lanes: { trueState: 'talking', perceivedState: 'thinking', offsetMs: 800 } }} />)
     expect(screen.getByTestId('lanes')).toHaveTextContent('800 ms')
+  })
+})
+
+describe('SimulationBadge', () => {
+  it('shows only while a condition is simulated (CUE-SIM-001)', () => {
+    const { rerender } = render(<SimulationBadge simulation={{ active: false, preset: 'clean' }} />)
+    expect(screen.queryByTestId('simulation-badge')).toBeNull()
+    rerender(<SimulationBadge simulation={{ active: true, preset: 'laggy_clipped' }} />)
+    expect(screen.getByTestId('simulation-badge')).toHaveTextContent('Simulated: laggy_clipped')
   })
 })

@@ -6,6 +6,20 @@ Page: `/` (cue panel, scenario and mode controls). Target: WCAG 2.2 level AA. Ne
 
 **Automated checks find only part of the problems.** Sources put axe-core at roughly 30 to 50 percent of issues ([ui-testing-tools.md](../../../../docs/research/ui-testing-tools.md)). A page is not "passing" until the keyboard and screen-reader passes are also done. The screen-reader pass is **not done yet**.
 
+## 2026-10-06: interview screen rebuilt from the mockup
+
+Same environment and tags as below. The page is now the mockup layout: Accessibility button, status card, captions (off by default), microphone row, controls, call conditions, and the Accessibility dialog.
+
+| Criterion | Level | How checked | Result | Note |
+|---|---|---|---|---|
+| All rules in the axe tag set | A, AA | Automated, `e2e/cues.spec.ts`: idle, a cue showing, captions on, Accessibility dialog open, debug lanes | Pass, no violations, Chromium and Firefox | Light theme only; the page is light only now |
+| 2.1.1 Keyboard, 2.4.3 Focus order | A | Automated: Accessibility button has focus on load, Enter opens the dialog, Escape closes it and returns focus, Start by Enter, Cues follow by arrow keys | Pass | Not a person's keyboard-only walk. Focus order is DOM order, and the harness controls sit last |
+| 2.5.8 Target size | AA | By CSS: buttons, selects and sliders are at least 44 px; checkboxes and radios 24 px | Not measured in a browser | |
+| 2.3.3, CUE-MOT-001 | AAA | The talking dots stop pulsing under `prefers-reduced-motion` by CSS | Not exercised by a test | Add one |
+| Dialog semantics | A | Native `<dialog>` with `showModal()`, labelled by its heading | axe passes | Focus trap and screen reader reading not checked by hand |
+
+Screen reader pass, zoom and reflow, contrast of the captions Contrast mode, and forced colours are still not done.
+
 ## 2026-10-05: first entry (simulation-off scenario, sound on)
 
 Environment: dev machine, Windows 11, Playwright 1.63.0, Chromium and Firefox (as installed by Playwright), `@axe-core/playwright` 4.13.0 on axe-core 4.13.0 with tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`.
