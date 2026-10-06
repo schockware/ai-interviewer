@@ -172,13 +172,13 @@ One state machine drives both audio and visual cues.
 |---|---|---|---|
 | **Listening** | Ear bubble | Soft ambient office room tone | "Your turn" |
 | **Thinking** | Thought bubble | Pen scribbling or typing | "Interviewer is thinking" |
-| **Talking** | Ellipsis (...) | The voice itself | Optional live caption |
+| **Talking** | Ellipsis (...) | The voice itself | Not announced by default; transcript always available (4.3) |
 | **Idle / paused** | Neutral icon | Silence | "Paused" |
 
 ### 4.1 Design notes
 - **"Your turn" cue:** a short chime plus the ear bubble appearing makes the handoff unambiguous.
 - **Thinking sounds double as latency masking:** a pause reads as someone taking notes, not a stall.
-- **Echo trap:** ambient audio played through speakers can be picked up by the mic and trigger VAD. Use separate audio buses (voice, ambient, effects), acoustic echo cancellation, gating of the mic path, or recommend headphones.
+- **Echo trap:** ambient audio and screen reader speech played through speakers can be picked up by the mic and trigger VAD. Use separate audio buses (voice, ambient, effects), acoustic echo cancellation, gating of the mic path, or recommend headphones.
 - **Controls:** pause, repeat, skip, hint, "give me a sec," optional push-to-talk, mid-session switching between voice and text, and an always-available Accessibility button (4.2).
 
 ### 4.2 Accessibility (verify against WCAG 2.2 before release)
@@ -186,20 +186,56 @@ One state machine drives both audio and visual cues.
 - Icons carry text labels, not shape alone. Status changes use an `aria-live` region, announced once per change.
 - Ambient audio has its own mute and volume control. Nothing auto-plays without a way to stop it.
 - Animations respect `prefers-reduced-motion`.
+- Braille and deafblind users are covered by the navigable transcript (4.3), because live regions may not reach a braille display.
 - Captions: adjustable size and contrast. Available as an accommodation (not framed as a "cheat" in the UI).
 - Captions have two modes: **accurate** (true text, default) and **as_heard** (matches degraded audio, a hard-mode training option). A user relying on captions must not be penalized by a degraded-audio preset.
-- **Accessibility button, first class.** An Accessibility button with an icon and a text label is visible on every screen and is never hidden, collapsed or disabled. When a screen loads, focus lands on it first, before any other control. It opens the accessibility settings (screen reader mode, captions, motion, sound levels, push-to-talk, pause timing), and every setting has a working default, so a user who never opens it still gets a usable session.
+- **Accessibility button, first class.** An Accessibility button with an icon and a text label is visible on every screen and is never hidden, collapsed or disabled. When a screen loads, focus lands on it first, before any other control. It opens the accessibility settings (screen reader mode, captions, motion, sound levels, push-to-talk, pause timing, and Advanced Accessibility, 4.5), and every setting has a working default, so a user who never opens it still gets a usable session.
 
 ### 4.3 Screen reader mode
-A screen reader's spoken announcement of a cue change can collide with the interviewer's voice. The browser gives no signal when a screen reader has finished speaking, so announcements are gated on signals the app owns. Screen reader mode is turned on from the Accessibility button (a page cannot reliably detect a screen reader). The timing values below are **proposals** until research on screen reader announcement timing for real-time UI sets the defaults (section 12 item 14).
+A screen reader's speech can collide with the interviewer's voice. The page cannot see or pause the screen reader, and neither ARIA nor the browser reports when it has finished speaking, so the cue gating must hold an appropriate block of time itself. The rules below follow `docs/research/screen-reader-live-updates.md` (§5). Screen reader mode is turned on from the Accessibility button, because a page cannot reliably detect a screen reader. Every timing value here is a **proposal** to be confirmed by manual screen reader passes.
 
+- **One speaker at a time.** While the interviewer's voice plays, it is the foreground channel. Non-urgent announcements wait until the voice stops and are then delivered once.
 - **One audio timeline.** Interviewer voice and all earcons (chime, scribble, lead-in tone) play through one sequenced queue, so they cannot overlap each other.
 - **Gate on played audio.** "Your turn" is announced only after the audio player reports that the last voice frame has actually played (scheduled end plus output latency), followed by a silence guard (proposal: 250 ms). The pipeline's "TTS finished" event is not a valid gate. In `perceived` mode the gate reads the delayed, clipped audio the user hears.
-- **Speak status only into guaranteed silence.** Spoken announcements: "Your turn" (after the gate) and "Paused" (after the voice has faded out). Entering Thinking or Speaking is announced by earcon only, because the voice may start at any moment; the status text still updates for braille and review.
+- **Coalesce, and drop stale states.** State announcements are debounced (proposal: 250-500 ms), and only the state that is displayed when the debounce ends is announced. A false cutoff that flips listening, thinking, listening within a second announces nothing new. A state is never announced twice.
+- **Per-state policy (defaults):**
+
+  | State or event | Announced | Notes |
+  |---|---|---|
+  | Listening | "Your turn", polite (`role="status"`), after the gate | The chime plays first; the text follows it |
+  | Thinking | "Thinking", polite, only if it is still current after a threshold (proposal: 500 ms) | Shorter flips are earcon only |
+  | Talking | Not announced | The voice is the signal. An opt-in setting can turn it on |
+  | Paused | "Paused", polite, after the voice has faded out | Follows a user action |
+  | Control feedback | A few words, polite | For example "Muted", "Repeating" |
+  | Blocking errors (microphone or connection lost) | Assertive (`role="alert"`) | The only interrupting case |
+  | Simulation badge, first-use explanation | Once, on first appearance, polite | |
+
+- **Short strings.** Announcements are a few words ("Your turn", "Thinking", "Paused"), to keep any collision short.
 - **Lead-in before the voice.** A short tone, then a gap (proposal: 150 ms tone, 300 ms gap), precedes each interviewer utterance.
 - **Hold the voice after a recent announcement** for its estimated speaking time (words divided by the user's reader rate, set in Accessibility settings).
-- **Captions are not a live region** in this mode, so the reader never reads them over the voice. Caption history is reachable by heading, and Repeat is one key.
-- Open choice: status spoken by the user's own screen reader (their voice, rate and braille, timing estimated) or by the app's TTS in the same queue (ordering guaranteed). Current lean: earcons always, text left to the screen reader.
+- **Live region hygiene.** The status region exists and is empty at load. Repeating identical text uses clear, then set after a short delay (proposal: 100 ms). Focus never moves to announce anything.
+- **Captions are not a live region by default.** A persistent, navigable transcript (`role="log"`, finished sentences only) is the main channel for braille and deafblind users, since live regions may not reach a braille display. An opt-in live-caption setting appends one final sentence at a time, never word by word.
+- **Announcement setting, three-way, remembered:** quiet while the interviewer speaks (default), always announce (for users who duck other audio), or off (chime and transcript only).
+- **Sound:** the interviewer's voice gets its own volume control, independent of system volume. Ambient sound defaults to off in screen reader mode.
+- **Keyboard:** a documented shortcut pauses the interviewer. It must not clash with screen reader keys, and single-character shortcuts can be turned off or remapped.
+- **First-run note:** headphones are recommended, because screen reader speech on speakers can reach the microphone. Screen reader ducking (NVDA, JAWS, VoiceOver) is mentioned as an option the user controls; the design never depends on it.
+- **`ariaNotify()`** may be added only as a feature-detected enhancement, using either it or the live region for a given message, never both.
+
+### 4.4 Two timing profiles
+The cue timing has two competing targets:
+
+- **Natural:** tuned to match human conversational timing (turn gaps near 200 ms, thinking cue at 300-500 ms; see `docs/research/latency-perception.md`).
+- **Accessible:** tuned so screen reader speech fits around the interviewer's voice (gates, guards, debounce and holds in 4.3). It is slower by design.
+
+**The accessible profile is the default for now.** Reconciling the two (for example, using the natural profile only when screen reader mode is off) is deferred until the timing is tuned with real users. The profile in use is recorded in the session report.
+
+### 4.5 Advanced Accessibility
+Screen readers differ in how they handle live updates (for example, TalkBack treats every region as assertive, NVDA re-announces speech an alert interrupted, and JAWS with Chrome may speak polite regions at the first break). The Accessibility panel therefore has an **Advanced Accessibility** section with a screen reader profile:
+
+- **Profiles:** Generic (default), NVDA, JAWS, Narrator, VoiceOver on macOS, VoiceOver on iOS and iPadOS, TalkBack, and Orca. A profile adjusts delivery only: debounce, guard and hold times, clear-then-set delay, and whether `ariaNotify()` is used. It never changes what is announced.
+- **Generic** uses the accessible defaults in 4.3 and is safe for any screen reader.
+- **Reader rate** (words per minute) for the hold estimate.
+- Profile values come from manual passes with each screen reader and browser pair, which are not done yet. Until a profile has been tested, it is shown as experimental and behaves like Generic.
 
 ---
 
@@ -427,7 +463,9 @@ Testing and benchmarking are first-class and live at the repository root. [`test
 11. Time to first token for a 2-4K-token prompt on small GPUs and CPUs, with prefix caching
 12. How llama.cpp sizes the Gemma 4 KV cache (sliding-window trimming and shared KV layers), which changes Tier 3-5 estimates
 13. Combined CPU budget on 4 cores (LLM, STT, TTS, VAD, turn detector together). The Tier 0 and Tier 1 floors depend on it
-14. Recommended screen reader timing for real-time UI changes (announcement delays, guard silences, live-region politeness). Research is planned by Steven and will set the section 4.3 defaults
+14. Recommended screen reader timing for real-time UI changes (announcement delays, guard silences, live-region politeness). First research is in `docs/research/screen-reader-live-updates.md`; the section 4.3 values still need manual screen reader passes to confirm
+15. Which screen reader and browser pairs the project commits to test (research proposes NVDA and JAWS with Chrome, NVDA with Firefox, VoiceOver with Safari), and current `ariaNotify()` support (sources conflict)
+16. How to reconcile the natural and accessible timing profiles (4.4)
 
 ---
 

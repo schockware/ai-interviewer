@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 13:42:56 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Reported that the screen reader research had landed in docs/research/screen-reader-live-updates.md, said the cue gating must hold an appropriate block of time, named two competing latencies (natural speech versus accessibility) with the accessibility default winning for now, and asked for an Advanced Accessibility option that builds for common and OS screen readers.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: branch fast-forwarded to origin/main after PR #1 merged (a forced reset was blocked; fast-forward lost nothing). SPEC.md: 4.3 rewritten from the research (one speaker at a time, debounce and stale-state drop, per-state announcement table, short strings, live-region hygiene, transcript instead of live captions, three-way announcement setting, voice volume, pause shortcut, headphone note, ariaNotify as enhancement only); new 4.4 two timing profiles (accessible is the default); new 4.5 Advanced Accessibility with per-reader profiles marked experimental until manual passes; Talking row, echo trap, braille bullet and Accessibility button bullet updated; open questions 15 and 16 added. TASKS.MD: research task replaced with manual-pass, test-pairs, profile reconciliation and specs/cues carry-over items. Design canvas: screen reader board updated and an Accessibility panel board added. specs/ not edited. Nothing rendered or checked visually.
+Tokens: ~35,200 (derived: counter 15,000,000 -> ~14,964,800)
+---
 ## 2026-10-06 13:26:51 | Claude Opus 5.5 (claude-opus-5-5)
 Summary prompt: Said they will run research on screen reader timing for real-time UI changes to set the defaults, asked for a required default plus a first-class Accessibility button that is always available and receives focus first when a screen loads, and asked to add this to SPEC.md.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
