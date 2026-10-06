@@ -1,0 +1,22 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Main.dc.html": {"expand": "fill", "h": 900, "title": "Interview screen", "w": 1280, "x": 0, "y": 0},
+    "ScreenReader.dc.html": {"h": 900, "title": "Screen reader gating", "w": 1280, "x": 1360, "y": 0},
+    "Accessibility.dc.html": {"h": 1060, "title": "Accessibility panel", "w": 1280, "x": 2720, "y": 0},
+    "States.dc.html": {"h": 640, "title": "The four states", "w": 1280, "x": 0, "y": 1443},
+    "Timeline.dc.html": {"h": 640, "title": "Handoff timing: true vs perceived", "w": 1280, "x": 1360, "y": 1443},
+    "Recovery.dc.html": {"h": 640, "title": "Edge moments", "w": 1280, "x": 2720, "y": 1443}
+  },
+  "createdOnFiles": {"at": "2026-10-06T13:13:29Z", "v": 1},
+  "designSystems": [],
+  "launch": {"view": "canvas"},
+  "notes": {
+    "proposals": {"fill": "orange", "text": "Draft 1. Every timing value shown is a PROPOSAL from docs/research (latency-perception.md, micro-pauses-and-run-ons.md, screen-reader-live-updates.md), to be tuned by ear, user test and manual screen reader passes. The accessible timing profile is the default for now (SPEC.md 4.4). Open the Interview screen's Tweaks to switch state, cue mode, preset and captions.", "w": 360, "x": -440, "y": 0},
+    "rowtitle": {"kind": "title1", "maxW": 4000, "text": "Cue system: states, timing, edge moments", "w": 240, "x": 0, "y": 1200}
+  },
+  "order": ["Main.dc.html", "ScreenReader.dc.html", "Accessibility.dc.html", "States.dc.html", "Timeline.dc.html", "Recovery.dc.html"],
+  "pages": [],
+  "title": "Interviewer Cue Design"
+}

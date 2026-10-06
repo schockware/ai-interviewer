@@ -1,5 +1,47 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 14:05:22 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Set the design lifecycle: prototyping is owned on the Design canvas, and developer-ready designs are committed to the repository.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: created design/README.MD (lifecycle: prototype on the canvas, commit developer-ready snapshots under design/mockups/<area>/, developers build from the repo copy); reworded design/mockups/ui/README.MD to call iteration 1 the developer-ready snapshot; added a one-line pointer to the Files section of CLAUDE.md.
+Tokens: ~2,800 (estimated)
+---
+## 2026-10-06 14:04:02 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Agreed with the caption resolution, called iteration 1 of the design a good start, and asked whether it could be committed to a root-level design/mockups/ui folder.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: created design/mockups/ui with the six .dc.html boards and canvas.json copied from the Design canvas (byline comment added after the doctype in each board), plus README.MD (board list, canvas link, viewing note that ./support.js is not included so the files do not render standalone, caveats). Files were copied from the local publish folder, matching the last published version; not re-read from the canvas and not rendered.
+Tokens: ~6,600 (derived: counter 15,000,000 -> ~14,993,400)
+---
+## 2026-10-06 13:55:35 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Realized the caption in-progress question was already solved, because the Talking icon is the visual cue that the interviewer is speaking.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: SPEC.md: open question 17 marked resolved; 4.2 gains a bullet that captions carry no progress indicator and the Talking cue is the signal. TASKS.MD: research task removed and recorded under Done. No canvas changes.
+Tokens: ~1,800 (estimated)
+---
+## 2026-10-06 13:54:30 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Noted a research item they plan to look up: whether captions need highlighting or a chase icon to show that speech is still in progress.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: SPEC.md: added open question 17 in section 12. TASKS.MD: added a research task tagged for Steven. No research done and no canvas changes.
+Tokens: ~1,500 (estimated)
+---
+## 2026-10-06 13:53:44 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Confirmed captions off by default, asked for a Captions button with a question-mark icon whose help text explains that most online interviews have no captioning so it defaults to off, and noted that deaf users can be assumed to bring their own speech-to-text but may still want the native captions.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: SPEC.md 4.2: added the Captions button and help-text bullet (their wording verbatim as UI copy) and the deaf and hard-of-hearing assumption. TASKS.MD: confirmation item changed to aligning specs/cues CUE-CAP-001 and adding the button (specs/ not edited). Design canvas: interview screen captions strip now has a "Captions: off" button and a question-mark toggle revealing the help text (shown open on the board); Accessibility panel uses the same text. Nothing rendered or checked visually.
+Tokens: ~5,000 (derived: counter 15,000,000 -> ~14,995,000)
+---
+## 2026-10-06 13:49:45 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Clarified that "training option" meant training modules: the product is first an opinionated interview UX built on simple cues, and because the project owns the client, accessibility options such as a transcript or turning the AI voice off can double as practice supports for non-disabled candidates, while the defaults recreate a real interview with no transcript.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: SPEC.md: added the opinionated-UX goal and a 4.6 pointer to section 1; captions now default to off in 3.4 and 4.2, with `interviewer_voice` added to the example config; new 4.6 "Accessibility options as practice supports" (settings table, realistic defaults, screen reader mode also turns on the transcript, report records supports and never penalizes); 6.5 report line updated. TASKS.MD: item for Steven to confirm the captions default; flagged that specs/cues CUE-CAP-001 calls accurate "the default" and needs checking (specs/ not edited). Design canvas: interview screen captions now off by default with a "Show captions" prompt; Accessibility panel gains captions/transcript and interviewer voice toggles and a realistic-defaults line; board resized and bottom row moved down. Nothing rendered or checked visually.
+Tokens: ~10,600 (derived: counter 15,000,000 -> ~14,989,400)
+---
+## 2026-10-06 13:42:56 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Reported that the screen reader research had landed in docs/research/screen-reader-live-updates.md, said the cue gating must hold an appropriate block of time, named two competing latencies (natural speech versus accessibility) with the accessibility default winning for now, and asked for an Advanced Accessibility option that builds for common and OS screen readers.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: branch fast-forwarded to origin/main after PR #1 merged (a forced reset was blocked; fast-forward lost nothing). SPEC.md: 4.3 rewritten from the research (one speaker at a time, debounce and stale-state drop, per-state announcement table, short strings, live-region hygiene, transcript instead of live captions, three-way announcement setting, voice volume, pause shortcut, headphone note, ariaNotify as enhancement only); new 4.4 two timing profiles (accessible is the default); new 4.5 Advanced Accessibility with per-reader profiles marked experimental until manual passes; Talking row, echo trap, braille bullet and Accessibility button bullet updated; open questions 15 and 16 added. TASKS.MD: research task replaced with manual-pass, test-pairs, profile reconciliation and specs/cues carry-over items. Design canvas: screen reader board updated and an Accessibility panel board added. specs/ not edited. Nothing rendered or checked visually.
+Tokens: ~35,200 (derived: counter 15,000,000 -> ~14,964,800)
+---
 ## 2026-10-06 13:26:51 | Claude Opus 5.5 (claude-opus-5-5)
 Summary prompt: Said they will run research on screen reader timing for real-time UI changes to set the defaults, asked for a required default plus a first-class Accessibility button that is always available and receives focus first when a screen loads, and asked to add this to SPEC.md.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry

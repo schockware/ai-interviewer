@@ -1,0 +1,231 @@
+<!doctype html>
+<!-- Authored by Claude Opus 5.5 (Anthropic), with Steven Chock as co-author. Iteration 1; see README.MD. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Interview screen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F3F5F7}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+@keyframes cuedot{0%,80%,100%{opacity:.25}40%{opacity:1}}
+.cuedot{animation:cuedot 1.2s infinite ease-in-out}
+.cuedot2{animation-delay:.2s}.cuedot3{animation-delay:.4s}
+@media (prefers-reduced-motion: reduce){.cuedot{animation:none;opacity:1}}
+</style>
+</helmet>
+<div style="min-height: 900px; background: #F3F5F7; color: #16202A; font-family: 'IBM Plex Sans', system-ui, sans-serif; padding: 24px 16px; box-sizing: border-box">
+<div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px">
+
+<header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px">
+<div style="display: flex; align-items: center; gap: 16px">
+<button type="button" autofocus="" aria-haspopup="dialog" style="min-height: 48px; padding: 0 16px 0 12px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 2px solid #1D4ED8; background: #FFFFFF; color: #1D4ED8; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; outline: 3px solid #93B4F5; outline-offset: 2px">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="7" r="1.3"></circle><path d="M7.5 10h9"></path><path d="M12 10v4"></path><path d="m9.5 18 2.5-4 2.5 4"></path></svg>
+Accessibility
+</button>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<h1 style="margin: 0; font-size: 22px; font-weight: 600">Practice interview</h1>
+<p style="margin: 0; font-size: 14px; color: #4A5562">Behavioral · Question 3 of 8 · [ROLE TITLE]</p>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<sc-if value="{{simActive}}" hint-placeholder-val="{{ true }}">
+<span style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; background: #FFF1DC; color: #7A3E00; font-size: 14px; font-weight: 500; border: 1px solid #F0C98E">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h3l3-8 4 16 3-8h7"></path></svg>
+Simulated: {{presetLabel}}
+</span>
+</sc-if>
+<span style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px; background: #E6EAEE; color: #2B3540; font-size: 14px; font-family: 'IBM Plex Mono', monospace">cues: {{cueMode}}</span>
+<button type="button" style="min-height: 44px; padding: 0 18px; border-radius: 10px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font: inherit; font-size: 15px; cursor: pointer">End session</button>
+</div>
+</header>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+
+<main style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+
+<section aria-label="Interviewer status" style="background: #FFFFFF; border-radius: 16px; padding: 32px; display: flex; flex-wrap: wrap; align-items: center; gap: 32px; border: 1px solid #E1E5EA">
+<div style="width: 136px; height: 136px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex: none; background: {{st.tint}}; color: {{st.color}}; box-shadow: 0 0 0 3px {{st.color}}">
+<sc-if value="{{isListening}}" hint-placeholder-val="{{ true }}">
+<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8.5a6.5 6.5 0 1 1 13 0c0 6-6 6-6 10a3.5 3.5 0 1 1-7 0"></path><path d="M15 8.5a2.5 2.5 0 0 0-5 0v1a2 2 0 1 1 0 4"></path></svg>
+</sc-if>
+<sc-if value="{{isThinking}}" hint-placeholder-val="{{ false }}">
+<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 15H9a5.5 5.5 0 1 1 5.2-7.3A4 4 0 1 1 17.5 15Z"></path><circle cx="8" cy="19" r="1.4"></circle><circle cx="4.5" cy="21.5" r="0.9"></circle></svg>
+</sc-if>
+<sc-if value="{{isTalking}}" hint-placeholder-val="{{ false }}">
+<div aria-hidden="true" style="display: flex; gap: 10px">
+<span class="cuedot" style="width: 14px; height: 14px; border-radius: 50%; background: currentColor"></span>
+<span class="cuedot cuedot2" style="width: 14px; height: 14px; border-radius: 50%; background: currentColor"></span>
+<span class="cuedot cuedot3" style="width: 14px; height: 14px; border-radius: 50%; background: currentColor"></span>
+</div>
+</sc-if>
+<sc-if value="{{isIdle}}" hint-placeholder-val="{{ false }}">
+<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M9 5v14"></path><path d="M15 5v14"></path></svg>
+</sc-if>
+</div>
+<div style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: #4A5562">Status</span>
+<h2 style="margin: 0; font-size: 36px; line-height: 1.15; font-weight: 600; color: {{st.color}}">{{st.label}}</h2>
+<p style="margin: 0; font-size: 17px; line-height: 1.5; color: #2B3540">{{st.sub}}</p>
+<p style="margin: 6px 0 0; display: flex; align-items: center; gap: 8px; font-size: 14px; color: #4A5562">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5Z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path></svg>
+Sound: {{st.audio}}
+</p>
+<sc-if value="{{isThinking}}" hint-placeholder-val="{{ false }}">
+<div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px">
+<span style="padding: 4px 10px; border-radius: 6px; background: #FCEBD9; color: #7A3E00">Stage 1 · bubble after 300–500 ms gap</span>
+<span style="padding: 4px 10px; border-radius: 6px; background: #9A4D00; color: #FFFFFF">Stage 2 · notes sound after ~1 s</span>
+</div>
+</sc-if>
+<p role="status" aria-live="polite" style="position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap">{{st.sr}}</p>
+</div>
+</section>
+
+<sc-if value="{{captionsOff}}" hint-placeholder-val="{{ true }}">
+<section aria-label="Captions off" style="background: #FFFFFF; border-radius: 16px; padding: 18px 28px; border: 1px dashed #C5CCD3; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<button type="button" aria-pressed="false" style="min-height: 44px; padding: 0 16px 0 12px; display: inline-flex; align-items: center; gap: 8px; border-radius: 10px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font: inherit; font-size: 15px; font-weight: 500; cursor: pointer">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M10 10.5a2 2 0 1 0 0 3"></path><path d="M16.5 10.5a2 2 0 1 0 0 3"></path></svg>
+Captions: off
+</button>
+<button type="button" aria-label="Why are captions off?" aria-expanded="{{helpOpen}}" aria-controls="caption-help" onClick="{{toggleHelp}}" style="width: 44px; height: 44px; border-radius: 50%; border: 1px solid #C5CCD3; background: #FFFFFF; color: #1D4ED8; display: inline-flex; align-items: center; justify-content: center; cursor: pointer">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>
+</button>
+</div>
+<sc-if value="{{helpOpen}}" hint-placeholder-val="{{ true }}">
+<p id="caption-help" style="margin: 0; padding: 12px 14px; border-radius: 10px; background: #EEF3FD; font-size: 15px; line-height: 1.5; color: #16202A; max-width: 560px">Most online interviews do not have a captioning system. It is defaulted to be off.</p>
+</sc-if>
+</section>
+</sc-if>
+<sc-if value="{{captions}}" hint-placeholder-val="{{ false }}">
+<section aria-label="Captions" style="background: #FFFFFF; border-radius: 16px; padding: 24px 28px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
+<h3 style="margin: 0; font-size: 15px; font-weight: 600">Captions <span style="font-weight: 400; color: #4A5562">· accurate</span></h3>
+<div style="display: flex; gap: 8px">
+<button type="button" aria-label="Smaller captions" style="min-width: 44px; min-height: 44px; border-radius: 10px; border: 1px solid #C5CCD3; background: #FFFFFF; font: inherit; font-size: 14px; color: #16202A; cursor: pointer">A−</button>
+<button type="button" aria-label="Larger captions" style="min-width: 44px; min-height: 44px; border-radius: 10px; border: 1px solid #C5CCD3; background: #FFFFFF; font: inherit; font-size: 18px; color: #16202A; cursor: pointer">A+</button>
+<button type="button" aria-label="High contrast captions" style="min-height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid #C5CCD3; background: #FFFFFF; font: inherit; font-size: 14px; color: #16202A; cursor: pointer">Contrast</button>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 13px; font-weight: 600; color: #0F6B5C">Interviewer</span>
+<p style="margin: 0; font-size: 20px; line-height: 1.5">Tell me about a time you had to change direction on a project late in the game. What did you do first?</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; padding-top: 14px; border-top: 1px solid #E1E5EA">
+<span style="font-size: 13px; font-weight: 600; color: #1D4ED8">You</span>
+<p style="margin: 0; font-size: 20px; line-height: 1.5; color: #2B3540">{{youLine}}</p>
+</div>
+</section>
+</sc-if>
+
+<section aria-label="Microphone" style="background: #FFFFFF; border-radius: 16px; padding: 18px 28px; border: 1px solid #E1E5EA; display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16202A" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3"></path></svg>
+<span style="font-size: 15px; font-weight: 500">Microphone on</span>
+<div aria-hidden="true" style="display: flex; align-items: flex-end; gap: 3px; height: 22px">
+<span style="width: 5px; height: 6px; border-radius: 2px; background: #1D4ED8"></span>
+<span style="width: 5px; height: 12px; border-radius: 2px; background: #1D4ED8"></span>
+<span style="width: 5px; height: 18px; border-radius: 2px; background: #1D4ED8"></span>
+<span style="width: 5px; height: 10px; border-radius: 2px; background: #1D4ED8"></span>
+<span style="width: 5px; height: 4px; border-radius: 2px; background: #C5CCD3"></span>
+<span style="width: 5px; height: 4px; border-radius: 2px; background: #C5CCD3"></span>
+</div>
+<span style="flex: 1 1 auto"></span>
+<span style="font-size: 14px; color: #4A5562">Push to talk: off · Space to toggle</span>
+</section>
+</main>
+
+<aside aria-label="Controls" style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+<section style="background: #FFFFFF; border-radius: 16px; padding: 24px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 14px">
+<h3 style="margin: 0; font-size: 15px; font-weight: 600">Controls</h3>
+<button type="button" style="min-height: 52px; border-radius: 12px; border: 0; background: #1D4ED8; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer">Give me a sec</button>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<button type="button" style="min-height: 44px; border-radius: 10px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font: inherit; font-size: 15px; cursor: pointer">Repeat</button>
+<button type="button" style="min-height: 44px; border-radius: 10px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font: inherit; font-size: 15px; cursor: pointer">Pause</button>
+<button type="button" style="min-height: 44px; border-radius: 10px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font: inherit; font-size: 15px; cursor: pointer">Hint</button>
+<button type="button" style="min-height: 44px; border-radius: 10px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font: inherit; font-size: 15px; cursor: pointer">Skip</button>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px; padding-top: 6px">
+<span id="answer-by" style="font-size: 14px; color: #4A5562">Answer by</span>
+<div role="group" aria-labelledby="answer-by" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border: 1px solid #C5CCD3; border-radius: 10px; overflow: hidden">
+<button type="button" aria-pressed="true" style="min-height: 44px; border: 0; background: #16202A; color: #FFFFFF; font: inherit; font-size: 15px; cursor: pointer">Voice</button>
+<button type="button" aria-pressed="false" style="min-height: 44px; border: 0; background: #FFFFFF; color: #16202A; font: inherit; font-size: 15px; cursor: pointer">Text</button>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label for="ambient" style="font-size: 14px; color: #4A5562">Room sound volume</label>
+<input id="ambient" type="range" min="0" max="100" value="30" style="width: 100%; min-height: 44px; accent-color: #1D4ED8">
+</div>
+</section>
+
+<section style="background: #FFFFFF; border-radius: 16px; padding: 24px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 14px">
+<h3 style="margin: 0; font-size: 15px; font-weight: 600">Call conditions</h3>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label for="preset" style="font-size: 14px; color: #4A5562">Preset</label>
+<select id="preset" style="min-height: 44px; border-radius: 10px; border: 1px solid #C5CCD3; padding: 0 12px; font: inherit; font-size: 15px; background: #FFFFFF; color: #16202A">
+<option>{{presetLabel}}</option>
+</select>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label for="cuemode" style="font-size: 14px; color: #4A5562">Cues follow</label>
+<select id="cuemode" style="min-height: 44px; border-radius: 10px; border: 1px solid #C5CCD3; padding: 0 12px; font: inherit; font-size: 15px; background: #FFFFFF; color: #16202A">
+<option>{{cueModeLabel}}</option>
+</select>
+</div>
+<sc-if value="{{showSameNote}}" hint-placeholder-val="{{ false }}">
+<p style="margin: 0; font-size: 13px; line-height: 1.5; color: #4A5562">No simulation is on, so both cue modes look the same right now.</p>
+</sc-if>
+</section>
+</aside>
+
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"state":{"editor":"enum","options":["listening","thinking","talking","idle"],"default":"listening","section":"Preview"},"cueMode":{"editor":"enum","options":["perceived","true_state","debug"],"default":"perceived","section":"Preview"},"preset":{"editor":"enum","options":["clean","decent_call","laggy_clipped","bad_connection"],"default":"laggy_clipped","section":"Preview"},"captions":{"editor":"boolean","default":false,"section":"Preview"},"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.props.state ?? 'listening';
+    const cueMode = this.props.cueMode ?? 'perceived';
+    const preset = this.props.preset ?? 'laggy_clipped';
+    const states = {
+      listening: { label: 'Your turn', sub: 'The interviewer is listening. Take your time.', audio: 'chime, then soft office room tone', sr: 'Your turn', color: '#1D4ED8', tint: '#E3EBFC' },
+      thinking: { label: 'Interviewer is thinking', sub: 'Taking notes on your answer.', audio: 'pen scribbling', sr: 'Interviewer is thinking', color: '#9A4D00', tint: '#FCEBD9' },
+      talking: { label: 'Interviewer is speaking', sub: 'Listen for the question. A chime tells you when it is your turn.', audio: 'the interviewer’s voice', sr: 'Interviewer is speaking', color: '#0F6B5C', tint: '#DDF2EC' },
+      idle: { label: 'Paused', sub: 'Nothing is recording. Resume when you are ready.', audio: 'silence', sr: 'Paused', color: '#4B5563', tint: '#E8EAED' }
+    };
+    const presets = { clean: 'Clean', decent_call: 'Decent call', laggy_clipped: 'Laggy / clipped', bad_connection: 'Bad connection' };
+    const modes = { perceived: 'What has arrived (perceived)', true_state: 'Interviewer’s real state', debug: 'Both timelines (debug)' };
+    const you = {
+      listening: 'So in my last role we were two weeks from launch when…',
+      thinking: 'So in my last role we were two weeks from launch when the client changed the scope. I paused the sprint and pulled the team together.',
+      talking: '—',
+      idle: '—'
+    };
+    return {
+      st: states[s] || states.listening,
+      isListening: s === 'listening',
+      isThinking: s === 'thinking',
+      isTalking: s === 'talking',
+      isIdle: s === 'idle',
+      cueMode: cueMode,
+      cueModeLabel: modes[cueMode] || modes.perceived,
+      presetLabel: presets[preset] || 'Clean',
+      simActive: preset !== 'clean',
+      showSameNote: preset === 'clean',
+      captions: this.props.captions ?? false,
+      captionsOff: !(this.props.captions ?? false),
+      helpOpen: this.state.helpOpen ?? true,
+      toggleHelp: () => this.setState({ helpOpen: !(this.state.helpOpen ?? true) }),
+      youLine: you[s] || '—'
+    };
+  }
+}
+</script>
+</body>
+</html>

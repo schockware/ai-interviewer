@@ -1,0 +1,78 @@
+<!doctype html>
+<!-- Authored by Claude Opus 5.5 (Anthropic), with Steven Chock as co-author. Iteration 1; see README.MD. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The four states</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1280px; height: 640px; box-sizing: border-box; padding: 48px; background: #F3F5F7; color: #16202A; font-family: 'IBM Plex Sans', system-ui, sans-serif; display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h1 style="margin: 0; font-size: 30px; font-weight: 600">One state machine, three channels</h1>
+<p style="margin: 0; font-size: 16px; color: #4A5562">Every state is shown, heard and announced. Shape, color and text label all change, so no cue depends on color alone.</p>
+</div>
+<span style="padding: 6px 10px; border-radius: 6px; background: #FFF1DC; color: #7A3E00; font-size: 13px; white-space: nowrap">Timings: proposals</span>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; flex: 1 1 auto">
+
+<sc-for list="{{states}}" as="s" hint-placeholder-count="4">
+<article style="background: #FFFFFF; border: 1px solid #E1E5EA; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; align-items: center; gap: 14px">
+<div style="width: 64px; height: 64px; border-radius: 50%; flex: none; display: flex; align-items: center; justify-content: center; background: {{s.tint}}; color: {{s.color}}; box-shadow: 0 0 0 2px {{s.color}}">
+<sc-if value="{{s.ear}}" hint-placeholder-val="{{ false }}">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8.5a6.5 6.5 0 1 1 13 0c0 6-6 6-6 10a3.5 3.5 0 1 1-7 0"></path><path d="M15 8.5a2.5 2.5 0 0 0-5 0v1a2 2 0 1 1 0 4"></path></svg>
+</sc-if>
+<sc-if value="{{s.cloud}}" hint-placeholder-val="{{ false }}">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 15H9a5.5 5.5 0 1 1 5.2-7.3A4 4 0 1 1 17.5 15Z"></path><circle cx="8" cy="19" r="1.4"></circle><circle cx="4.5" cy="21.5" r="0.9"></circle></svg>
+</sc-if>
+<sc-if value="{{s.dots}}" hint-placeholder-val="{{ false }}">
+<div aria-hidden="true" style="display: flex; gap: 5px"><span style="width: 7px; height: 7px; border-radius: 50%; background: currentColor"></span><span style="width: 7px; height: 7px; border-radius: 50%; background: currentColor"></span><span style="width: 7px; height: 7px; border-radius: 50%; background: currentColor"></span></div>
+</sc-if>
+<sc-if value="{{s.pause}}" hint-placeholder-val="{{ false }}">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 5v14"></path><path d="M15 5v14"></path></svg>
+</sc-if>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #4A5562">{{s.key}}</span>
+<h2 style="margin: 0; font-size: 20px; font-weight: 600; color: {{s.color}}">{{s.label}}</h2>
+</div>
+</div>
+<dl style="margin: 0; display: flex; flex-direction: column; gap: 12px; font-size: 14px; line-height: 1.45">
+<div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-weight: 600">Visual</dt><dd style="margin: 0; color: #2B3540">{{s.visual}}</dd></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-weight: 600">Audio</dt><dd style="margin: 0; color: #2B3540">{{s.audio}}</dd></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-weight: 600">Announced</dt><dd style="margin: 0; color: #2B3540; font-family: 'IBM Plex Mono', monospace; font-size: 13px">{{s.sr}}</dd></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-weight: 600">Enters when</dt><dd style="margin: 0; color: #2B3540">{{s.enter}}</dd></div>
+</dl>
+<p style="margin: auto 0 0; padding: 10px 12px; border-radius: 8px; background: #F3F5F7; font-size: 13px; line-height: 1.45; color: #2B3540">{{s.timing}}</p>
+</article>
+</sc-for>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":640}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      states: [
+        { key: 'listening', label: 'Your turn', color: '#1D4ED8', tint: '#E3EBFC', ear: true, visual: 'Ear bubble, blue ring', audio: 'Short chime on entry, then soft office room tone', sr: '“Your turn”', enter: 'The interviewer’s last audio frame has arrived (perceived) or TTS has ended (true state)', timing: 'Chime and bubble land together. Ring transition 150–300 ms.' },
+        { key: 'thinking', label: 'Interviewer is thinking', color: '#9A4D00', tint: '#FCEBD9', cloud: true, visual: 'Thought bubble. Stage 2 adds a “taking notes” line', audio: 'Pen scribbling, added at stage 2', sr: '“Interviewer is thinking”', enter: 'The turn detector says your answer is complete', timing: 'Show only if the gap passes 300–500 ms. Escalate at ~1 s.' },
+        { key: 'talking', label: 'Interviewer is speaking', color: '#0F6B5C', tint: '#DDF2EC', dots: true, visual: 'Pulsing ellipsis (static with reduced motion)', audio: 'The voice itself', sr: '“Interviewer is speaking”, plus live caption', enter: 'The first audio frame arrives', timing: 'Holds through gaps under ~300 ms so loss does not flicker it.' },
+        { key: 'idle', label: 'Paused', color: '#4B5563', tint: '#E8EAED', pause: true, visual: 'Pause bars, grey ring', audio: 'Silence. Room tone stops', sr: '“Paused”', enter: 'You press Pause, or the session has not started', timing: 'Local control: responds within 100 ms, never simulated.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
