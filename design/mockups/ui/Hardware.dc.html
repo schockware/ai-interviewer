@@ -1,0 +1,292 @@
+<!doctype html>
+<!-- Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author. Added after iteration 1; see README.MD. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Hardware setup and verification</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F3F5F7}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+@keyframes sweep{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
+.sweep{animation:sweep 1.8s infinite ease-in-out}
+@media (prefers-reduced-motion: reduce){.sweep{animation:none;transform:none;width:100%}}
+</style>
+</helmet>
+<div style="min-height: 1200px; background: #F3F5F7; color: #16202A; font-family: 'IBM Plex Sans', system-ui, sans-serif; display: flex; flex-direction: column; box-sizing: border-box">
+<div style="flex: 1 1 auto; padding: 24px 16px 32px; box-sizing: border-box">
+<div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px">
+
+<header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
+<button type="button" autofocus="" aria-haspopup="dialog" style="min-height: 48px; padding: 0 16px 0 12px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 2px solid #1D4ED8; background: #FFFFFF; color: #1D4ED8; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; outline: 3px solid #93B4F5; outline-offset: 2px">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="7" r="1.3"></circle><path d="M7.5 10h9"></path><path d="M12 10v4"></path><path d="m9.5 18 2.5-4 2.5 4"></path></svg>
+Accessibility
+</button>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<h1 style="margin: 0; font-size: 22px; font-weight: 600">Check your setup</h1>
+<p style="margin: 0; font-size: 14px; color: #4A5562">Step 2 of 2 · Hardware setup and verification</p>
+</div>
+</div>
+<a href="Setup.dc.html" style="font-size: 15px; font-weight: 500">Back to application setup</a>
+</header>
+
+<section aria-label="Host status" style="{{hostStyle}}">
+<div aria-hidden="true" style="width: 48px; height: 48px; flex: none; border-radius: 50%; background: #FFFFFF; display: flex; align-items: center; justify-content: center; color: {{hostColor}}">
+<sc-if value="{{showWaiting}}" hint-placeholder-val="{{ true }}">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12"></path><path d="M6 22h12"></path><path d="M6 2v4l6 6-6 6v4"></path><path d="M18 2v4l-6 6 6 6v4"></path></svg>
+</sc-if>
+<sc-if value="{{showHostReady}}" hint-placeholder-val="{{ false }}">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"></path></svg>
+</sc-if>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<h2 style="margin: 0; font-size: 20px; font-weight: 600; color: {{hostColor}}">{{hostTitle}}</h2>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: #2B3540">{{hostBody}}</p>
+</div>
+</section>
+
+<sc-if value="{{showDiagnosis}}" hint-placeholder-val="{{ false }}">
+<section aria-label="What went wrong" style="background: #FFFFFF; border-radius: 16px; padding: 24px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 600">What the interviewer found</h2>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: #2B3540">[DIAGNOSIS FROM THE AI MODELS, WITH STEPS TO FIX]</p>
+<div style="display: flex; flex-wrap: wrap; gap: 12px">
+<button type="button" style="min-height: 44px; padding: 0 18px; border-radius: 10px; border: 0; background: #1D4ED8; color: #FFFFFF; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer">Try preparing again</button>
+<a href="Setup.dc.html" style="min-height: 44px; padding: 0 18px; display: inline-flex; align-items: center; border-radius: 10px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font-size: 15px; font-weight: 500; text-decoration: none">Change application setup</a>
+</div>
+</section>
+</sc-if>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+
+<main style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+
+<section aria-labelledby="audio-title" style="background: #FFFFFF; border-radius: 16px; padding: 28px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
+<h2 id="audio-title" style="margin: 0; font-size: 18px; font-weight: 600">Audio check <span style="font-size: 14px; font-weight: 500; color: #B42318">(required)</span></h2>
+<span style="{{audioChipStyle}}">
+<span aria-hidden="true" style="display: inline-flex">{{audio.mark}}</span>
+{{audio.chip}}
+</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; max-width: 480px">
+<label for="mic-pick" style="font-size: 14px; font-weight: 500">Microphone</label>
+<select id="mic-pick" style="min-height: 44px; border-radius: 10px; border: 1px solid #C5CCD3; padding: 0 12px; font: inherit; font-size: 15px; background: #FFFFFF; color: #16202A">
+<option>[DEFAULT MICROPHONE]</option>
+</select>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
+<div aria-hidden="true" style="display: flex; align-items: flex-end; gap: 3px; height: 28px">
+<span style="width: 6px; height: 8px; border-radius: 2px; background: {{audio.meter}}"></span>
+<span style="width: 6px; height: 16px; border-radius: 2px; background: {{audio.meter}}"></span>
+<span style="width: 6px; height: 24px; border-radius: 2px; background: {{audio.meter}}"></span>
+<span style="width: 6px; height: 14px; border-radius: 2px; background: {{audio.meter}}"></span>
+<span style="width: 6px; height: 6px; border-radius: 2px; background: #C5CCD3"></span>
+<span style="width: 6px; height: 6px; border-radius: 2px; background: #C5CCD3"></span>
+</div>
+<p style="margin: 0; flex: 1 1 260px; font-size: 15px; line-height: 1.5; color: #2B3540">{{audio.prompt}}</p>
+</div>
+<div role="status" style="{{audioNoteStyle}}">
+<span style="font-size: 15px; font-weight: 600; color: {{audio.color}}">{{audio.chip}}</span>
+<span style="font-size: 14px; line-height: 1.5; color: #2B3540">{{audio.detail}}</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px">
+<button type="button" style="min-height: 48px; padding: 0 20px; border-radius: 12px; border: 0; background: #1D4ED8; color: #FFFFFF; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer">{{audio.action}}</button>
+</div>
+</section>
+
+<section aria-labelledby="video-title" style="background: #FFFFFF; border-radius: 16px; padding: 28px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
+<h2 id="video-title" style="margin: 0; font-size: 18px; font-weight: 600">Video check <span style="font-size: 14px; font-weight: 500; color: #4A5562">(optional)</span></h2>
+<span style="{{videoChipStyle}}">
+<span aria-hidden="true" style="display: inline-flex">{{video.mark}}</span>
+{{video.chip}}
+</span>
+</div>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: #2B3540">{{video.detail}}</p>
+<div style="display: flex; flex-wrap: wrap; gap: 12px">
+<button type="button" style="min-height: 48px; padding: 0 20px; border-radius: 12px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer">{{video.action}}</button>
+<button type="button" style="min-height: 48px; padding: 0 20px; border-radius: 12px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font: inherit; font-size: 15px; font-weight: 500; cursor: pointer">Skip video</button>
+</div>
+</section>
+
+<section aria-label="Start the interview" style="background: #FFFFFF; border-radius: 16px; padding: 28px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
+<button type="button" aria-disabled="{{startDisabled}}" aria-describedby="start-reasons" style="{{startStyle}}">
+Start interview
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+</button>
+</div>
+<ul id="start-reasons" style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{checks}}" as="c" hint-placeholder-count="3">
+<li style="display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.5; color: #2B3540">
+<span aria-hidden="true" style="width: 22px; height: 22px; flex: none; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: {{c.tint}}; color: {{c.color}}; font-size: 13px; font-weight: 600">{{c.mark}}</span>
+<span><b>{{c.name}}</b> · {{c.state}}</span>
+</li>
+</sc-for>
+</ul>
+</section>
+
+</main>
+
+<aside aria-label="Advanced training options" style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 20px; align-self: flex-end">
+<section aria-labelledby="adv-title" style="background: #FFFFFF; border-radius: 16px; padding: 24px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 16px">
+<h2 id="adv-title" style="margin: 0; font-size: 15px; font-weight: 600">Advanced training options</h2>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px">
+<span id="cap-label" style="font-size: 14px; font-weight: 500">Captions on by default</span>
+<button type="button" role="switch" aria-checked="{{captionsOn}}" aria-labelledby="cap-label" style="{{switchStyle}}">
+<span style="{{knobStyle}}"></span>
+<span style="font-size: 13px; font-weight: 600; color: #16202A; padding: 0 8px; min-width: 24px">{{captionsWord}}</span>
+</button>
+</div>
+<p style="margin: 0; font-size: 13px; line-height: 1.5; color: #4A5562">Most online interviews do not have a captioning system. It is defaulted to be off.</p>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; padding-top: 14px; border-top: 1px solid #E1E5EA">
+<label for="preset" style="font-size: 14px; font-weight: 500">Simulated call conditions</label>
+<select id="preset" style="min-height: 44px; border-radius: 10px; border: 1px solid #C5CCD3; padding: 0 12px; font: inherit; font-size: 15px; background: #FFFFFF; color: #16202A">
+<option>{{presetLabel}}</option>
+</select>
+<sc-if value="{{presetActive}}" hint-placeholder-val="{{ false }}">
+<p style="margin: 0; padding: 10px 12px; border-radius: 8px; background: #FFF1DC; font-size: 13px; line-height: 1.5; color: #4A2600">Cues and audio will arrive late and may drop out, like a real call. A “Simulated” badge stays on screen during the interview.</p>
+</sc-if>
+<sc-if value="{{presetClean}}" hint-placeholder-val="{{ true }}">
+<span style="font-size: 13px; color: #4A5562">Adds network delay and packet loss. Off by default.</span>
+</sc-if>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; padding-top: 14px; border-top: 1px solid #E1E5EA">
+<span style="font-size: 14px; font-weight: 500">Training modules</span>
+<span style="font-size: 13px; color: #4A5562">[TRAINING MODULES]</span>
+</div>
+</section>
+</aside>
+
+</div>
+</div>
+</div>
+
+<section aria-label="Interview preparation progress" style="{{barStyle}}">
+<div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 14px">
+<span id="prep-label" style="font-weight: 600; color: #16202A">{{barLabel}}</span>
+<span style="color: #4A5562">{{barNote}}</span>
+</div>
+<div role="progressbar" aria-labelledby="prep-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{barNow}}" aria-valuetext="{{barValueText}}" style="height: 12px; border-radius: 6px; background: #D5DAE0; overflow: hidden; position: relative">
+<sc-if value="{{barDeterminate}}" hint-placeholder-val="{{ true }}">
+<div style="width: {{barWidth}}; height: 100%; background: {{barColor}}; border-radius: 6px"></div>
+</sc-if>
+<sc-if value="{{barIndeterminate}}" hint-placeholder-val="{{ false }}">
+<div class="sweep" style="width: 40%; height: 100%; background: #9A4D00; border-radius: 6px"></div>
+</sc-if>
+</div>
+</div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"prep":{"editor":"enum","options":["preparing","retrying","diagnosing","ready"],"default":"preparing","section":"Preview"},"audio":{"editor":"enum","options":["pending","checking","clear","intermittent","readable","unreadable","errored"],"default":"pending","section":"Preview"},"video":{"editor":"enum","options":["skipped","pending","checking","clear","intermittent","readable","unreadable","errored"],"default":"skipped","section":"Preview"},"captions":{"editor":"boolean","default":false,"section":"Preview"},"preset":{"editor":"enum","options":["clean","decent_call","laggy_clipped","bad_connection","rough_day"],"default":"clean","section":"Preview"},"$preview":{"width":1280,"height":1200}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const prep = p.prep ?? 'preparing';
+    const audioKey = p.audio ?? 'pending';
+    const videoKey = p.video ?? 'skipped';
+    const captionsOn = p.captions ?? false;
+    const preset = p.preset ?? 'clean';
+
+    const OK = '#0F6B5C', WARN = '#7A3E00', BAD = '#B42318', NEUTRAL = '#4B5563';
+    const OKT = '#DDF2EC', WARNT = '#FFF1DC', BADT = '#FCE4E1', NEUT = '#E8EAED';
+    const mk = (s) => ({ ok: '✓', warn: '!', bad: '✕', wait: '…' }[s]);
+
+    const quality = {
+      pending: { chip: 'Not checked yet', mark: '…', color: NEUTRAL, tint: NEUT, meter: '#C5CCD3', tone: 'wait', prompt: 'Read this sentence aloud when you start: [SAMPLE SENTENCE]', detail: 'Start the check to see how your voice comes through.', action: 'Start audio check' },
+      checking: { chip: 'Checking', mark: '…', color: WARN, tint: WARNT, meter: '#1D4ED8', tone: 'wait', prompt: 'Keep reading: [SAMPLE SENTENCE]', detail: 'Listening to your voice. This takes a few seconds.', action: 'Checking…' },
+      clear: { chip: 'Clear', mark: '✓', color: OK, tint: OKT, meter: '#1D4ED8', tone: 'ok', prompt: 'Read this sentence aloud when you start: [SAMPLE SENTENCE]', detail: 'Your voice is coming through clearly.', action: 'Check again' },
+      intermittent: { chip: 'Intermittent', mark: '!', color: WARN, tint: WARNT, meter: '#1D4ED8', tone: 'warn', prompt: 'Read this sentence aloud when you start: [SAMPLE SENTENCE]', detail: 'Parts of your voice drop out. You can continue, and the interviewer may ask you to repeat yourself.', action: 'Check again' },
+      readable: { chip: 'Readable', mark: '!', color: WARN, tint: WARNT, meter: '#1D4ED8', tone: 'warn', prompt: 'Read this sentence aloud when you start: [SAMPLE SENTENCE]', detail: 'You can be understood, with some noise. You can continue.', action: 'Check again' },
+      unreadable: { chip: 'Unreadable', mark: '✕', color: BAD, tint: BADT, meter: '#B42318', tone: 'bad', prompt: 'Read this sentence aloud when you start: [SAMPLE SENTENCE]', detail: 'The interviewer cannot understand you yet. Move closer to the microphone, or pick another one, then check again.', action: 'Check again' },
+      errored: { chip: 'Could not check', mark: '✕', color: BAD, tint: BADT, meter: '#C5CCD3', tone: 'bad', prompt: 'We could not reach this device.', detail: 'Check that it is plugged in and allowed in your browser, then try again.', action: 'Try again' }
+    };
+    const a = quality[audioKey] || quality.pending;
+    const vBase = quality[videoKey === 'skipped' ? 'pending' : videoKey] || quality.pending;
+    const v = videoKey === 'skipped'
+      ? { chip: 'Skipped', mark: '–', color: NEUTRAL, tint: NEUT, detail: 'You are not using video. You can still run the interview.', action: 'Check camera' }
+      : { chip: vBase.chip, mark: vBase.mark, color: vBase.color, tint: vBase.tint, detail: videoKey === 'pending' ? 'Start the check to see how you look on camera.' : (videoKey === 'checking' ? 'Looking at your camera feed.' : vBase.detail), action: videoKey === 'checking' ? 'Checking…' : (videoKey === 'pending' ? 'Start camera check' : 'Check again') };
+
+    const audioOk = audioKey === 'clear' || audioKey === 'intermittent' || audioKey === 'readable';
+    const prepared = prep === 'ready';
+    const canStart = prepared && audioOk;
+
+    const host = {
+      preparing: { title: 'Waiting for host…', body: 'The interviewer is building your interview. You can set up your hardware while you wait.', color: WARN, bg: '#FFF1DC', border: '#F0C98E', waiting: true },
+      retrying: { title: 'Waiting for host…', body: 'This is taking a little longer than usual. We are retrying quietly, and you can keep going.', color: WARN, bg: '#FFF1DC', border: '#F0C98E', waiting: true },
+      diagnosing: { title: 'The host ran into a problem', body: 'We tried again and it did not work. The interviewer is checking what went wrong.', color: BAD, bg: '#FCE4E1', border: '#E8A29B', waiting: false },
+      ready: { title: 'The host is ready', body: 'Your interview is prepared. Finish the audio check to start.', color: OK, bg: '#DDF2EC', border: '#9AD3C5', waiting: false }
+    }[prep];
+
+    const bar = {
+      preparing: { label: 'Preparing your interview', note: 'Setting up the interviewer', now: 45, width: '45%', color: '#1D4ED8', indet: false },
+      retrying: { label: 'Preparing your interview', note: 'Taking longer than usual. Retrying', now: 62, width: '62%', color: '#9A4D00', indet: false },
+      diagnosing: { label: 'Preparing your interview', note: 'Checking what went wrong', now: 0, width: '0%', color: '#9A4D00', indet: true },
+      ready: { label: 'Your interview is ready', note: '', now: 100, width: '100%', color: '#0F6B5C', indet: false }
+    }[prep];
+
+    const checks = [
+      { name: 'Interview prepared', state: prepared ? 'done' : (prep === 'diagnosing' ? 'needs attention' : 'still preparing'), mark: prepared ? '✓' : (prep === 'diagnosing' ? '!' : '…'), color: prepared ? OK : (prep === 'diagnosing' ? BAD : WARN), tint: prepared ? OKT : (prep === 'diagnosing' ? BADT : WARNT) },
+      { name: 'Audio', state: audioOk ? 'verified, rated ' + a.chip.toLowerCase() : (audioKey === 'unreadable' || audioKey === 'errored' ? 'needs attention: ' + a.chip.toLowerCase() : 'not verified yet'), mark: audioOk ? '✓' : (audioKey === 'unreadable' || audioKey === 'errored' ? '✕' : '…'), color: audioOk ? OK : (audioKey === 'unreadable' || audioKey === 'errored' ? BAD : WARN), tint: audioOk ? OKT : (audioKey === 'unreadable' || audioKey === 'errored' ? BADT : WARNT) },
+      { name: 'Video', state: 'optional, ' + v.chip.toLowerCase(), mark: '–', color: NEUTRAL, tint: NEUT }
+    ];
+
+    const presets = { clean: 'Clean', decent_call: 'Decent call', laggy_clipped: 'Laggy / clipped', bad_connection: 'Bad connection', rough_day: 'Rough day' };
+    const chip = (c, t) => 'display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; font-size: 14px; font-weight: 600; color: ' + c + '; background: ' + t;
+    const note = (c, t) => 'display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: 10px; background: ' + t + '; border: 1px solid ' + c;
+
+    return {
+      hostStyle: 'background: ' + host.bg + '; border: 1px solid ' + host.border + '; border-radius: 16px; padding: 20px 24px; display: flex; align-items: center; gap: 16px',
+      hostColor: host.color,
+      hostTitle: host.title,
+      hostBody: host.body,
+      showWaiting: host.waiting || prep === 'diagnosing',
+      showHostReady: prep === 'ready',
+      showDiagnosis: prep === 'diagnosing',
+      audio: a,
+      audioChipStyle: chip(a.color, a.tint),
+      audioNoteStyle: note(a.color, a.tint),
+      video: v,
+      videoChipStyle: chip(v.color, v.tint),
+      startDisabled: !canStart,
+      startStyle: canStart
+        ? 'min-height: 56px; padding: 0 28px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 0; background: #1D4ED8; color: #FFFFFF; font: inherit; font-size: 17px; font-weight: 600; cursor: pointer'
+        : 'min-height: 56px; padding: 0 28px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 0; background: #D5DAE0; color: #4A5562; font: inherit; font-size: 17px; font-weight: 600; cursor: not-allowed',
+      checks: checks,
+      captionsOn: captionsOn,
+      captionsWord: captionsOn ? 'On' : 'Off',
+      switchStyle: 'min-width: 72px; min-height: 44px; padding: 0 4px; display: inline-flex; align-items: center; gap: 4px; border-radius: 22px; border: 2px solid ' + (captionsOn ? '#1D4ED8' : '#8A93A0') + '; background: ' + (captionsOn ? '#E3EBFC' : '#FFFFFF') + '; cursor: pointer; flex-direction: ' + (captionsOn ? 'row-reverse' : 'row'),
+      knobStyle: 'width: 28px; height: 28px; border-radius: 50%; background: ' + (captionsOn ? '#1D4ED8' : '#8A93A0'),
+      presetLabel: presets[preset] || 'Clean',
+      presetActive: preset !== 'clean',
+      presetClean: preset === 'clean',
+      barStyle: 'position: sticky; bottom: 0; background: #FFFFFF; border-top: 1px solid #E1E5EA; padding: 16px; box-sizing: border-box',
+      barLabel: bar.label,
+      barNote: bar.note,
+      barNow: bar.now,
+      barValueText: bar.label,
+      barWidth: bar.width,
+      barColor: bar.color,
+      barDeterminate: !bar.indet,
+      barIndeterminate: bar.indet
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -14,4 +14,4 @@ A new iteration replaces the previous snapshot in place; git history keeps the e
 
 ## Contents
 
-- [`mockups/ui/`](mockups/ui/README.MD): interviewer cues, iteration 1 (2026-10-06).
+- [`mockups/ui/`](mockups/ui/README.MD): interviewer cues, iteration 1 (2026-10-06), plus the transitions master and the setup pages added after it.

@@ -1,5 +1,17 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 20:28:21 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Said the last PR was merged without the mockups, which were missed because attention went to the log entries, and asked for a new PR.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: confirmed PR 4 was merged before the mockups commit, so that commit was not on main; rebased the branch onto the latest main, force-with-lease pushed it, and opened a new PR containing the Transitions, Setup, Hardware and SetupHot boards and the README updates. Nothing else changed.
+Tokens: ~3,000 (estimated)
+---
+## 2026-10-06 20:27:20 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Said the new panels need to be added to the mockup area.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: copied the four boards new since iteration 1 (Transitions, Setup, Hardware, SetupHot) from the live canvas (version 22) into design/mockups/ui/ with a byline comment; added them, their order and the two row titles to the folder's canvas.json; added an "Added after iteration 1" section to design/mockups/ui/README.MD and updated design/README.MD. Left Main, States, Timeline and Recovery at iteration 1 (they are newer on the canvas) and said so in the README. Not rendered.
+Tokens: ~16,000 (derived: counter 15,000,000 -> ~14,985,000)
+---
 ## 2026-10-06 20:21:52 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Said the work is ready for a new pull request.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
