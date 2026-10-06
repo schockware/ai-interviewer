@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 20:15:28 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Agreed with disabling Prepare for a hot interview without a resume, asked for a frame or panel showing the Hot interview selection and its hot-incomplete=>cold and hot states, and said the audio streaming question is still being worked on and should stay open.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: Design canvas version 22: new SetupHot.dc.html board with four frames of the Hot resume panel (no saved resumes and processing as hot-incomplete=>cold; processed and saved-resume-defaulted as hot) beside the Hardware page. Corrected the Setup page: with saved resumes, Hot selects the last picked resume by default (spec), so it is already a complete hot interview. The canvas index had been reordered by someone since my last publish; re-read and merged. Audio streaming TODO left open. Not rendered or checked visually. design/mockups/ui/ not changed.
+Tokens: ~19,000 (derived: counter 15,000,000 -> ~14,981,000)
+---
 ## 2026-10-06 20:10:09 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Said the team is ready to mock up the Application setup page and the Hardware setup and verification page.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
