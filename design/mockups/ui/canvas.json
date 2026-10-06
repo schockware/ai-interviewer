@@ -7,16 +7,22 @@
     "Accessibility.dc.html": {"h": 1060, "title": "Accessibility panel", "w": 1280, "x": 2720, "y": 0},
     "States.dc.html": {"h": 640, "title": "The four states", "w": 1280, "x": 0, "y": 1443},
     "Timeline.dc.html": {"h": 640, "title": "Handoff timing: true vs perceived", "w": 1280, "x": 1360, "y": 1443},
-    "Recovery.dc.html": {"h": 640, "title": "Edge moments", "w": 1280, "x": 2720, "y": 1443}
+    "Recovery.dc.html": {"h": 640, "title": "Edge moments", "w": 1280, "x": 2720, "y": 1443},
+    "Transitions.dc.html": {"h": 2760, "title": "Cue transitions (master)", "w": 1940, "x": 0, "y": 2366},
+    "Setup.dc.html": {"expand": "fill", "h": 1300, "title": "Application setup", "w": 1280, "x": 0, "y": 5409},
+    "Hardware.dc.html": {"expand": "fill", "h": 1200, "title": "Hardware setup and verification", "w": 1280, "x": 1360, "y": 5409},
+    "SetupHot.dc.html": {"h": 1040, "title": "Hot interview: resume panel states", "w": 1680, "x": 2720, "y": 5409}
   },
   "createdOnFiles": {"at": "2026-10-06T13:13:29Z", "v": 1},
   "designSystems": [],
   "launch": {"view": "canvas"},
   "notes": {
     "proposals": {"fill": "orange", "text": "Draft 1. Every timing value shown is a PROPOSAL from docs/research (latency-perception.md, micro-pauses-and-run-ons.md, screen-reader-live-updates.md), to be tuned by ear, user test and manual screen reader passes. The accessible timing profile is the default for now (SPEC.md 4.4). Open the Interview screen's Tweaks to switch state, cue mode, preset and captions.", "w": 360, "x": -440, "y": 0},
-    "rowtitle": {"kind": "title1", "maxW": 4000, "text": "Cue system: states, timing, edge moments", "w": 240, "x": 0, "y": 1200}
+    "rowtitle": {"kind": "title1", "maxW": 4000, "text": "Cue system: states, timing, edge moments", "w": 240, "x": 0, "y": 1200},
+    "transitionstitle": {"kind": "title1", "maxW": 1940, "text": "Cue transitions: the master diagram", "w": 240, "x": 0, "y": 2123},
+    "setuptitle": {"kind": "title1", "maxW": 4400, "text": "Setup pages: application setup, then hardware", "w": 240, "x": 0, "y": 5166}
   },
-  "order": ["Main.dc.html", "ScreenReader.dc.html", "Accessibility.dc.html", "States.dc.html", "Timeline.dc.html", "Recovery.dc.html"],
+  "order": ["Main.dc.html", "ScreenReader.dc.html", "Accessibility.dc.html", "States.dc.html", "Timeline.dc.html", "Recovery.dc.html", "Transitions.dc.html", "Setup.dc.html", "Hardware.dc.html", "SetupHot.dc.html"],
   "pages": [],
   "title": "Interviewer Cue Design"
 }

@@ -4,7 +4,7 @@
 
 Design mockups for the interview screen's cues, from the 2026-10-06 design session. They are not code and are not in either code zone (`src/prototypes/`, `src/prod/`). Nothing here is verified.
 
-Design prototyping happens on a private Design canvas on claude.ai, "Interviewer Cue Design": https://claude.ai/artifact/WQvDtXFX6ZbXbqscJcuT3Q. These files are the **developer-ready snapshot of iteration 1**; build from them, not from the live canvas, which may already hold later work in progress. See [the design lifecycle](../../README.MD).
+Design prototyping happens on a private Design canvas on claude.ai, "Interviewer Cue Design": https://claude.ai/artifact/WQvDtXFX6ZbXbqscJcuT3Q. These files are the **developer-ready snapshot of iteration 1, plus the boards added after it** (see below); build from them, not from the live canvas, which may already hold later work in progress. See [the design lifecycle](../../README.MD).
 
 ## Boards
 
@@ -17,6 +17,21 @@ Design prototyping happens on a private Design canvas on claude.ai, "Interviewer
 | `Timeline.dc.html` | Handoff timing | One question as true state and as perceived under the Laggy preset |
 | `Recovery.dc.html` | Edge moments | Long silence, false cutoff, "Give me a sec", first-time simulator notice |
 | `canvas.json` | | The canvas index: board positions, sizes, notes |
+
+## Added after iteration 1
+
+Four boards were added to the canvas later the same day and copied here. Their states and Tweaks are described in each board.
+
+| File | Board | What it shows |
+|---|---|---|
+| `Transitions.dc.html` | Cue transitions (master) | Every state and edge of the cue state machine, the decisions made, and the WCAG 2.2 notes. This is the master the text contract (`contracts/cue-transitions.md`) will be converted from |
+| `Setup.dc.html` | Application setup | Interview type (Cold or Hot), resume and role focus, Application settings (AI models), and Prepare interview. Tweaks switch page state, interview type, resume and role states. Built from `contracts/page-flow.md` |
+| `Hardware.dc.html` | Hardware setup and verification | Waiting for host and the progress bar, audio (required) and video (optional) checks, Advanced training options, and Start interview. Tweaks switch preparation, audio, video, captions and preset |
+| `SetupHot.dc.html` | Hot interview: resume panel states | The resume panel under Hot in each `ResumeValidation` state: `hot-incomplete=>cold` (no saved resumes, processing) and `hot` (processed, saved resume defaulted) |
+
+**These boards are newer than the rest of this folder.** On the canvas, `Main.dc.html` and `States.dc.html` have changed since iteration 1 (the End interview control and its confirmation, and the fifth state, Uninterruptible), and `Timeline.dc.html` and `Recovery.dc.html` were moved to make room. The copies here of those four are still iteration 1. Until they are synced, `Transitions.dc.html` refers to a fifth state that `States.dc.html` here does not show.
+
+Open items on these boards: how audio streams to the server for hardware verification, and the hold length before the Uninterruptible states (shown as `[HOLD]`).
 
 ## Viewing
 
