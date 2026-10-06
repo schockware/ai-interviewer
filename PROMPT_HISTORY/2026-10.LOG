@@ -1,5 +1,125 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 06:56:46 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked to keep a task list at the repo root and to say what the open questions were.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: created TASKS.MD at the root, seeded from a subagent's scan of the docs for open items (grouped by area and tagged for who decides). The scan did not read every spec in full, and its file and line pointers were not individually checked. Dropped the scan's stale "decide the Human QA requirement" item because the rules were already drafted.
+Tokens: ~16,000 (derived: counter 14,995,890 -> ~14,983,900)
+---
+## 2026-10-05 13:58:44 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked to spin up a rudimentary React, Vite and TypeScript scaffold for the prod area at src/prod/ui, with no tests since they will write those as they learn the domain; also reflected that skipping full contract development was a lesson learned.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: created src/prod/ui (package.json, vite.config.ts, playwright.config.ts on port 5174, tsconfig files, .oxlintrc.json, .gitignore, index.html, src/main.tsx, src/App.tsx rendering one heading, src/test-setup.ts, e2e/.gitkeep, README.MD with the zone rules). No prototype code copied and no tests written, per the moratorium. Updated the layout and zone bullet in src/README.MD and the prod-zone path in CLAUDE.md. npm install, tsc -b, oxlint and vite build pass; vitest and playwright are set to pass with no tests. Playwright browsers were not run. First npm install attempt died when backgrounded and was rerun.
+Tokens: ~16,000 (derived: counter 14,999,360 -> ~14,983,500)
+---
+## 2026-10-05 13:39:16 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked to draft the Human QA rules: a moratorium on Claude-written tests in the prod zone until the human has written their own (with a negotiated minimum per feature before Claude adds a battery), free rein for Claude in prototypes, free pulls from prod to prototype, and a gate on promotion from prototype to prod.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: added the "Human QA and the two zones" section to CLAUDE.md and a pointer bullet to src/README.MD. The QA ledger and per-feature QA contract are deliberately not created yet. Open question left in the text: per-behavior versus per-line sufficiency.
+Tokens: ~3,200 (derived: counter 14,999,695 -> ~14,996,500)
+---
+## 2026-10-05 13:36:17 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Proposed splitting the repo so the prototype area is fully Claude-run while a future production area requires that every line be sufficiently human-tested, and asked for a quick check of expert opinion in research.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: no code changes; three web searches (verification bottleneck, independent oracles for agent-written tests, comprehension/verification debt). Only search-result summaries were read; no pages were fetched or verified.
+Tokens: ~4,600 (derived: counter 14,999,695 -> ~14,995,100)
+---
+## 2026-10-05 13:32:17 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Raised that the volume of generated code outpaces their ability to verify it with domain knowledge, and asked to discuss adding a "Human QA Engineer" requirement in which they write their own tests from scratch to verify Claude's behavior.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: no code changes; discussion only, with a recommended shape for the requirement. Nothing added to CLAUDE.md yet, pending their decision.
+Tokens: ~2,500 (derived: counter 14,954,488 -> ~14,952,000)
+---
+## 2026-10-05 13:14:00 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Said they were ready for the reducer and cue strategy to be built against the calibrated mock scripts.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: created src/prototypes/ui/src/core/cues/ (payload, strategy, display, reducer, engine, index) with reducer.spec.ts and engine.spec.ts; added the CuePlayer port; created adapters/systemClock.ts and webAudioCuePlayer.ts; created ui/CuePanel.tsx, ui/useCueEngine.ts, rewrote ui/App.tsx, with CuePanel.test.tsx and App.test.tsx; added e2e/cues.spec.ts; created audit/main-page.md (first WCAG audit entry); updated README.MD layout, index.css, test-setup.ts; added a cue section to docs/research/prototype-ui.md. Results: npm test 98 pass; playwright 16 pass (Chromium and Firefox); tsc -b and oxlint clean. A screenshot was taken for a visual check. Not done: talking-cue hold, dropped-frame and clipped scripts, captions, sound beds, screen-reader pass, reset-settings link.
+Tokens: ~60,000 (derived: counter 15,000,000 -> ~14,955,000 less earlier prompts' cost)
+---
+## 2026-10-05 12:58:00| Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Pointed to the new latency-perception and micro-pause research and asked that the mocked model also account for what the AI has been calibrated for when it is done talking and when it is listening for an answer.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: read docs/research/latency-perception.md and micro-pauses-and-run-ons.md. Created src/prototypes/ui/src/adapters/mock/mockInterviewer.ts (TurnPolicy, generateScript), calibrations.ts (eager, balanced, patient presets, fixture answer with a 700 ms and a 2,500 ms pause), mockInterviewer.spec.ts; updated mock/index.ts to register the three generated scripts; added a calibration section and findings 8 to 11 to docs/research/prototype-ui.md; added a paragraph to src/design/ui/PROTOTYPE.MD. npm test 63 pass; tsc -b and oxlint clean. Preset values are proposals from unverified research figures. The latency scripts (perceived times) are still not written.
+Tokens: ~36,500 (derived: counter 15,000,000 -> ~14,963,500)
+---
+## 2026-10-05 12:52:01| Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked to add a reference to the latency research document in SPEC.MD (another chat will adjust the specs), and to start research on "micro-pause" and run-on problems for the models, noting that dialing in pauses is model training rather than latency.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: added one reference line to the References list in SPEC.MD; created docs/research/micro-pauses-and-run-ons.md (turn-detector hesitation cutoffs, run-on user speech, TTS pause control and chunk gaps, run-on LLM output, measurement proposals, spec findings, unverified items). Interpreted "micro-pause" and "run-on" as four problems (interviewer output and user input) and said so in the doc. Several primary PDFs were unreadable, so those figures are marked [unverified]. specs/ not edited.
+Tokens: ~34,000 (derived: counter 15,000,000 -> ~14,966,000)
+---
+## 2026-10-05 12:38:59 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked to start research on the latencies at which people notice web pages lagging, uncanny-valley effects, and online-meeting latency problems, to inform emulating latency in a locally run AI interviewer web chat.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: created docs/research/latency-perception.md (turn-taking gaps, video-call and G.114 delay, web UI thresholds, uncanny valley and timing, chat delays, A/V sync, packet loss, proposed emulation parameters, spec findings, unverified items). Ran web searches and fetches; several primary PDFs (PNAS, ACM, SIGdial) returned 403 or unreadable binary, so those figures are marked [unverified]. SPEC.MD and specs/ not edited.
+Tokens: ~105,000 (derived: counter 15,000,000 -> ~14,895,000)
+---
+## 2026-10-05 12:35:09 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked to start the mock event stream, noting that a separate research chat is finding the latency thresholds to use.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: created src/prototypes/ui/src/adapters/mock/ (script.ts, buildStream.ts, scriptedEventSource.ts, index.ts, scripts/simulation-off.json) with buildStream.spec.ts and scriptedEventSource.spec.ts; added the EventSource port to core/ports.ts; added a "Mock event stream" section to docs/research/prototype-ui.md. npm test 48 pass; tsc -b and oxlint clean. The other four scripts are not written, because they need perceived times and the pending latency thresholds.
+Tokens: ~11,500 (estimated)
+---
+## 2026-10-05 12:32:01| Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Confirmed that millisecond resolution is needed at every level because latency emulation is tuned within the range humans notice, which they recall as about 180 to 300 ms.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: switched the contract draft to milliseconds: renamed t_true and t_perceived to t_true_ms and t_perceived_ms in events.ts, parse.ts, time.ts and the three .spec.ts files (values converted); updated doc comments; marked finding 1 decided in docs/research/prototype-ui.md. npm test 30 pass; tsc -b and oxlint clean.
+Tokens: ~4,500 (derived: counter 15,000,000 -> ~14,993,100 less earlier prompts' cost)
+---
+## 2026-10-05 12:27:20| Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Said they were ready for the first-pass typed event and control contracts.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: created src/prototypes/ui/src/core/contract/ (events.ts, parse.ts, order.ts, time.ts, index.ts) with parse.spec.ts, order.spec.ts and time.spec.ts (EVT vectors 1 to 4, and part of 6); created docs/research/prototype-ui.md with a "Findings for the spec" section (8 proposals). specs/ not edited. npm test: 30 pass; tsc -b and oxlint clean. Read specs/events, specs/common and src/design/events first.
+Tokens: ~19,500 (derived: counter 15,000,000 -> ~14,980,500)
+---
+## 2026-10-05 12:25:10| Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked to narrow the src/README.MD testing rule so holistic or feature-level testing is first class outside src, while unit, component and single-boundary integration tests live next to the code.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: src/README.MD (replaced the testing rule with two rules, and refreshed the stale status line and layout block to mention prototypes/).
+Tokens: ~2,000 (estimated)
+---
+## 2026-10-05 12:22:21| Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Shared their UI testing conventions: tests live beside the code, .spec. for domain behavior or requirements and .test. for coupled UX or integration behavior, and behavior testing (e2e and bdd) as sibling folders to src.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: src/prototypes/ui/README.MD (added a Test conventions section and a bdd/ row); renamed adapters/simulatedClock.test.ts to simulatedClock.spec.ts; vite.config.ts (include both .test. and .spec.). npm test: 5 pass.
+Tokens: ~2,500 (estimated)
+---
+## 2026-10-05 12:03:42| Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked to add instructions for running the prototype to the README.MD they created in src/prototypes/ui/.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: src/prototypes/ui/README.MD (added a byline with Steven as author and Claude as co-author, since Steven created the file; added requirements, setup, run, test commands and layout sections; kept Steven's synopsis text unchanged).
+Tokens: ~1,500 (estimated)
+---
+## 2026-10-05 11:55:30| Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Confirmed Vitest 5.0.3, asked for the Chromium autoplay flag with the Firefox equivalent on hand, an own Clock port with drift for component tests, and the src/prototypes/ui/ location with portable modules.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: created src/prototypes/ui/ (Vite + React + TypeScript scaffold; Vitest 5.0.3, Testing Library, jsdom, Playwright 1.63.0, axe-core; core/ports.ts Clock port, adapters/simulatedClock.ts with tests, ui/ shell, e2e smoke and autoplay specs, playwright.config.ts with Chromium flag and Firefox prefs); installed Playwright Chromium and Firefox; updated docs/research/ui-testing-tools.md and src/design/ui/PROTOTYPE.MD. Commands: npm test (5 pass), tsc -b and oxlint (clean), playwright test (4 pass). A first batched shell write failed on a quoting error and was redone with the file tool. A control run showed the autoplay test passes without the flags, so it does not discriminate (recorded in the research note).
+Tokens: ~14,500 (derived: counter 15,000,000 -> ~14,984,000 less earlier prompts' cost)
+---
+## 2026-10-05 11:46:51| Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked to start with the research on Playwright versus Vitest first, noting testing is first class and Vitest is new to them.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: created docs/research/ui-testing-tools.md (from web searches and two page fetches; nothing run). Checked node and npm versions.
+Tokens: ~5,000 (derived: counter 15,000,000 -> ~14,994,500 less earlier prompts' cost)
+---
+## 2026-10-05 11:43:30| Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Answered the three open questions: the implementer drafts the first typed event and control contracts, a small strategy-in, payload-out interface is enough for the middle layer, and the reset link clears preferences only.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: src/design/ui/PROTOTYPE.MD (replaced the questions section with the decisions). A first python edit attempt failed because Python is not installed; redone with the edit tool.
+Tokens: ~1,500 (estimated)
+---
+## 2026-10-05 11:40:37| Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Answered the seven open points for the UI prototype: mock event stream first with ports-and-adapters structure, Vite + React + TypeScript with a plain reducer and Playwright research, a middle strategy layer for cues, placeholder sounds, WCAG 2.2 AA with a per-page audit log, audio capture later, and a settings-reset link.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: created src/design/ui/PROTOTYPE.MD (draft brief); src/design/README.MD (linked the brief). Noted that typed contracts are missing; specs/cues already exists.
+Tokens: ~5,900 (derived: counter 15,000,000 -> ~14,993,500 less the prior prompt's cost)
+---
+## 2026-10-05 11:32:21| Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked to act as the implementer for the React UI, to read SPEC.MD and src/design/PROTOTYPES.MD, and then discuss what else the design docs need before implementation starts.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: no code changes; read SPEC.MD, src/design/PROTOTYPES.MD, src/design/README.MD, PROMPT_HISTORY/README.MD and decision 0003.
+Tokens: ~61,400 (derived: counter 15,000,000 -> ~14,938,600)
+---
 ## 2026-10-05 09:50:14 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Agreed with Claude's recommendation to include the behavioral de-escalation interview, as practice only until research shows whether feedback is feasible.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry

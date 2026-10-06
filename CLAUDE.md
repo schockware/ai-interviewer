@@ -46,6 +46,25 @@ Tokens: ~{N} (derived: counter {start} -> ~{end} | estimated)
 - **Model:** use the current model name and ID, as in the Authorship rule.
 - No file in `PROMPT_HISTORY/` except `README.MD` has a byline, because the newest entry must stay at the top and each entry names its model.
 
+## Human QA and the two zones
+
+Generated code outpaces what Steven can verify with domain knowledge, and a green suite Claude wrote for its own code is not independent evidence. So trust is split by zone.
+
+**Prototype zone** (`src/prototypes/`): Claude has free rein, as a junior developer would. Claude writes the code and the tests, and nothing here counts as verified. Everything in it is throwaway until promoted.
+
+**Prod zone** (`src/prod/`; so far only the empty `src/prod/ui` scaffold, nothing promoted): no line is accepted until Steven has tested it sufficiently.
+
+Rules:
+
+- **Moratorium on Claude-written tests in prod.** Until Steven has written his own tests for a feature, Claude writes no tests in the prod zone. Steven writes them from the spec and his expected behavior, before reading Claude's implementation or prototype tests. Prod test files Steven wrote carry him as author in the byline. Claude never edits them; if one fails, Claude reports it and fixes the code.
+- **Claude's own battery, by agreement.** Once Steven and Claude agree a minimum human test set for a feature (recorded in the feature's QA contract), Claude may add its own tests on top. They are labeled as Claude-written and never count toward the minimum.
+- **Pulling prod into a prototype is free.** Claude may copy or adapt prod code into the prototype zone with no gate. The copy is prototype code and is not verified.
+- **Promotion from prototype to prod is gated.** Claude never moves, copies or rewrites prototype code into the prod zone on its own. Promotion needs Steven's go-ahead for that feature, the agreed minimum human tests written and passing, and an entry in the QA ledger naming the feature, the commit, and what Steven verified. Claude may propose a promotion and list what would need testing, written as steps to run and not as expected results, so it does not lead Steven.
+- **Mark guesses.** Values that come from unverified research (for example the pause presets) are labeled as proposals wherever they appear, so Steven knows which ones need his judgment first.
+- **Scope.** Applies to observable behavior and to anything that touches a requirement ID. Pure refactors and plumbing in prod must still not change behavior covered by Steven's tests.
+
+The QA ledger and the per-feature QA contract are created with the first promotion; until then, no code has been promoted. Open: whether "sufficiently tested" is judged per behavior (current assumption) or per line.
+
 ## Files
 
 - Follow the existing `README.MD` naming for READMEs. This file is `CLAUDE.md`, lowercase extension, because Claude Code looks for that exact name on case-sensitive filesystems.

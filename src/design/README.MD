@@ -53,6 +53,8 @@ Before a layer is designed in full, it is prototyped alone. The briefs are for i
 | 3 | Transcription | [transcription/PROTOTYPE.MD](transcription/PROTOTYPE.MD) |
 | 3 | Speech synthesis | [speech/PROTOTYPE.MD](speech/PROTOTYPE.MD) |
 
+The UI prototype ([ui/PROTOTYPE.MD](ui/PROTOTYPE.MD), draft) runs against a mock event stream and can proceed in parallel with any of the above.
+
 Transcription and speech synthesis are independent and can run in parallel. Briefs for the interviewer, follow-up, evaluator, simulator, cues, session and fit layers come next.
 
 ## Open items

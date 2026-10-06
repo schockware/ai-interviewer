@@ -438,3 +438,4 @@ Testing and benchmarking are first-class and live at the repository root. [`test
 - TurnWave benchmark table (Hugging Face)
 - Local TTS comparisons (offlinetts.com, localaimaster.com, promptquorum.com, codesota.com)
 - Local LLM roundups and hardware guides (popularai.org, tinyweights.dev, frankx.ai, fast.io, bestllmfor.com, codesota.com)
+- Latency perception research (turn-taking gaps, video-call delay, web UI thresholds, cue timing): `docs/research/latency-perception.md`

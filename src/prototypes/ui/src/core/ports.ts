@@ -26,3 +26,13 @@ export interface Clock {
   /** Run `fn` after `delayMs` of this clock's time. Returns a function that cancels it. */
   schedule(delayMs: number, fn: () => void): () => void
 }
+
+/** Makes the sounds that go with cues (CUE-RED-001). Sound is placeholder for now: simple generated tones. */
+export interface CuePlayer {
+  /** The hand-off to the user (CUE-STA-003). */
+  chime(): void
+  /** Must be called from a user gesture in a browser, so sound is never played on its own (CUE-AMB-001). */
+  unlock(): void
+  /** Sound on or off, as the user chose. */
+  setMuted(muted: boolean): void
+}

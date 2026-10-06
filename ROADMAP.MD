@@ -37,6 +37,10 @@ None of these has a phase yet. The first two came up while building the verbal i
 - **Behavioral "de-escalation" / cross-functional interview:** included as practice only for now. It is highly subjective, so no feedback or scoring until further research shows whether feedback is feasible.
   - Research question: can feedback be based on observable behaviors (acknowledging the other person's concern, restating their position, asking clarifying questions, proposing a next step, not escalating the tone)?
   - Risk: the LLM playing the difficult counterpart may be inconsistent or too gentle.
+- **Advanced Cues System:** as more research comes in, an interviewer listening for an answer may penalize how long it takes the interviewee to start answering. Two parts:
+  - Interviewee features to practice cadence and pensive cues, so they can navigate this. Example: a progress bar showing how quickly they may be judged on an answer based on cadence alone.
+  - Listening model tuning: the listening models need to account for real human interaction (relevant to the verbal interviewer in section 1).
+  - Research: [docs/research/latency-perception.md](docs/research/latency-perception.md), [docs/research/micro-pauses-and-run-ons.md](docs/research/micro-pauses-and-run-ons.md)
 
 ## 3. Practice modes that actually build skill
 
@@ -63,6 +67,8 @@ Why the author does not approve of language/framework trivia: it rewards people 
   - Related to the proctored code review challenge in section 2: both put the user in front of someone else's flawed code under time pressure. They may share infrastructure.
   - Also linked to system debugging/triage (section 2): the generator could produce reproducible bugs plus logs, instead of hand-curated scenarios.
 - **The Creepy Crypt Client** (a play on words for scope creep and the Crypt Keeper): the user designs a system based on a client request. New requirements are then added incrementally, and the user practices redesigning as they arrive.
+- **Peter Piper's Pitter Patter Meter:** an interviewee can turn it on to evaluate how often they use patter and filler words. Example from the author: "I catch myself using 'and so forth' or 'et cetera' as my transition phrase a lot."
+- **Amber's Ambiguity Alarm:** lets an agent analyze when something in the user's explanation was too ambiguous.
 
 ## 6. Desktop client (later)
 

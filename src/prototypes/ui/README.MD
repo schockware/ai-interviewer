@@ -62,8 +62,8 @@ Both suffixes are picked up by `npm test`. A rule of thumb for choosing: if a re
 
 | Folder | Holds |
 |---|---|
-| `src/core/` | Pure TypeScript: ports and, later, the reducer and cue strategies. Imports nothing from the other folders |
-| `src/adapters/` | Implementations of the ports, such as `SimulatedClock` |
+| `src/core/` | Pure TypeScript: ports, the event contract (`contract/`), and the cue reducer, strategies and engine (`cues/`). Imports nothing from the other folders |
+| `src/adapters/` | Implementations of the ports: clocks, the mock event stream and calibrated mock interviewer (`mock/`), placeholder cue sounds |
 | `src/ui/` | React components. They render what they are given and decide nothing |
 | `e2e/` | Playwright browser journeys (sibling of `src/`) |
 | `bdd/` | Behavior scenarios (sibling of `src/`). Not created yet |
