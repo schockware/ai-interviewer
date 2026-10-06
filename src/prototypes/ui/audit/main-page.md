@@ -6,6 +6,20 @@ Page: `/` (cue panel, scenario and mode controls). Target: WCAG 2.2 level AA. Ne
 
 **Automated checks find only part of the problems.** Sources put axe-core at roughly 30 to 50 percent of issues ([ui-testing-tools.md](../../../../docs/research/ui-testing-tools.md)). A page is not "passing" until the keyboard and screen-reader passes are also done. The screen-reader pass is **not done yet**.
 
+## 2026-10-06: setup and hardware pages added
+
+Same environment and tags. Pages: Application setup (loading, error, ready, hot resume panel, role focus, settings open, paste dialog) and Hardware setup (preparing, retrying, diagnosing, ready, audio and video checks).
+
+| Criterion | Level | How checked | Result | Note |
+|---|---|---|---|---|
+| All rules in the axe tag set | A, AA | Automated, `e2e/flow.spec.ts`: setup loading, ready, hot panel with settings open, error; hardware preparing, with a check done, diagnosing | Pass, no violations, Chromium and Firefox | Light theme only. The paste and Advanced dialogs were not scanned |
+| 4.1.2 Name, role, value | A | By construction: native radios and selects, `role="switch"` with `aria-checked` for captions, `role="progressbar"` with `aria-valuenow` omitted while indeterminate | axe passes | Not read by a screen reader |
+| 3.3.1, 3.3.3 Error identification and suggestion | A, AA | A disabled Prepare interview and Start interview use `aria-disabled` with a list of reasons beside them, so the button stays focusable | Not checked by a person | Whether the reasons list is announced when it changes is open |
+| 4.1.3 Status messages | AA | Processing and ready messages, the host status and each check result are `role="status"` | DOM only | Not confirmed with a screen reader; the host banner and progress bar may both speak on one change |
+| 2.2.2 Pause, stop, hide | A | The indeterminate bar and skeletons stop under `prefers-reduced-motion` by CSS | Not exercised by a test | |
+
+Not covered: a screen reader pass on either page, a keyboard-only walk by a person, zoom and reflow, and whether the sticky progress bar covers focused controls (2.4.11) on short screens.
+
 ## 2026-10-06: interview screen rebuilt from the mockup
 
 Same environment and tags as below. The page is now the mockup layout: Accessibility button, status card, captions (off by default), microphone row, controls, call conditions, and the Accessibility dialog.

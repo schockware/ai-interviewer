@@ -5,7 +5,7 @@ const WCAG = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']
 
 test.describe('main page, simulation-off scenario, in a real browser', () => {
   test('shows the interviewer state change by change, and announces each once (CUE-ANN-001, CUE-ANN-002)', async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/?page=interview')
     const label = page.getByTestId('cue-label')
     const region = page.getByTestId('announcement')
     await expect(label).toHaveText('Not started')
@@ -21,7 +21,7 @@ test.describe('main page, simulation-off scenario, in a real browser', () => {
   })
 
   test('has no axe violations while a cue is showing', async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/?page=interview')
     await page.getByRole('button', { name: 'Start' }).click()
     await expect(page.getByTestId('cue-label')).toHaveText('Interviewer is thinking', { timeout: 2000 })
     const results = await new AxeBuilder({ page }).withTags(WCAG).analyze()
@@ -29,14 +29,14 @@ test.describe('main page, simulation-off scenario, in a real browser', () => {
   })
 
   test('has no axe violations with captions on', async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/?page=interview')
     await page.getByRole('button', { name: 'Captions: off' }).click()
     const results = await new AxeBuilder({ page }).withTags(WCAG).analyze()
     expect(results.violations).toEqual([])
   })
 
   test('has no axe violations with the Accessibility dialog open', async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/?page=interview')
     await page.getByRole('button', { name: 'Accessibility' }).click()
     await expect(page.getByRole('dialog', { name: 'Accessibility' })).toBeVisible()
     const results = await new AxeBuilder({ page }).withTags(WCAG).analyze()
@@ -44,7 +44,7 @@ test.describe('main page, simulation-off scenario, in a real browser', () => {
   })
 
   test('has no axe violations in debug mode with both lanes showing', async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/?page=interview')
     await page.getByRole('combobox', { name: 'Cues follow' }).selectOption('debug')
     await expect(page.getByTestId('lanes')).toBeVisible()
     const results = await new AxeBuilder({ page }).withTags(WCAG).analyze()
@@ -52,7 +52,7 @@ test.describe('main page, simulation-off scenario, in a real browser', () => {
   })
 
   test('every control can be reached and used with the keyboard alone (CUE-CTL-002)', async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/?page=interview')
     await expect(page.getByRole('button', { name: 'Accessibility' })).toBeFocused()
     // Open and close the Accessibility dialog by keyboard; focus returns to the button.
     await page.keyboard.press('Enter')
@@ -70,7 +70,7 @@ test.describe('main page, simulation-off scenario, in a real browser', () => {
   })
 
   test('switching mode does not restart the session (CUE-MOD-002)', async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/?page=interview')
     await page.getByRole('button', { name: 'Start' }).click()
     await expect(page.getByTestId('cue-label')).toHaveText('Interviewer is speaking', { timeout: 3000 })
     await page.getByRole('combobox', { name: 'Cues follow' }).selectOption('true_state')
@@ -91,7 +91,7 @@ test.describe('main page, simulation-off scenario, in a real browser', () => {
       }
       ;(window as unknown as { __audioContexts: string[] }).__audioContexts = created
     })
-    await page.goto('/')
+    await page.goto('/?page=interview')
     const count = () => page.evaluate(() => (window as unknown as { __audioContexts: string[] }).__audioContexts.length)
     expect(await count()).toBe(0)
     await page.getByRole('button', { name: 'Start' }).click()

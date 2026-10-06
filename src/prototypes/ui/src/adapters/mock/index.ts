@@ -19,3 +19,4 @@ export function builtMockStream(name: string): BuiltStream {
   if (!script) throw new Error(`No mock script named "${name}"`)
   return buildStream(script)
 }
+export { MockSetupHost, MOCK_DELAYS, defaultMockConfig, type MockHostConfig } from './mockSetupHost.ts'

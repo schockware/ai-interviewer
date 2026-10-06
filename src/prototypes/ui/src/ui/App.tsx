@@ -1,111 +1,73 @@
-import { useEffect, useMemo, useState } from 'react'
-import { builtMockStream, mockScripts, ScriptedEventSource } from '../adapters/mock/index.ts'
+// Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author.
+import { useEffect, useRef, useState } from 'react'
+import { defaultMockConfig, MockSetupHost, type MockHostConfig } from '../adapters/mock/index.ts'
 import { SystemClock } from '../adapters/systemClock.ts'
-import { WebAudioCuePlayer } from '../adapters/webAudioCuePlayer.ts'
-import { CueEngine } from '../core/cues/index.ts'
-import type { CueMode } from '../core/contract/index.ts'
+import type { PrepareInterview } from '../core/contract/pageFlow.ts'
 import { AccessibilityDialog } from './AccessibilityDialog.tsx'
-import { CallConditions } from './CallConditions.tsx'
-import { CaptionsSection } from './CaptionsSection.tsx'
-import { ControlsCard } from './ControlsCard.tsx'
-import { CuePanel } from './CuePanel.tsx'
-import { AccessibilityIcon } from './icons.tsx'
-import { MicrophoneRow } from './MicrophoneRow.tsx'
-import { SimulationBadge } from './SimulationBadge.tsx'
-import { useCuePayload, useCueSounds } from './useCueEngine.ts'
+import { HardwarePage } from './HardwarePage.tsx'
+import InterviewPage from './InterviewPage.tsx'
+import { SetupPage } from './SetupPage.tsx'
 
-const scriptNames = Object.keys(mockScripts)
+type Page = 'setup' | 'hardware' | 'interview'
 
-function makeEngine(scriptName: string, mode: CueMode): CueEngine {
-  const clock = new SystemClock()
-  return new CueEngine(new ScriptedEventSource(builtMockStream(scriptName), clock), clock, mode)
+const pageFromUrl = (): Page => {
+  const wanted = new URLSearchParams(window.location.search).get('page')
+  return wanted === 'interview' ? 'interview' : 'setup'
 }
 
 /**
- * The interview screen, built from design/mockups/ui/Main.dc.html (iteration 1). The cue engine
- * and the mock interviewer are the real prototype parts; captions text, the microphone row and
- * the controls are drawn but not wired (see each component).
+ * The page flow (contracts/page-flow.md): Application setup, then Hardware setup, then the
+ * interview. `?page=interview` opens the interview directly, for development and the e2e tests.
+ * No router: three pages in a row need only a value.
  */
 export default function App() {
-  const [scriptName, setScriptName] = useState(scriptNames[0] ?? '')
-  const [mode, setMode] = useState<CueMode>('perceived')
-  const [muted, setMuted] = useState(false)
-  const [started, setStarted] = useState(false)
+  const [page, setPage] = useState<Page>(pageFromUrl)
+  const [request, setRequest] = useState<PrepareInterview | null>(null)
+  const [config, setConfig] = useState<MockHostConfig>(defaultMockConfig)
   const [captions, setCaptions] = useState(false)
   const [a11yOpen, setA11yOpen] = useState(false)
-  const player = useMemo(() => new WebAudioCuePlayer(), [])
-  const [engine, setEngine] = useState(() => makeEngine(scriptName, mode))
 
-  useEffect(() => () => engine.stop(), [engine])
-  useEffect(() => player.setMuted(muted), [muted, player])
+  // The host reads the harness config when it acts, so changing it needs no new host.
+  const configRef = useRef(config)
+  useEffect(() => {
+    configRef.current = config
+  }, [config])
+  const [host] = useState(() => new MockSetupHost(new SystemClock(), () => configRef.current))
 
-  const payload = useCuePayload(engine)
-  useCueSounds(payload, player)
-
-  const chooseScript = (name: string) => {
-    setScriptName(name)
-    setStarted(false)
-    setEngine(makeEngine(name, mode))
-  }
-  const chooseMode = (next: CueMode) => {
-    setMode(next)
-    engine.setMode(next) // takes effect at once, with no restart (CUE-MOD-002)
-  }
-  const start = () => {
-    player.unlock() // inside the click, so sound is never played on its own (CUE-AMB-001)
-    const next = makeEngine(scriptName, mode)
-    setEngine(next)
-    setStarted(true)
-    next.start()
-  }
+  const openA11y = () => setA11yOpen(true)
 
   return (
-    <div className="page">
-      <header className="page-head">
-        <div className="row row-wide">
-          {/* First in focus order, as in the mockup. */}
-          <button type="button" className="btn btn-a11y" aria-haspopup="dialog" autoFocus onClick={() => setA11yOpen(true)}>
-            <AccessibilityIcon />
-            Accessibility
-          </button>
-          <div>
-            <h1>Practice interview</h1>
-            <p className="muted">Behavioral · Question 3 of 8 · [ROLE TITLE]</p>
-          </div>
-        </div>
-        <div className="row">
-          <SimulationBadge simulation={payload.simulation} />
-          <span className="pill pill-mono">cues: {mode}</span>
-          <button type="button" className="btn">
-            End session
-          </button>
-        </div>
-      </header>
-
-      <div className="layout">
-        <main className="layout-main">
-          <CuePanel payload={payload} />
-          <CaptionsSection enabled={captions} onEnabledChange={setCaptions} />
-          <MicrophoneRow />
-        </main>
-        <aside aria-label="Controls" className="layout-side">
-          <ControlsCard />
-          <CallConditions
-            payload={payload}
-            scriptNames={scriptNames}
-            scriptName={scriptName}
-            onScript={chooseScript}
-            mode={mode}
-            onMode={chooseMode}
-            started={started}
-            onStart={start}
-            muted={muted}
-            onMuted={setMuted}
-          />
-        </aside>
-      </div>
-
+    <>
+      {page === 'setup' && (
+        <SetupPage
+          key={`${config.saved}-${config.load}`}
+          host={host}
+          config={config}
+          onConfig={setConfig}
+          onOpenAccessibility={openA11y}
+          onPrepare={(r) => {
+            setRequest(r)
+            setPage('hardware') // straight to hardware setup; preparation continues there
+          }}
+        />
+      )}
+      {page === 'hardware' && request && (
+        <HardwarePage
+          host={host}
+          request={request}
+          initialCaptions={captions}
+          config={config}
+          onConfig={setConfig}
+          onOpenAccessibility={openA11y}
+          onBack={() => setPage('setup')}
+          onStart={(_start, wantsCaptions) => {
+            setCaptions(wantsCaptions)
+            setPage('interview')
+          }}
+        />
+      )}
+      {page === 'interview' && <InterviewPage captions={captions} onCaptions={setCaptions} onOpenAccessibility={openA11y} />}
       <AccessibilityDialog open={a11yOpen} onClose={() => setA11yOpen(false)} captions={captions} onCaptions={setCaptions} />
-    </div>
+    </>
   )
 }

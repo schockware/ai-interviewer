@@ -1,9 +1,15 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { useState } from 'react'
 import { describe, expect, it } from 'vitest'
-import App from './App.tsx'
+import InterviewPage from './InterviewPage.tsx'
 
-describe('App shell', () => {
+function App() {
+  const [captions, setCaptions] = useState(false)
+  return <InterviewPage captions={captions} onCaptions={setCaptions} onOpenAccessibility={() => {}} />
+}
+
+describe('Interview page', () => {
   it('starts not started, with no announcement', () => {
     render(<App />)
     expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()

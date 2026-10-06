@@ -2,6 +2,18 @@
 // core/ imports nothing from adapters/ or ui/, and names no framework or browser API.
 
 import type { StreamEvent, StreamHeader } from './contract/index.ts'
+import type {
+  ApplicationSetupPage,
+  HardwareKind,
+  HardwareQuality,
+  JobDescriptionPaste,
+  JobDescriptionProcessed,
+  JobDescriptionUpload,
+  PrepProgress,
+  PrepareInterview,
+  ResumeProcessed,
+  UploadResume,
+} from './contract/pageFlow.ts'
 
 /**
  * Where events come from. A mock script, a recorded stream or a WebSocket all implement this,
@@ -35,4 +47,20 @@ export interface CuePlayer {
   unlock(): void
   /** Sound on or off, as the user chose. */
   setMuted(muted: boolean): void
+}
+
+/**
+ * The server side of the setup and hardware pages (contracts/page-flow.md). Uploads and the page
+ * load are synchronous in the contract: each promise settles once the server has finished.
+ * A failed upload rejects with an Error whose message the page shows.
+ */
+export interface SetupHost {
+  loadPage(): Promise<ApplicationSetupPage>
+  uploadResume(request: UploadResume): Promise<ResumeProcessed>
+  uploadJobDescription(request: JobDescriptionUpload): Promise<JobDescriptionProcessed>
+  pasteJobDescription(request: JobDescriptionPaste): Promise<JobDescriptionProcessed>
+  /** Asynchronous: progress arrives as it happens. Returns a function that stops listening. */
+  prepareInterview(request: PrepareInterview, onProgress: (progress: PrepProgress) => void): () => void
+  /** Open question in the contract: how the stream reaches the server. Settles with the quality the server estimates, or rejects. */
+  verifyHardware(kind: HardwareKind): Promise<Exclude<HardwareQuality, 'pending' | 'skipped'>>
 }

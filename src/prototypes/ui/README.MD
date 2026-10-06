@@ -32,7 +32,9 @@ npx playwright install chromium firefox
 npm run dev
 ```
 
-Open http://localhost:5173. The page is the interview screen from `design/mockups/ui/Main.dc.html` (iteration 1) with the Accessibility panel from `Accessibility.dc.html`. The cue engine and the scripted mock interviewer are live. Drawn but not wired: the Controls buttons, the microphone row, the caption text (the mockup's sample lines), and every Accessibility setting except captions. The setup and hardware pages in `contracts/page-flow.md` have no mockups yet and are not built. The port is fixed at 5173 because the Playwright tests use it.
+Open http://localhost:5173. The app is the whole page flow from `contracts/page-flow.md`, built from the boards in `design/mockups/ui`: Application setup (`Setup.dc.html`, `SetupHot.dc.html`), then Hardware setup and verification (`Hardware.dc.html`), then the interview screen (`Main.dc.html`) with the Accessibility panel (`Accessibility.dc.html`). `?page=interview` opens the interview directly.
+
+There is no server. A scripted mock host (`src/adapters/mock/mockSetupHost.ts`) stands in for it, and each page has a "Prototype harness" card, which is not in the mockups, to make it fail, hold no saved data, retry or fail preparation, or return another audio or video quality. The cue engine and the mock interviewer are live on the interview page. Drawn but not wired: the Controls buttons, the microphone row, the caption text (the mockup's sample lines), every Accessibility setting except captions, Advanced settings (a placeholder dialog), and the simulated call condition chosen on the Hardware page (the interview still plays the simulation-off scenario). No microphone or camera is read: the audio and video checks return a scripted quality (the contract leaves the streaming open). The port is fixed at 5173 because the Playwright tests use it.
 
 ## Tests
 
