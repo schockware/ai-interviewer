@@ -1,5 +1,17 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 20:28:21 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Said the last PR was merged without the mockups, which were missed because attention went to the log entries, and asked for a new PR.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: confirmed PR 4 was merged before the mockups commit, so that commit was not on main; rebased the branch onto the latest main, force-with-lease pushed it, and opened a new PR containing the Transitions, Setup, Hardware and SetupHot boards and the README updates. Nothing else changed.
+Tokens: ~3,000 (estimated)
+---
+## 2026-10-06 20:27:20 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Said the new panels need to be added to the mockup area.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: copied the four boards new since iteration 1 (Transitions, Setup, Hardware, SetupHot) from the live canvas (version 22) into design/mockups/ui/ with a byline comment; added them, their order and the two row titles to the folder's canvas.json; added an "Added after iteration 1" section to design/mockups/ui/README.MD and updated design/README.MD. Left Main, States, Timeline and Recovery at iteration 1 (they are newer on the canvas) and said so in the README. Not rendered.
+Tokens: ~16,000 (derived: counter 15,000,000 -> ~14,985,000)
+---
 ## 2026-10-06 20:21:52 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Said the work is ready for a new pull request.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
@@ -17,12 +29,6 @@ Summary prompt: Said the team is ready to mock up the Application setup page and
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
 Actions: merged origin/main (PR 3 had already been merged, so the branch is level with main). Design canvas version 20: added Setup.dc.html (Application setup) and Hardware.dc.html (Hardware setup and verification) as PAGE boards in a new row at the bottom, with a row title note. Built from contracts/page-flow.md and specs/page-flow.md; page, interview type, resume, role, audio, video, host-preparation, captions and preset states are Tweaks. Not rendered or checked visually. Placeholders in brackets (disclaimer, provider names, resume and role names, sample sentence, diagnosis, training modules). design/mockups/ui/ not changed.
 Tokens: ~44,000 (derived: counter 15,000,000 -> ~14,956,000)
----
-## 2026-10-06 13:42:47 | Claude Sonnet 5.5 (claude-sonnet-5-5)
-Summary prompt: Asked for a first pass at implementing the UI mockups in design/mockups/ui inside the prototype UI area, noting that contracts/page-flow.md should hold good draft contracts.
-Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
-Actions: src/prototypes/ui: rebuilt the interview screen from Main.dc.html (new CuePanel layout, SimulationBadge, CaptionsSection, MicrophoneRow, ControlsCard, CallConditions, AccessibilityDialog, icons, stateView; App.tsx and index.css rewritten); updated App.test.tsx, CuePanel.test.tsx and e2e/cues.spec.ts (cue-mode radios became the Cues follow select; Accessibility button is first focus; new captions and dialog tests). typecheck, lint, 100 vitest tests and 20 Playwright tests (Chromium and Firefox, axe WCAG 2.2 AA incl. captions on and dialog open) pass. One screenshot checked by eye. contracts/page-flow.md read but not used: the mockups cover only the interview screen, and no mockup exists for the setup or hardware pages. Controls, microphone row and caption text are drawn but not wired.
-Tokens: ~46,000 (derived: counter 15,000,000 -> ~14,954,000)
 ---
 ## 2026-10-06 19:32:58 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Told that a pull request for this branch was created from the Claude Code UI and that no new one is needed; later commits to the branch update it.
