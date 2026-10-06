@@ -58,7 +58,7 @@ The typed contracts were skipped. This is the largest gap and the thing that mak
 - [ ] **S** A screen-reader pass on the live region, and a real keyboard-only walk. These need a person.
 - [ ] **S** Manual screen reader passes that confirm the SPEC.md §4.3 timings and fill in the §4.5 per-reader profiles. Record speech timing (NVDA Speech Viewer) against the mock timeline. (docs/research/screen-reader-live-updates.md §7)
 - [ ] **S** Choose the screen reader and browser pairs the project commits to test. (SPEC.md §12 item 15)
-- [ ] **S** Confirm captions default to off (a real interview shows no transcript), with one-step opt-in at setup. Changed in SPEC.md §3.4, §4.2 and §4.6; `specs/cues` CUE-CAP-* still needs checking.
+- [ ] **S/C** Captions are off by default (confirmed by Steven 2026-10-06; SPEC.md §3.4, §4.2, §4.6). Align `specs/cues` CUE-CAP-001, which calls `accurate` "the default", and add the Captions button and its help text.
 - [ ] **S/C** Reconcile the natural and accessible timing profiles once timing is tuned; accessible is the default for now. (SPEC.md §4.4)
 - [ ] **S/C** Carry SPEC.md §4.2 to §4.5 (Accessibility button, screen reader gating, timing profiles, Advanced Accessibility) into `specs/cues` as requirement IDs, with the research's §8 findings.
 - [ ] **C** Measure the cost of refolding the log at about 100 frame events a second.
