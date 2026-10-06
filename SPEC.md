@@ -14,7 +14,8 @@ A local-first, open-source AI interviewer for practicing interviews by voice or 
 - **Fix turn-taking.** No laggy dead air, no interrupting the user, no ambiguity about when the interviewer is finished.
 - **Run locally** on modest hardware (minimum 4 CPU cores), with optional GPU acceleration (CUDA first, an open alternative later).
 - **Voice and text** in one interface, switchable mid-session.
-- **Accessible by design**: audio and visual cues are redundant, captions are WCAG-minded, and nothing depends on a single sense.
+- **An opinionated interview UX first.** The core claim is that simple visual and audio cues help candidates interview better. Training modules come second, and are possible because we own the client.
+- **Accessible by design**: audio and visual cues are redundant, captions are WCAG-minded, and nothing depends on a single sense. The same accessibility options double as practice supports (4.6).
 - **Pluggable at every stage**: users can swap in their own STT, LLM, TTS, and turn detector.
 - **Train for real remote interviews** via an opt-in Conditions Simulator (latency, jitter, packet loss, clipped audio).
 - **Easy to install and contribute to** (one-command setup, reproducible benchmarks).
@@ -152,7 +153,8 @@ slots:
 
 ux:
   cue_mode: perceived    # perceived | true_state | debug
-  captions: accurate     # accurate | as_heard | off
+  captions: off          # off | accurate | as_heard (off matches a real interview; see 4.6)
+  interviewer_voice: on  # on | off (off: text only)
   ambient_audio: true
   ambient_volume: 0.3
   reduced_motion: auto
@@ -187,8 +189,8 @@ One state machine drives both audio and visual cues.
 - Ambient audio has its own mute and volume control. Nothing auto-plays without a way to stop it.
 - Animations respect `prefers-reduced-motion`.
 - Braille and deafblind users are covered by the navigable transcript (4.3), because live regions may not reach a braille display.
-- Captions: adjustable size and contrast. Available as an accommodation (not framed as a "cheat" in the UI).
-- Captions have two modes: **accurate** (true text, default) and **as_heard** (matches degraded audio, a hard-mode training option). A user relying on captions must not be penalized by a degraded-audio preset.
+- Captions: adjustable size and contrast. Off by default, because a real interview shows no transcript (4.6), and one step to turn on from the Accessibility button and at setup. Available as an accommodation and a practice support, never framed as a "cheat" in the UI.
+- Captions have two modes: **accurate** (true text, the default once captions are on) and **as_heard** (matches degraded audio, a hard-mode training option). A user relying on captions must not be penalized by a degraded-audio preset.
 - **Accessibility button, first class.** An Accessibility button with an icon and a text label is visible on every screen and is never hidden, collapsed or disabled. When a screen loads, focus lands on it first, before any other control. It opens the accessibility settings (screen reader mode, captions, motion, sound levels, push-to-talk, pause timing, and Advanced Accessibility, 4.5), and every setting has a working default, so a user who never opens it still gets a usable session.
 
 ### 4.3 Screen reader mode
@@ -237,9 +239,24 @@ Screen readers differ in how they handle live updates (for example, TalkBack tre
 - **Reader rate** (words per minute) for the hold estimate.
 - Profile values come from manual passes with each screen reader and browser pair, which are not done yet. Until a profile has been tested, it is shown as experimental and behaves like Generic.
 
----
+### 4.6 Accessibility options as practice supports
+Because the project owns the client, it can offer what real interview software does not. A real AI or human interview shows no transcript, so the **defaults recreate a real interview**: interviewer voice on, captions and transcript off. A candidate practicing verbal context gathering does so with the defaults.
 
-## 5. Conditions Simulator
+The accessibility options are also **practice supports** for any candidate. One setting serves both purposes, in one place (the Accessibility button), and the UI never treats either use as lesser.
+
+| Setting | As an accommodation | As a practice support |
+|---|---|---|
+| Captions and transcript | Deaf, hard-of-hearing, braille and deafblind users | A candidate who struggles to follow the AI's speech reads along, then turns it off as they improve |
+| Interviewer voice off (text only) | Users who cannot use audio output | Rely on the transcript alone, for example to focus on structuring answers before working on listening |
+| Screen reader mode and timing profiles (4.3-4.5) | Screen reader users | More room around each handoff while learning the turn-taking rhythm |
+| "Give me a sec", pause timing, push-to-talk | Slower or disfluent speech, second-language speakers | Practice thinking before answering without being cut off |
+| Cue sounds and visual cues | Redundant channels for any single sense | The core UX; turning cues off rehearses a plain video call |
+
+Rules:
+- **Defaults are the realistic interview.** Supports are opt-in, one step away, and offered at setup.
+- **Exception:** turning on screen reader mode also turns on the transcript, because it is the main channel for braille users (4.3).
+- **Never penalize.** The session report records which supports were on, so a candidate can track progress toward the realistic setting. It never lowers a score because a support was on.
+
 
 Opt-in module that emulates remote-call conditions. Disabled by default and adds nothing when off.
 
@@ -328,7 +345,7 @@ Rules:
 - Switching modes mid-session is instant (the renderer just reads a different timeline).
 - Screen-reader announcements follow the *displayed* cues, once per change.
 - First time a non-Clean preset is chosen, show a dismissible explanation that cues will arrive late like a real call.
-- The session report records the cue mode and preset.
+- The session report records the cue mode, the preset, and which practice supports were on (4.6).
 
 ---
 
