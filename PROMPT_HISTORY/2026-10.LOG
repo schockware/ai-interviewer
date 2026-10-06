@@ -6,6 +6,30 @@ Redaction check: passed; nothing redacted; original in the matching .REDACTED en
 Actions: no code changes. Looked for contracts/page-flow.md and found it absent on this branch and on origin (only an empty testing/contracts/ exists); asked the user where it lives.
 Tokens: ~72,000 (estimated)
 ---
+## 2026-10-06 11:51:28 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Reported further contract edits (validation usage, explicit loading and error states, JobDescriptionValidation), said a diagram will replace the workflow text, and asked for a new section converting the known contracts to OpenAPI 3.1.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: appended an "OpenAPI 3.1" section to contracts/page-flow.md (6 proposed paths, 38 schemas, notes on what has no path); validated the YAML with openapi-spec-validator. The pip install of pyyaml and openapi-spec-validator touched the local Python only.
+Tokens: ~17,500 (derived: counter 15000000 -> ~14982500)
+---
+## 2026-10-06 11:31:08 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Reported the user's edits (resuming, pausing, hot-incomplete fallback, ResumeValidation, removed source, spec cue variations) and asked for the formatting items to be cleaned up and the changes rechecked.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: formatting cleanup in contracts/page-flow.md (heading case, fence spacing, indentation, trailing blank lines) and specs/page-flow.md (grammar, cue list headings, i.e.); reported remaining gaps in the reply.
+Tokens: ~7,000 (derived: counter 15000000 -> ~14993100)
+---
+## 2026-10-06 11:01:08 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Responded to the earlier review points (status cues, pause and speech-ended as client cues, payload, hot-incomplete, common types) and asked for a double check of the user's edits.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: no code changes; re-read contracts/page-flow.md and specs/page-flow.md and reported remaining gaps.
+Tokens: ~1,200 (derived: counter 15000000 -> ~14999400)
+---
+## 2026-10-06 10:43:45 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked for help cleaning up the pseudo contracts and the spec for the page flow.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: edited specs/page-flow.md (byline, heading levels, step numbering 1-3, typos, consistent bullet nesting) and contracts/page-flow.md (byline, typos, comment placement and style, whitespace); no meaning changed; open questions listed in the reply.
+Tokens: ~60,900 (derived: counter 15000000 -> ~14939100)
+---
 ## 2026-10-06 14:05:22 | Claude Opus 5.5 (claude-opus-5-5)
 Summary prompt: Set the design lifecycle: prototyping is owned on the Design canvas, and developer-ready designs are committed to the repository.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
