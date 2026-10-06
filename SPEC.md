@@ -175,6 +175,7 @@ One state machine drives both audio and visual cues.
 | **Listening** | Ear bubble | Soft ambient office room tone | "Your turn" |
 | **Thinking** | Thought bubble | Pen scribbling or typing | "Interviewer is thinking" |
 | **Talking** | Ellipsis (...) | The voice itself | Not announced by default; transcript always available (4.3) |
+| **Uninterruptible** | Ear with a slash, with a text label | The voice itself, after a short hold | "The interviewer is not listening during this portion of the interview." (once on entering) |
 | **Idle / paused** | Neutral icon | Silence | "Paused" |
 
 ### 4.1 Design notes
@@ -182,6 +183,9 @@ One state machine drives both audio and visual cues.
 - **Thinking sounds double as latency masking:** a pause reads as someone taking notes, not a stall.
 - **Echo trap:** ambient audio and screen reader speech played through speakers can be picked up by the mic and trigger VAD. Use separate audio buses (voice, ambient, effects), acoustic echo cancellation, gating of the mic path, or recommend headphones.
 - **Controls:** pause, repeat, skip, hint, "give me a sec," optional push-to-talk, mid-session switching between voice and text, and an always-available Accessibility button (4.2).
+- **End interview:** a separate control placed below the control group, apart from the other buttons, so it is not hit by mistake. It asks for confirmation first, and the safe choice ("Keep going") takes focus. Confirming closes the session at once, without the interviewer's closing.
+- **Uninterruptible:** the opening and the closing of the interview, where the interviewer cannot be interrupted and is not listening. It has its own cue: an ear with a slash plus a text label, so the meaning never rests on the icon or the colour alone. A banner shows the notice "The interviewer is not listening during this portion of the interview." and it is announced once on entering each of the two portions.
+- **Hold before the voice (text and braille readers):** the notice would otherwise collide with the interviewer's voice, and a braille display may not carry a live announcement at all. So the notice stays on screen as text, and the voice is held behind a progress bar. The length of the hold is a placeholder until the timing is known. The progress bar has a name and a fixed text value, and its movement is not announced. There is no skip control, because it is not yet known whether the stream can be controlled. The hold is a timed phase inside the Uninterruptible state, not a state of its own. After a pause in the opening or closing, resuming repeats the notice and the hold once. Every user sees the hold and its progress bar.
 
 ### 4.2 Accessibility (verify against WCAG 2.2 before release)
 - Every audio cue has a visual equivalent, and every visual cue has an audio or text equivalent.
@@ -210,6 +214,7 @@ A screen reader's speech can collide with the interviewer's voice. The page cann
   | Listening | "Your turn", polite (`role="status"`), after the gate | The chime plays first; the text follows it |
   | Thinking | "Thinking", polite, only if it is still current after a threshold (proposal: 500 ms) | Shorter flips are earcon only |
   | Talking | Not announced | The voice is the signal. An opt-in setting can turn it on |
+  | Uninterruptible | "The interviewer is not listening during this portion of the interview.", polite, once on entering the opening and once on entering the closing | Shown as a banner as well. The voice is held behind a progress bar (4.1) |
   | Paused | "Paused", polite, after the voice has faded out | Follows a user action |
   | Control feedback | A few words, polite | For example "Muted", "Repeating" |
   | Blocking errors (microphone or connection lost) | Assertive (`role="alert"`) | The only interrupting case |

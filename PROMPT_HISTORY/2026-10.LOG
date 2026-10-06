@@ -1,5 +1,65 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 19:32:58 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Told that a pull request for this branch was created from the Claude Code UI and that no new one is needed; later commits to the branch update it.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: no code changes; noted https://github.com/schockware/ai-interviewer/pull/3 as the PR for claude/festive-fermi-hzvqa0.
+Tokens: ~1,000 (estimated)
+---
+## 2026-10-06 19:31:47 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Confirmed that everyone sees the progress bars leading into the Uninterruptible cues, and accepted the names delayed, reconnecting and timed-out.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: Design canvas version 19: Transitions board now marks delayed, reconnecting and timed-out as accepted (solid borders), Decided box gains the everyone-sees-the-hold and names items, Open box says nothing is open on the state machine. SPEC.md 4.1: the hold shows for every user. Nothing rendered. contracts/cue-transitions.md and design/mockups/ui/ not changed.
+Tokens: ~2,000 (derived: counter 15,000,000 -> ~14,998,000)
+---
+## 2026-10-06 19:30:15 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Answered the four open items: the hold length stays a placeholder because timing is not known, there is no skip control because stream control is unknown, resuming into the opening or closing repeats the notice and hold, and the confirmation copy is approved.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: Design canvas version 18: Transitions board Decided box now holds items F to L (resume repetition, approved confirmation copy, placeholder hold length, no skip), Open box reduced to two items (who sees the hold, names of the three recovery states), boxes re-laid out wider and the board made taller (2760); hold callout and States board card now say the length is to be decided. SPEC.md 4.1 and 4.3: removed the reading-time formula and the 250 ms guard proposal, added no skip control and repeat on resume. Geometry checked by script; nothing rendered. contracts/cue-transitions.md and design/mockups/ui/ not changed.
+Tokens: ~5,000 (derived: counter 15,000,000 -> ~14,995,000)
+---
+## 2026-10-06 19:26:12 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Confirmed the previous round, gave the Uninterruptible notice wording, noted that text and braille readers will collide with the interviewer's speech and need a progress bar and guards, asked for the End interview control to sit below the control group with a confirmation popup, and asked for Uninterruptible on the States board and in SPEC section 4. The message arrived twice; the second, longer copy was treated as the request.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: Design canvas version 17. Interview screen board: End session removed from the header, End interview added below the Controls card with a confirmation dialog (Tweak "confirmEnd"), new Uninterruptible state with banner and progress bar ([HOLD] placeholder). States board: now five states, widened to 1560 (Timeline and Recovery shifted right). Transitions board: hold callout, notes, Decided/Open/WCAG boxes updated; moved the Transitions row down and its title note so it no longer overlaps the States board. SPEC.md section 4: Uninterruptible row, End interview, hold before the voice, 4.3 policy row. Geometry of the Transitions board checked by script; nothing rendered. Hold length, skip, resume repetition and dialog copy are proposals. contracts/cue-transitions.md and design/mockups/ui/ not changed.
+Tokens: ~42,000 (derived: counter 15,000,000 -> ~14,958,000)
+---
+## 2026-10-06 19:16:14 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Answered the open items: session-closed shows Idle like not-started, the Uninterruptible icon was ambiguous and must express that the AI is not listening, not-started should mark a clean start, the guard reuse is correct, and an end-early control should trigger session-closed.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: redrew the Transitions board on the Design canvas (version 16, 1940x2600): session-closed now Idle; Uninterruptible icon changed from an information icon to an ear with a slash (a proposal, flagged in the Open box); start marker into not-started; new edge 22 from an "end early" pill (any state except not-started and session-closed) straight to session-closed; the loop-back arrow moved to make room; accepted states marked NEW, unaccepted names kept dashed as proposals; Decided, Open and WCAG boxes updated. Geometry checked by script, not rendered. Main board, States board, SPEC.md, contracts/cue-transitions.md and design/mockups/ui/ not changed.
+Tokens: ~26,000 (derived: counter 15,000,000 -> ~14,974,000)
+---
+## 2026-10-06 19:11:09 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Answered the five open items: the opening and closing are the exception for resuming re-entry, retries resend the waited-on cue, the waits are successive (5 s, then 10 s, then 15 s), the entrance and exit get named states that all show a new Uninterruptible cue with an information icon, and onscreen announcements must be WCAG 2.2 compliant.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: redrew the Transitions board on the Design canvas (version 15, 1940x2470): replaced preamble, postamble and ended with preamble-started, preamble-ended, postamble-started, postamble-ended and session-closed; added the Uninterruptible cue (information icon) to the legend and cards; preamble-ended now goes to thinking; interrupted and resuming end in "continues at listening" chips; 21 numbered edges; Decided, Open and WCAG 2.2 boxes. Geometry checked by script, not rendered. WCAG criteria listed are my reading, unconfirmed. States board, SPEC.md, contracts/cue-transitions.md and design/mockups/ui/ not changed.
+Tokens: ~25,000 (derived: counter 15,000,000 -> ~14,975,000)
+---
+## 2026-10-06 19:00:40 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Answered open proposals A to E on the transitions board: pause from any state goes to pausing (shows Thinking), Thinking after speech-ended, new uninterruptible preamble and postamble states, pause during the guard cancels it, and a 5/10/15 second warning-then-error recovery path with given messages; asked whether sub-states should be explicit states or bundled.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: redrew the Transitions board on the Design canvas (version 14, 1940x2260): new states preamble, not-started, postamble, ended, delayed, reconnecting, timed-out (dashed, marked proposal); an "any state" pause pill replaces the interrupted-to-paused edge; speech-ended now shows Thinking; 19 numbered edges with notes; Decided and Open boxes. Geometry checked by script (no arrow crossing a card or another arrow, no label collisions); not rendered. Retry behaviour, the 5/10/15 reading, pause during preamble/postamble and new client cue names left as open proposals. contracts/cue-transitions.md and design/mockups/ui/ not changed and now trail the board.
+Tokens: ~40,400 (derived: counter 15,000,000 -> ~14,959,600)
+---
+## 2026-10-06 18:37:09 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Clarified that the transitions should be a diagram on the Claude Design canvas, which will be the master and be converted to text once the workflow is settled.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: added a Transitions.dc.html board (1680x1260, below the existing boards) and a row title note to the "Interviewer Cue Design" canvas, as version 13; canvas.json keeps every existing entry. 9 cue cards coloured by displayed status, 12 numbered arrows (dashed = client, solid = server), a notes block per transition, and the 5 open items as proposals. Generated by script, not rendered or checked visually; not copied into design/mockups/ui/ (committed only when Steven calls an iteration developer-ready). contracts/cue-transitions.md not changed and now trails the canvas. One publish was refused for a stale read and retried after re-reading.
+Tokens: ~70,500 (derived: counter 15,000,000 -> ~14,929,500)
+---
+## 2026-10-06 18:33:05 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Said the page-flow contract was now pushed, so the earlier request to describe the cue transitions could proceed.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: merged origin/main (resolved the PROMPT_HISTORY/2026-10.LOG conflict by keeping both sides, newest first); created contracts/cue-transitions.md (state diagram, 12-row transition table, displayed-status mapping, rules, 5 open items marked as proposals); one-line pointer in the Transitions comment of contracts/page-flow.md. Nothing rendered; the mermaid diagram was not previewed. Inferred items (displayed-status mapping, the listening entry state) are labeled as proposals or open.
+Tokens: ~20,000 (derived: counter 15,000,000 -> ~14,980,000)
+---
+## 2026-10-06 18:31:22 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked to use contracts/page-flow.md for the next design and describe the cue transitions; noted their own draft under a Transitions section there had become unwieldy.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: no code changes. Looked for contracts/page-flow.md and found it absent on this branch and on origin (only an empty testing/contracts/ exists); asked the user where it lives.
+Tokens: ~72,000 (estimated)
+---
 ## 2026-10-06 11:51:28 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Reported further contract edits (validation usage, explicit loading and error states, JobDescriptionValidation), said a diagram will replace the workflow text, and asked for a new section converting the known contracts to OpenAPI 3.1.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
