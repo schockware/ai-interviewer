@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 20:10:09 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Said the team is ready to mock up the Application setup page and the Hardware setup and verification page.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: merged origin/main (PR 3 had already been merged, so the branch is level with main). Design canvas version 20: added Setup.dc.html (Application setup) and Hardware.dc.html (Hardware setup and verification) as PAGE boards in a new row at the bottom, with a row title note. Built from contracts/page-flow.md and specs/page-flow.md; page, interview type, resume, role, audio, video, host-preparation, captions and preset states are Tweaks. Not rendered or checked visually. Placeholders in brackets (disclaimer, provider names, resume and role names, sample sentence, diagnosis, training modules). design/mockups/ui/ not changed.
+Tokens: ~44,000 (derived: counter 15,000,000 -> ~14,956,000)
+---
 ## 2026-10-06 19:32:58 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Told that a pull request for this branch was created from the Claude Code UI and that no new one is needed; later commits to the branch update it.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
