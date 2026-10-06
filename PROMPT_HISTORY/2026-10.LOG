@@ -1,5 +1,23 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 13:16:36 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Asked for a first draft of the interview cue UX/UI as a Design canvas, their first time using the feature.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: created the private Design canvas "Interviewer Cue Design" (claude.ai artifact, not in the repo) with four artboards: the interview screen (tweaks for state, cue mode, preset and captions), the four states across visual, audio and screen-reader channels, a true-versus-perceived handoff timeline for the Laggy preset, and four edge moments (long silence, false cutoff, "give me a sec", first-time simulator notice). All timings are labeled as proposals from docs/research. Nothing rendered or checked visually. No repo files changed apart from this log.
+Tokens: ~42,300 (derived: counter 15,000,000 -> ~14,957,700)
+---
+## 2026-10-06 13:16:36 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Asked to load SPEC.MD and the latency-perception and micro-pauses research notes as context for a discussion of cue UX/UI from a web page design perspective. Logged late, at the end of the following prompt.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: no code changes; read SPEC.md (the file name is SPEC.md, not SPEC.MD) and both research notes, and summarized the cue-relevant points.
+Tokens: ~24,800 (derived: counter 15,000,000 -> ~14,975,200)
+---
+## 2026-10-06 13:16:36 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Asked whether the newly checked-in docs/research folder was visible. Logged late, at the end of a later prompt.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: no code changes; listed docs/research locally and on origin/main (8 files; main also has a .gitkeep).
+Tokens: ~66,800 (derived: counter 15,000,000 -> ~14,933,200; includes the session's initial context load)
+---
 ## 2026-10-06 06:56:46 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Asked to keep a task list at the repo root and to say what the open questions were.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
