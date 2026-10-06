@@ -179,7 +179,7 @@ One state machine drives both audio and visual cues.
 - **"Your turn" cue:** a short chime plus the ear bubble appearing makes the handoff unambiguous.
 - **Thinking sounds double as latency masking:** a pause reads as someone taking notes, not a stall.
 - **Echo trap:** ambient audio played through speakers can be picked up by the mic and trigger VAD. Use separate audio buses (voice, ambient, effects), acoustic echo cancellation, gating of the mic path, or recommend headphones.
-- **Controls:** pause, repeat, skip, hint, "give me a sec," optional push-to-talk, and mid-session switching between voice and text.
+- **Controls:** pause, repeat, skip, hint, "give me a sec," optional push-to-talk, mid-session switching between voice and text, and an always-available Accessibility button (4.2).
 
 ### 4.2 Accessibility (verify against WCAG 2.2 before release)
 - Every audio cue has a visual equivalent, and every visual cue has an audio or text equivalent.
@@ -188,6 +188,18 @@ One state machine drives both audio and visual cues.
 - Animations respect `prefers-reduced-motion`.
 - Captions: adjustable size and contrast. Available as an accommodation (not framed as a "cheat" in the UI).
 - Captions have two modes: **accurate** (true text, default) and **as_heard** (matches degraded audio, a hard-mode training option). A user relying on captions must not be penalized by a degraded-audio preset.
+- **Accessibility button, first class.** An Accessibility button with an icon and a text label is visible on every screen and is never hidden, collapsed or disabled. When a screen loads, focus lands on it first, before any other control. It opens the accessibility settings (screen reader mode, captions, motion, sound levels, push-to-talk, pause timing), and every setting has a working default, so a user who never opens it still gets a usable session.
+
+### 4.3 Screen reader mode
+A screen reader's spoken announcement of a cue change can collide with the interviewer's voice. The browser gives no signal when a screen reader has finished speaking, so announcements are gated on signals the app owns. Screen reader mode is turned on from the Accessibility button (a page cannot reliably detect a screen reader). The timing values below are **proposals** until research on screen reader announcement timing for real-time UI sets the defaults (section 12 item 14).
+
+- **One audio timeline.** Interviewer voice and all earcons (chime, scribble, lead-in tone) play through one sequenced queue, so they cannot overlap each other.
+- **Gate on played audio.** "Your turn" is announced only after the audio player reports that the last voice frame has actually played (scheduled end plus output latency), followed by a silence guard (proposal: 250 ms). The pipeline's "TTS finished" event is not a valid gate. In `perceived` mode the gate reads the delayed, clipped audio the user hears.
+- **Speak status only into guaranteed silence.** Spoken announcements: "Your turn" (after the gate) and "Paused" (after the voice has faded out). Entering Thinking or Speaking is announced by earcon only, because the voice may start at any moment; the status text still updates for braille and review.
+- **Lead-in before the voice.** A short tone, then a gap (proposal: 150 ms tone, 300 ms gap), precedes each interviewer utterance.
+- **Hold the voice after a recent announcement** for its estimated speaking time (words divided by the user's reader rate, set in Accessibility settings).
+- **Captions are not a live region** in this mode, so the reader never reads them over the voice. Caption history is reachable by heading, and Repeat is one key.
+- Open choice: status spoken by the user's own screen reader (their voice, rate and braille, timing estimated) or by the app's TTS in the same queue (ordering guaranteed). Current lean: earcons always, text left to the screen reader.
 
 ---
 
@@ -415,6 +427,7 @@ Testing and benchmarking are first-class and live at the repository root. [`test
 11. Time to first token for a 2-4K-token prompt on small GPUs and CPUs, with prefix caching
 12. How llama.cpp sizes the Gemma 4 KV cache (sliding-window trimming and shared KV layers), which changes Tier 3-5 estimates
 13. Combined CPU budget on 4 cores (LLM, STT, TTS, VAD, turn detector together). The Tier 0 and Tier 1 floors depend on it
+14. Recommended screen reader timing for real-time UI changes (announcement delays, guard silences, live-region politeness). Research is planned by Steven and will set the section 4.3 defaults
 
 ---
 
