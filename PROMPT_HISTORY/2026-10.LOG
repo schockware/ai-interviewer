@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 19:26:12 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Confirmed the previous round, gave the Uninterruptible notice wording, noted that text and braille readers will collide with the interviewer's speech and need a progress bar and guards, asked for the End interview control to sit below the control group with a confirmation popup, and asked for Uninterruptible on the States board and in SPEC section 4. The message arrived twice; the second, longer copy was treated as the request.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: Design canvas version 17. Interview screen board: End session removed from the header, End interview added below the Controls card with a confirmation dialog (Tweak "confirmEnd"), new Uninterruptible state with banner and progress bar ([HOLD] placeholder). States board: now five states, widened to 1560 (Timeline and Recovery shifted right). Transitions board: hold callout, notes, Decided/Open/WCAG boxes updated; moved the Transitions row down and its title note so it no longer overlaps the States board. SPEC.md section 4: Uninterruptible row, End interview, hold before the voice, 4.3 policy row. Geometry of the Transitions board checked by script; nothing rendered. Hold length, skip, resume repetition and dialog copy are proposals. contracts/cue-transitions.md and design/mockups/ui/ not changed.
+Tokens: ~42,000 (derived: counter 15,000,000 -> ~14,958,000)
+---
 ## 2026-10-06 19:16:14 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Answered the open items: session-closed shows Idle like not-started, the Uninterruptible icon was ambiguous and must express that the AI is not listening, not-started should mark a clean start, the guard reuse is correct, and an end-early control should trigger session-closed.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
