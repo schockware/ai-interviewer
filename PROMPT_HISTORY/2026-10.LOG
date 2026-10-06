@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 13:54:30 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Noted a research item they plan to look up: whether captions need highlighting or a chase icon to show that speech is still in progress.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: SPEC.md: added open question 17 in section 12. TASKS.MD: added a research task tagged for Steven. No research done and no canvas changes.
+Tokens: ~1,500 (estimated)
+---
 ## 2026-10-06 13:53:44 | Claude Opus 5.5 (claude-opus-5-5)
 Summary prompt: Confirmed captions off by default, asked for a Captions button with a question-mark icon whose help text explains that most online interviews have no captioning so it defaults to off, and noted that deaf users can be assumed to bring their own speech-to-text but may still want the native captions.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry

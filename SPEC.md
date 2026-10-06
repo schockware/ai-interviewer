@@ -485,6 +485,7 @@ Testing and benchmarking are first-class and live at the repository root. [`test
 14. Recommended screen reader timing for real-time UI changes (announcement delays, guard silences, live-region politeness). First research is in `docs/research/screen-reader-live-updates.md`; the section 4.3 values still need manual screen reader passes to confirm
 15. Which screen reader and browser pairs the project commits to test (research proposes NVDA and JAWS with Chrome, NVDA with Firefox, VoiceOver with Safari), and current `ariaNotify()` support (sources conflict)
 16. How to reconcile the natural and accessible timing profiles (4.4)
+17. Whether captions should show that speech is still in progress (for example highlighting the current words, or a moving "chase" indicator at the end of the line), and how that interacts with reduced motion and screen readers. Research is planned by Steven
 
 ---
 
