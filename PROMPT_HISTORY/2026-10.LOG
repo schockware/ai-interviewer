@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 20:28:21 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Said the last PR was merged without the mockups, which were missed because attention went to the log entries, and asked for a new PR.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: confirmed PR 4 was merged before the mockups commit, so that commit was not on main; rebased the branch onto the latest main, force-with-lease pushed it, and opened a new PR containing the Transitions, Setup, Hardware and SetupHot boards and the README updates. Nothing else changed.
+Tokens: ~3,000 (estimated)
+---
 ## 2026-10-06 20:27:20 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Said the new panels need to be added to the mockup area.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
