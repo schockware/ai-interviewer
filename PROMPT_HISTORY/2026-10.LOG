@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 19:16:14 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Answered the open items: session-closed shows Idle like not-started, the Uninterruptible icon was ambiguous and must express that the AI is not listening, not-started should mark a clean start, the guard reuse is correct, and an end-early control should trigger session-closed.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: redrew the Transitions board on the Design canvas (version 16, 1940x2600): session-closed now Idle; Uninterruptible icon changed from an information icon to an ear with a slash (a proposal, flagged in the Open box); start marker into not-started; new edge 22 from an "end early" pill (any state except not-started and session-closed) straight to session-closed; the loop-back arrow moved to make room; accepted states marked NEW, unaccepted names kept dashed as proposals; Decided, Open and WCAG boxes updated. Geometry checked by script, not rendered. Main board, States board, SPEC.md, contracts/cue-transitions.md and design/mockups/ui/ not changed.
+Tokens: ~26,000 (derived: counter 15,000,000 -> ~14,974,000)
+---
 ## 2026-10-06 19:11:09 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Answered the five open items: the opening and closing are the exception for resuming re-entry, retries resend the waited-on cue, the waits are successive (5 s, then 10 s, then 15 s), the entrance and exit get named states that all show a new Uninterruptible cue with an information icon, and onscreen announcements must be WCAG 2.2 compliant.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
