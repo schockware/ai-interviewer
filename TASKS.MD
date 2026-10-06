@@ -56,6 +56,8 @@ The typed contracts were skipped. This is the largest gap and the thing that mak
 - [ ] **C** A perceived-delay simulator (a test helper adds 800 ms as a stand-in).
 - [ ] **C** Unchecked WCAG items: radio and checkbox target size, 200 and 400 percent zoom, focus visibility, dark-theme contrast, reduced motion. (src/prototypes/ui/audit/main-page.md)
 - [ ] **S** A screen-reader pass on the live region, and a real keyboard-only walk. These need a person.
+- [ ] **S** Research screen reader timing for real-time UI changes; it sets the SPEC.md §4.3 defaults. (SPEC.md §12 item 14)
+- [ ] **S/C** Carry SPEC.md §4.2 (Accessibility button, focus lands first) and §4.3 (screen reader mode gating) into `specs/cues` as requirement IDs.
 - [ ] **C** Measure the cost of refolding the log at about 100 frame events a second.
 - [ ] **C** Own Clock port versus Vitest fake timers (leaning own port); whether the audit log is hand-written or generated. (docs/research/ui-testing-tools.md)
 

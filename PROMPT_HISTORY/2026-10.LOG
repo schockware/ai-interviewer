@@ -1,5 +1,35 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 13:26:51 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Said they will run research on screen reader timing for real-time UI changes to set the defaults, asked for a required default plus a first-class Accessibility button that is always available and receives focus first when a screen loads, and asked to add this to SPEC.md.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: SPEC.md: Accessibility button added to the 4.1 controls and as a 4.2 bullet; new 4.3 "Screen reader mode" with the gating rules, timings marked as proposals pending research; open question 14 added in section 12. TASKS.MD: added the research task and a task to carry 4.2 and 4.3 into specs/cues as requirement IDs (specs/ not edited). Design canvas: Accessibility button placed first in the interview screen's header with autofocus; screen reader board updated. Nothing rendered or checked visually.
+Tokens: ~8,600 (derived: counter 15,000,000 -> ~14,991,400)
+---
+## 2026-10-06 13:22:37 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Raised that a screen reader's announcement of a cue change can collide with the interviewer's speech for blind users, and asked that the change be gated on a guaranteed signal.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: added a "Screen reader gating" artboard to the Design canvas (claude.ai artifact, not in the repo) beside the interview screen: one sequenced audio timeline, a per-transition table of gate signal, spoken announcement and earcon, and three open decisions. Gate and guard values are labeled proposals. Nothing rendered or checked visually. No repo files changed apart from this log.
+Tokens: ~9,800 (derived: counter 15,000,000 -> ~14,990,200)
+---
+## 2026-10-06 13:16:36 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Asked for a first draft of the interview cue UX/UI as a Design canvas, their first time using the feature.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: created the private Design canvas "Interviewer Cue Design" (claude.ai artifact, not in the repo) with four artboards: the interview screen (tweaks for state, cue mode, preset and captions), the four states across visual, audio and screen-reader channels, a true-versus-perceived handoff timeline for the Laggy preset, and four edge moments (long silence, false cutoff, "give me a sec", first-time simulator notice). All timings are labeled as proposals from docs/research. Nothing rendered or checked visually. No repo files changed apart from this log.
+Tokens: ~42,300 (derived: counter 15,000,000 -> ~14,957,700)
+---
+## 2026-10-06 13:16:36 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Asked to load SPEC.MD and the latency-perception and micro-pauses research notes as context for a discussion of cue UX/UI from a web page design perspective. Logged late, at the end of the following prompt.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: no code changes; read SPEC.md (the file name is SPEC.md, not SPEC.MD) and both research notes, and summarized the cue-relevant points.
+Tokens: ~24,800 (derived: counter 15,000,000 -> ~14,975,200)
+---
+## 2026-10-06 13:16:36 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Asked whether the newly checked-in docs/research folder was visible. Logged late, at the end of a later prompt.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: no code changes; listed docs/research locally and on origin/main (8 files; main also has a .gitkeep).
+Tokens: ~66,800 (derived: counter 15,000,000 -> ~14,933,200; includes the session's initial context load)
+---
 ## 2026-10-06 07:30:47 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Asked to research screen reader recommendations for live page updates, because accessibility is first class for the cue system and the interviewer's voice may collide with a screen update.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
