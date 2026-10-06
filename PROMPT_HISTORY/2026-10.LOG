@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 18:33:05 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Said the page-flow contract was now pushed, so the earlier request to describe the cue transitions could proceed.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: merged origin/main (resolved the PROMPT_HISTORY/2026-10.LOG conflict by keeping both sides, newest first); created contracts/cue-transitions.md (state diagram, 12-row transition table, displayed-status mapping, rules, 5 open items marked as proposals); one-line pointer in the Transitions comment of contracts/page-flow.md. Nothing rendered; the mermaid diagram was not previewed. Inferred items (displayed-status mapping, the listening entry state) are labeled as proposals or open.
+Tokens: ~20,000 (derived: counter 15,000,000 -> ~14,980,000)
+---
 ## 2026-10-06 18:31:22 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Asked to use contracts/page-flow.md for the next design and describe the cue transitions; noted their own draft under a Transitions section there had become unwieldy.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry

@@ -225,7 +225,7 @@ A pause request needs to interrupt the AI if they are not in listening mode.
 */
 CueType: "speech-ready" | "speaking" | "speech-ended" | "listening" | "thinking" | "interrupted" | "pausing" | "paused" | "resuming"
 
-/* Transitions */
+/* Transitions. Each edge is explained in cue-transitions.md. */
 "interrupted" => "listening" | "paused"
 "speech-ready" => "speaking" | "interrupted"
 "speaking" => "speech-ended" | "interrupted"
