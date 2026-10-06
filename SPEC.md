@@ -191,6 +191,7 @@ One state machine drives both audio and visual cues.
 - Braille and deafblind users are covered by the navigable transcript (4.3), because live regions may not reach a braille display.
 - Captions: adjustable size and contrast. Off by default, because a real interview shows no transcript (4.6), and one step to turn on from the Accessibility button and at setup. Available as an accommodation and a practice support, never framed as a "cheat" in the UI.
 - **Captions button and help.** The main screen has a Captions button (icon plus text label showing on or off) that turns captions on in one press. Next to it, a question-mark button (`aria-label` "Why are captions off?") reveals: "Most online interviews do not have a captioning system. It is defaulted to be off." The same text appears beside the captions setting in the Accessibility panel.
+- **No caption progress indicator.** Captions do not highlight words or show a chase icon while speech continues; the Talking cue (ellipsis) is the signal that the interviewer is still speaking.
 - **Deaf and hard-of-hearing users** are assumed to bring their own speech-to-text for online interviews, so the off default does not block them. The native captions are still one press away for those who prefer them.
 - Captions have two modes: **accurate** (true text, the default once captions are on) and **as_heard** (matches degraded audio, a hard-mode training option). A user relying on captions must not be penalized by a degraded-audio preset.
 - **Accessibility button, first class.** An Accessibility button with an icon and a text label is visible on every screen and is never hidden, collapsed or disabled. When a screen loads, focus lands on it first, before any other control. It opens the accessibility settings (screen reader mode, captions, motion, sound levels, push-to-talk, pause timing, and Advanced Accessibility, 4.5), and every setting has a working default, so a user who never opens it still gets a usable session.
@@ -485,7 +486,7 @@ Testing and benchmarking are first-class and live at the repository root. [`test
 14. Recommended screen reader timing for real-time UI changes (announcement delays, guard silences, live-region politeness). First research is in `docs/research/screen-reader-live-updates.md`; the section 4.3 values still need manual screen reader passes to confirm
 15. Which screen reader and browser pairs the project commits to test (research proposes NVDA and JAWS with Chrome, NVDA with Firefox, VoiceOver with Safari), and current `ariaNotify()` support (sources conflict)
 16. How to reconcile the natural and accessible timing profiles (4.4)
-17. Whether captions should show that speech is still in progress (for example highlighting the current words, or a moving "chase" indicator at the end of the line), and how that interacts with reduced motion and screen readers. Research is planned by Steven
+17. ~~Whether captions need their own in-progress indicator~~ **Resolved 2026-10-06:** no. The Talking cue (section 4) already shows that the interviewer is still speaking, so captions carry no separate highlight or chase icon
 
 ---
 

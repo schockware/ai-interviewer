@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 13:55:35 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Realized the caption in-progress question was already solved, because the Talking icon is the visual cue that the interviewer is speaking.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: SPEC.md: open question 17 marked resolved; 4.2 gains a bullet that captions carry no progress indicator and the Talking cue is the signal. TASKS.MD: research task removed and recorded under Done. No canvas changes.
+Tokens: ~1,800 (estimated)
+---
 ## 2026-10-06 13:54:30 | Claude Opus 5.5 (claude-opus-5-5)
 Summary prompt: Noted a research item they plan to look up: whether captions need highlighting or a chase icon to show that speech is still in progress.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry

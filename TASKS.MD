@@ -58,7 +58,6 @@ The typed contracts were skipped. This is the largest gap and the thing that mak
 - [ ] **S** A screen-reader pass on the live region, and a real keyboard-only walk. These need a person.
 - [ ] **S** Manual screen reader passes that confirm the SPEC.md §4.3 timings and fill in the §4.5 per-reader profiles. Record speech timing (NVDA Speech Viewer) against the mock timeline. (docs/research/screen-reader-live-updates.md §7)
 - [ ] **S** Choose the screen reader and browser pairs the project commits to test. (SPEC.md §12 item 15)
-- [ ] **S** Research whether captions need an in-progress indicator (current-word highlight or a chase icon) while speech continues. (SPEC.md §12 item 17)
 - [ ] **S/C** Captions are off by default (confirmed by Steven 2026-10-06; SPEC.md §3.4, §4.2, §4.6). Align `specs/cues` CUE-CAP-001, which calls `accurate` "the default", and add the Captions button and its help text.
 - [ ] **S/C** Reconcile the natural and accessible timing profiles once timing is tuned; accessible is the default for now. (SPEC.md §4.4)
 - [ ] **S/C** Carry SPEC.md §4.2 to §4.5 (Accessibility button, screen reader gating, timing profiles, Advanced Accessibility) into `specs/cues` as requirement IDs, with the research's §8 findings.
@@ -98,3 +97,4 @@ Values marked `[unverified]` in the specs are proposals. They are the ones that 
 
 - 2026-10-05: Human QA rules and the two zones (CLAUDE.md).
 - 2026-10-05: `src/prod/ui` scaffold (empty, no tests).
+- 2026-10-06: Caption in-progress indicator not needed; the Talking cue covers it (SPEC.md §4.2, §12 item 17).
