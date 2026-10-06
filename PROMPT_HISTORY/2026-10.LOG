@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 19:00:40 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Answered open proposals A to E on the transitions board: pause from any state goes to pausing (shows Thinking), Thinking after speech-ended, new uninterruptible preamble and postamble states, pause during the guard cancels it, and a 5/10/15 second warning-then-error recovery path with given messages; asked whether sub-states should be explicit states or bundled.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: redrew the Transitions board on the Design canvas (version 14, 1940x2260): new states preamble, not-started, postamble, ended, delayed, reconnecting, timed-out (dashed, marked proposal); an "any state" pause pill replaces the interrupted-to-paused edge; speech-ended now shows Thinking; 19 numbered edges with notes; Decided and Open boxes. Geometry checked by script (no arrow crossing a card or another arrow, no label collisions); not rendered. Retry behaviour, the 5/10/15 reading, pause during preamble/postamble and new client cue names left as open proposals. contracts/cue-transitions.md and design/mockups/ui/ not changed and now trail the board.
+Tokens: ~40,400 (derived: counter 15,000,000 -> ~14,959,600)
+---
 ## 2026-10-06 18:37:09 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Clarified that the transitions should be a diagram on the Claude Design canvas, which will be the master and be converted to text once the workflow is settled.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
