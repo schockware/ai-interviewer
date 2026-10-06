@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 19:11:09 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Answered the five open items: the opening and closing are the exception for resuming re-entry, retries resend the waited-on cue, the waits are successive (5 s, then 10 s, then 15 s), the entrance and exit get named states that all show a new Uninterruptible cue with an information icon, and onscreen announcements must be WCAG 2.2 compliant.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: redrew the Transitions board on the Design canvas (version 15, 1940x2470): replaced preamble, postamble and ended with preamble-started, preamble-ended, postamble-started, postamble-ended and session-closed; added the Uninterruptible cue (information icon) to the legend and cards; preamble-ended now goes to thinking; interrupted and resuming end in "continues at listening" chips; 21 numbered edges; Decided, Open and WCAG 2.2 boxes. Geometry checked by script, not rendered. WCAG criteria listed are my reading, unconfirmed. States board, SPEC.md, contracts/cue-transitions.md and design/mockups/ui/ not changed.
+Tokens: ~25,000 (derived: counter 15,000,000 -> ~14,975,000)
+---
 ## 2026-10-06 19:00:40 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Answered open proposals A to E on the transitions board: pause from any state goes to pausing (shows Thinking), Thinking after speech-ended, new uninterruptible preamble and postamble states, pause during the guard cancels it, and a 5/10/15 second warning-then-error recovery path with given messages; asked whether sub-states should be explicit states or bundled.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
