@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-06 18:31:22 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked to use contracts/page-flow.md for the next design and describe the cue transitions; noted their own draft under a Transitions section there had become unwieldy.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: no code changes. Looked for contracts/page-flow.md and found it absent on this branch and on origin (only an empty testing/contracts/ exists); asked the user where it lives.
+Tokens: ~72,000 (estimated)
+---
 ## 2026-10-06 14:05:22 | Claude Opus 5.5 (claude-opus-5-5)
 Summary prompt: Set the design lifecycle: prototyping is owned on the Design canvas, and developer-ready designs are committed to the repository.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
