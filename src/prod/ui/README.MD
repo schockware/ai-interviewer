@@ -12,6 +12,7 @@ This is the prod zone. Read "Human QA and the two zones" in [`CLAUDE.md`](../../
 
 - **No Claude-written tests** until Steven has written his own for the feature. The runners (`vitest`, `playwright`) are configured and have no tests on purpose.
 - **Nothing arrives from `prototypes/ui` without the promotion gate.** Do not copy or rewrite prototype code here on Claude's own initiative.
+- **Every file needs an approved Development Manager Review of its current content** ([protocol](../../../DEV_MANAGER_REVIEW/README.MD)); `node tools/review.mjs check` is the gate, and it is not satisfied by tests.
 - Steven's tests carry him as author in the byline. Claude does not edit them.
 - Lower-level tests sit next to the code (`.spec.` for domain behavior, `.test.` for tightly coupled UX), journey tests in `e2e/`, following [`src/README.MD`](../../README.MD).
 

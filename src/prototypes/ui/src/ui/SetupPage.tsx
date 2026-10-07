@@ -12,7 +12,7 @@ import {
   toForm,
   type SetupState,
 } from '../core/setup/setupState.ts'
-import { changedSlots, CLOUD, CUSTOM_LOCAL, SLOT_VIEWS } from '../core/setup/slots.ts'
+import { changedSlots, choiceFromKey, choiceKey, SLOT_VIEWS } from '../core/setup/slots.ts'
 import { ArrowIcon, CheckIcon, ErrorIcon, HourglassIcon, PasteIcon, SettingsIcon, UploadIcon } from './icons.tsx'
 import { ModalDialog } from './ModalDialog.tsx'
 import { PageHeader } from './PageHeader.tsx'
@@ -27,12 +27,15 @@ export function SetupPage({
   host,
   config,
   onConfig,
+  showMockServer,
   onPrepare,
   onOpenAccessibility,
 }: {
   host: SetupHost
   config: MockHostConfig
   onConfig: (config: MockHostConfig) => void
+  /** The harness card only means something while the host is the mock. */
+  showMockServer: boolean
   onPrepare: (request: PrepareInterview) => void
   onOpenAccessibility: () => void
 }) {
@@ -88,7 +91,7 @@ export function SetupPage({
       )}
 
       {page.type === 'ready' && (
-        <SetupForm key={attempt} page={page} host={host} settingsOpen={settingsOpen} config={config} onConfig={onConfig} onPrepare={onPrepare} />
+        <SetupForm key={attempt} page={page} host={host} settingsOpen={settingsOpen} config={config} onConfig={onConfig} showMockServer={showMockServer} onPrepare={onPrepare} />
       )}
     </div>
   )
@@ -100,6 +103,7 @@ function SetupForm({
   settingsOpen,
   config,
   onConfig,
+  showMockServer,
   onPrepare,
 }: {
   page: Extract<ApplicationSetupPage, { type: 'ready' }>
@@ -107,6 +111,7 @@ function SetupForm({
   settingsOpen: boolean
   config: MockHostConfig
   onConfig: (config: MockHostConfig) => void
+  showMockServer: boolean
   onPrepare: (request: PrepareInterview) => void
 }) {
   const [s, dispatch] = useReducer(setupReducer, page, initialSetup)
@@ -165,14 +170,17 @@ function SetupForm({
                   <label htmlFor={`slot-${slot.slot}`}>{slot.label}</label>
                   <select
                     id={`slot-${slot.slot}`}
-                    value={s.ai[slot.slot]}
+                    value={choiceKey(s.ai[slot.slot])}
                     onChange={(e) => {
-                      dispatch({ type: 'ai', slot: slot.slot, choice: e.target.value })
-                      if (e.target.value === CUSTOM_LOCAL) setAdvanced(true)
+                      const choice = choiceFromKey(slot.slot, e.target.value)
+                      dispatch({ type: 'ai', slot: slot.slot, choice })
+                      if (typeof choice !== 'string') setAdvanced(true)
                     }}
                   >
                     {slot.options.map((o) => (
-                      <option key={o}>{o}</option>
+                      <option key={choiceKey(o.choice)} value={choiceKey(o.choice)}>
+                        {o.label}
+                      </option>
                     ))}
                   </select>
                   <span className="muted">{slot.note}</span>
@@ -246,7 +254,7 @@ function SetupForm({
                       Processing {s.resumeProcessing}. This can take a moment.
                     </span>
                   )}
-                  {s.resumeProcessing === null && resumeName && s.resumeId?.startsWith('res-new') && (
+                  {s.resumeProcessing === null && resumeName && s.loadedResumeId !== null && s.loadedResumeId === s.resumeId && (
                     <span role="status" className="inline-status inline-ok">
                       <CheckIcon />
                       {resumeName} is loaded and selected.
@@ -315,7 +323,7 @@ function SetupForm({
                   Processing the job description. This can take a moment.
                 </span>
               )}
-              {!s.jdProcessing && roleName && s.roleId?.startsWith('role-new') && (
+              {!s.jdProcessing && roleName && s.addedRoleId !== null && s.addedRoleId === s.roleId && (
                 <span role="status" className="inline-status inline-ok">
                   <CheckIcon />
                   {roleName} is added and selected.
@@ -356,7 +364,7 @@ function SetupForm({
 
       <aside aria-label="Your choices" className="layout-side">
         <Summary s={s} resumeName={resumeName} roleName={roleName} />
-        <Harness config={config} onConfig={onConfig} />
+        {showMockServer && <Harness config={config} onConfig={onConfig} />}
       </aside>
 
       <PasteDialog
@@ -368,7 +376,7 @@ function SetupForm({
         }}
       />
       <ModalDialog open={advanced} onClose={() => setAdvanced(false)} title="Advanced settings">
-        <p>Custom (local) models and cloud access keys are set up here. [NOT BUILT YET: the {CUSTOM_LOCAL} and {CLOUD} shapes are not defined in the contract.]</p>
+        <p>Custom (local) models and cloud access keys are set up here. [NOT BUILT YET: the custom-local and cloud shapes are not defined in the contract.]</p>
         <button type="button" className="btn" onClick={() => setAdvanced(false)}>
           Close
         </button>

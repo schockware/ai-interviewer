@@ -14,6 +14,16 @@ Tags: **S** Steven decides. **C** Claude can do it unaided. **S/C** Claude propo
 - [ ] **C** Draft run-steps (no expected results) for the cue and pause behavior, as a starting point for Steven's tests.
 - [ ] **C** Name an owner for reviewing OPEN lines in the `.AUDIT` file (CLAUDE.md, audit rule).
 
+- [ ] **S** Adopt, change or reject the Development Manager Review draft ([DEV_MANAGER_REVIEW/README.MD](DEV_MANAGER_REVIEW/README.MD)); turn on the hook (`git config core.hooksPath .githooks`), the required check and code-owner review in GitHub; confirm the `@schockware` handle in `.github/CODEOWNERS`.
+- [ ] **S** Review the 13 files in `src/prod/ui` as a dry run of the protocol (the gate fails until you do).
+- [ ] **S** Go through [PATTERNS.MD](DEV_MANAGER_REVIEW/PATTERNS.MD): 12 patterns proposed by Claude, none judged.
+
+- [ ] **S** Rule on [decision 0004](docs/decisions/0004-integration-modes-and-secrets.md) (integration modes and secrets), starting with its Open list: does prod ship mock adapters, and which secret manager at the first cloud integration.
+- [ ] **S/C** Ask the API chat for a hardware-verify endpoint and a decided `InterviewPrepared` delivery, so real mode can drop the hardware mock and the guessed `ready` on `202`.
+
+- [ ] **S** Design testing as a first-class part of the system, starting with the ephemeral or in-memory persistence layer that mock and test mode inject, so mock mode cannot construct a real store. ([decision 0004](docs/decisions/0004-integration-modes-and-secrets.md), Mocks in production, point 5)
+- [ ] **S/C** Design identity, users and groups far enough to carry the "may use mocks" claim (decision 0004, point 1). Probably belongs with `specs/session-management.md`.
+
 ## 2. Decisions for Steven (the product shape)
 
 - [ ] **S** Where do whiteboard and code review fit: segments of the 45-60 minute interview, or separate modes? (ROADMAP.MD ~82)

@@ -1,10 +1,13 @@
 // Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author.
 import { useEffect, useRef, useState } from 'react'
-import { defaultMockConfig, MockSetupHost, type MockHostConfig } from '../adapters/mock/index.ts'
+import { defaultMockConfig, type MockHostConfig } from '../adapters/mock/index.ts'
 import { SystemClock } from '../adapters/systemClock.ts'
 import type { PrepareInterview } from '../core/contract/pageFlow.ts'
+import { buildSetupHost } from '../composition/hosts.ts'
+import { readIntegration, type Integration } from '../composition/integration.ts'
 import { AccessibilityDialog } from './AccessibilityDialog.tsx'
 import { HardwarePage } from './HardwarePage.tsx'
+import { IntegrationBar } from './IntegrationBar.tsx'
 import InterviewPage from './InterviewPage.tsx'
 import { SetupPage } from './SetupPage.tsx'
 
@@ -21,6 +24,24 @@ const pageFromUrl = (): Page => {
  * No router: three pages in a row need only a value.
  */
 export default function App() {
+  // A bad mode is shown, never guessed past (decision 0004).
+  const [integration] = useState(() => {
+    try {
+      return readIntegration(import.meta.env, window.location.search)
+    } catch (e) {
+      return e instanceof Error ? e : new Error('Unknown integration error')
+    }
+  })
+  if (integration instanceof Error)
+    return (
+      <p role="alert" className="card card-error">
+        {integration.message}
+      </p>
+    )
+  return <Flow integration={integration} />
+}
+
+function Flow({ integration }: { integration: Integration }) {
   const [page, setPage] = useState<Page>(pageFromUrl)
   const [request, setRequest] = useState<PrepareInterview | null>(null)
   const [config, setConfig] = useState<MockHostConfig>(defaultMockConfig)
@@ -32,18 +53,20 @@ export default function App() {
   useEffect(() => {
     configRef.current = config
   }, [config])
-  const [host] = useState(() => new MockSetupHost(new SystemClock(), () => configRef.current))
+  const [{ host, parts }] = useState(() => buildSetupHost(integration, new SystemClock(), () => configRef.current))
 
   const openA11y = () => setA11yOpen(true)
 
   return (
     <>
+      <IntegrationBar parts={parts} />
       {page === 'setup' && (
         <SetupPage
           key={`${config.saved}-${config.load}`}
           host={host}
           config={config}
           onConfig={setConfig}
+          showMockServer={parts.setup === 'mock'}
           onOpenAccessibility={openA11y}
           onPrepare={(r) => {
             setRequest(r)

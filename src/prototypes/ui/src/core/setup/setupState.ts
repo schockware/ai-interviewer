@@ -11,6 +11,7 @@ import type {
   ResumeProcessed,
   Saved,
   RoleId,
+  SlotChoice,
 } from '../contract/pageFlow.ts'
 
 /**
@@ -24,10 +25,14 @@ export interface SetupState {
   resumeId: ResumeId | null
   /** The file being processed, or null. */
   resumeProcessing: string | null
+  /** The resume this session just loaded, so the page can say so. Cleared when the user picks another. */
+  loadedResumeId: ResumeId | null
   roles: Saved
   roleId: RoleId | null
+  /** The role this session just added from a job description. */
+  addedRoleId: RoleId | null
   jdProcessing: boolean
-  ai: Record<AiSlot, string>
+  ai: Record<AiSlot, SlotChoice>
 }
 
 export type SetupAction =
@@ -40,7 +45,7 @@ export type SetupAction =
   | { type: 'jdProcessing' }
   | { type: 'jdProcessed'; processed: JobDescriptionProcessed }
   | { type: 'jdFailed' }
-  | { type: 'ai'; slot: AiSlot; choice: string }
+  | { type: 'ai'; slot: AiSlot; choice: SlotChoice }
 
 /** From a ready page. Resumes are newest first, and the first is the one picked last (the mock server has no separate "last picked"). */
 export function initialSetup(page: Extract<ApplicationSetupPage, { type: 'ready' }>): SetupState {
@@ -51,8 +56,10 @@ export function initialSetup(page: Extract<ApplicationSetupPage, { type: 'ready'
     resumes,
     resumeId: resumes[0]?.[0] ?? null,
     resumeProcessing: null,
+    loadedResumeId: null,
     roles,
     roleId: null,
+    addedRoleId: null,
     jdProcessing: false,
     ai: page.form.ai,
   }
@@ -63,7 +70,7 @@ export function setupReducer(s: SetupState, a: SetupAction): SetupState {
     case 'wants':
       return { ...s, wants: a.wants }
     case 'pickResume':
-      return { ...s, resumeId: a.resumeId }
+      return { ...s, resumeId: a.resumeId, loadedResumeId: null }
     case 'resumeProcessing':
       return { ...s, resumeProcessing: a.fileName }
     case 'resumeProcessed':
@@ -73,11 +80,12 @@ export function setupReducer(s: SetupState, a: SetupAction): SetupState {
         resumeProcessing: null,
         resumes: [[a.processed.resumeId, a.processed.displayName], ...s.resumes],
         resumeId: a.processed.resumeId,
+        loadedResumeId: a.processed.resumeId,
       }
     case 'resumeFailed':
       return { ...s, resumeProcessing: null }
     case 'pickRole':
-      return { ...s, roleId: a.roleId }
+      return { ...s, roleId: a.roleId, addedRoleId: null }
     case 'jdProcessing':
       return { ...s, jdProcessing: true }
     case 'jdProcessed':
@@ -86,6 +94,7 @@ export function setupReducer(s: SetupState, a: SetupAction): SetupState {
         jdProcessing: false,
         roles: [...s.roles, [a.processed.roleId, a.processed.displayName]],
         roleId: a.processed.roleId,
+        addedRoleId: a.processed.roleId,
       }
     case 'jdFailed':
       return { ...s, jdProcessing: false }

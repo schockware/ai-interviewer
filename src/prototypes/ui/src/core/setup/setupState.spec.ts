@@ -79,3 +79,18 @@ describe('what blocks Prepare interview', () => {
     expect(toForm(s).roleFocus).toBe('x')
   })
 })
+
+describe('what the session just added', () => {
+  // Found by running against the real API: the page once keyed this off the mock's id format.
+  it('remembers the loaded resume and added role whatever their ids look like, until another is picked', () => {
+    let s = setupReducer(ready('some', 'some'), { type: 'resumeProcessed', processed: { resumeId: '3f2c-guid', displayName: 'cv' } })
+    expect(s.loadedResumeId).toBe('3f2c-guid')
+    s = setupReducer(s, { type: 'pickResume', resumeId: 'r1' })
+    expect(s.loadedResumeId).toBeNull()
+
+    s = setupReducer(s, { type: 'jdProcessed', processed: { roleId: '9a-guid', displayName: 'Role' } })
+    expect(s.addedRoleId).toBe('9a-guid')
+    s = setupReducer(s, { type: 'pickRole', roleId: 'x' })
+    expect(s.addedRoleId).toBeNull()
+  })
+})

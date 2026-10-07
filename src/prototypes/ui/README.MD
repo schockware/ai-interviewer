@@ -36,6 +36,20 @@ Open http://localhost:5173. The app is the whole page flow from `contracts/page-
 
 There is no server. A scripted mock host (`src/adapters/mock/mockSetupHost.ts`) stands in for it, and each page has a "Prototype harness" card, which is not in the mockups, to make it fail, hold no saved data, retry or fail preparation, or return another audio or video quality. The cue engine and the mock interviewer are live on the interview page. Drawn but not wired: the Controls buttons, the microphone row, the caption text (the mockup's sample lines), every Accessibility setting except captions, Advanced settings (a placeholder dialog), and the simulated call condition chosen on the Hardware page (the interview still plays the simulation-off scenario). No microphone or camera is read: the audio and video checks return a scripted quality (the contract leaves the streaming open). The port is fixed at 5173 because the Playwright tests use it.
 
+## Mock or real
+
+Everything runs on mocks by default. Real integrations are opt-in, per [decision 0004](../../../docs/decisions/0004-integration-modes-and-secrets.md) (proposed).
+
+| To | Do |
+|---|---|
+| Run the UI on mocks (default) | `npm run dev` |
+| Run the UI against the API prototype | Start the API (`dotnet run --project ../api/src/AiInterviewer.Api --launch-profile http`), then `npm run dev:real`. Or add `?integration=real` to the address |
+| Point at another API | Set `VITE_API_URL`, or `API_PROXY_TARGET` for the dev proxy (see `.env.example`) |
+
+The page always says what is real and what is mock. Today, in real mode, **setup is real and hardware checks are still mock** (the API has no verify endpoint). The interview cues are always scripted. The Prototype harness cards for the mock server only show in mock mode.
+
+**Env files hold public values only.** `VITE_` variables are bundled into the page. Only `.env.example` and `.env.real` are committed, and a test fails if another `.env*` file or a secret-sounding name appears. There are no secrets today; see the decision for where the first one will go.
+
 ## Tests
 
 | Command | What it does |
@@ -43,6 +57,8 @@ There is no server. A scripted mock host (`src/adapters/mock/mockSetupHost.ts`) 
 | `npm test` | Runs the Vitest tests once (core, adapters and component tests, in jsdom) |
 | `npm run test:watch` | Reruns Vitest tests when files change |
 | `npm run test:e2e` | Runs the Playwright tests in Chromium and Firefox, with an axe scan at WCAG 2.2 AA. Starts the dev server itself, or reuses one already on port 5173 |
+| `npm run test:integration` | Runs the real-API tests (`*.integration.spec.ts`). Needs the API running; skips loudly if it is not. `INTEGRATION_REQUIRED=1` makes the skip a failure |
+| `npm run test:e2e:real` | Runs the real-integration browser tests (`*.real.spec.ts`). Starts the UI in real mode and the API prototype itself |
 | `npm run typecheck` | Type-checks with `tsc -b` |
 | `npm run lint` | Runs oxlint |
 
@@ -65,7 +81,8 @@ Both suffixes are picked up by `npm test`. A rule of thumb for choosing: if a re
 | Folder | Holds |
 |---|---|
 | `src/core/` | Pure TypeScript: ports, the event contract (`contract/`), and the cue reducer, strategies and engine (`cues/`). Imports nothing from the other folders |
-| `src/adapters/` | Implementations of the ports: clocks, the mock event stream and calibrated mock interviewer (`mock/`), placeholder cue sounds |
+| `src/adapters/` | Implementations of the ports: clocks, the mock event stream and calibrated mock interviewer and mock setup host (`mock/`), the real API client (`http/`), placeholder cue sounds. `setupHostContract.ts` is the behavior suite every setup host must pass |
+| `src/composition/` | The one place that picks which adapter backs which port (mode, host wiring). May import everything; nothing imports it except `ui/App` |
 | `src/ui/` | React components. They render what they are given and decide nothing |
 | `e2e/` | Playwright browser journeys (sibling of `src/`) |
 | `bdd/` | Behavior scenarios (sibling of `src/`). Not created yet |

@@ -1,0 +1,7 @@
+# Development Manager Review (DEV_MANAGER_REVIEW/README.MD). Require code-owner review in branch protection for this to bind.
+# The owner handle is inferred from the repo URL; confirm it.
+/DEV_MANAGER_REVIEW/ @schockware
+/src/prod/ @schockware
+/tools/review.mjs @schockware
+/.githooks/ @schockware
+/.github/ @schockware

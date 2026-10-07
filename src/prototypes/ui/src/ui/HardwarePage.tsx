@@ -57,6 +57,8 @@ export function HardwarePage({
   const [video, setVideo] = useState<CheckPhase>({ type: 'skipped' })
   const [captions, setCaptions] = useState(initialCaptions)
   const [preset, setPreset] = useState('clean')
+  const [starting, setStarting] = useState(false)
+  const [startError, setStartError] = useState<string | null>(null)
 
   useEffect(() => {
     return host.prepareInterview(request, setPrep)
@@ -72,9 +74,18 @@ export function HardwarePage({
   }
 
   const startable = canStart(prep, audio)
-  const start = () => {
-    if (!startable) return
-    onStart({ form: toHardwareForm(audio, video, captions), sessionId: request.sessionId }, captions)
+  const start = async () => {
+    if (!startable || starting) return
+    setStarting(true)
+    setStartError(null)
+    const startRequest = { form: toHardwareForm(audio, video, captions), sessionId: request.sessionId }
+    try {
+      await host.startInterview(startRequest) // the server can still refuse (not prepared, hardware not ready)
+      onStart(startRequest, captions)
+    } catch (e) {
+      setStartError(e instanceof Error ? e.message : 'The interview could not start.')
+      setStarting(false)
+    }
   }
 
   const host_ = hostView[prep]
@@ -168,11 +179,16 @@ export function HardwarePage({
 
           <section aria-label="Start the interview" className="card">
             <div>
-              <button type="button" className={startable ? 'btn btn-big btn-primary' : 'btn btn-big btn-disabled'} aria-disabled={!startable} aria-describedby="start-reasons" onClick={start}>
+              <button type="button" className={startable ? 'btn btn-big btn-primary' : 'btn btn-big btn-disabled'} aria-disabled={!startable} aria-describedby="start-reasons" onClick={() => void start()}>
                 Start interview
                 <ArrowIcon />
               </button>
             </div>
+            {startError && (
+              <p role="alert" className="note-box note-bad">
+                {startError}
+              </p>
+            )}
             <ul id="start-reasons" className="checklist">
               {checklist(prep, audio, video).map((c) => (
                 <li key={c.name}>

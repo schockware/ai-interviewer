@@ -2,10 +2,13 @@
 import type { Clock, SetupHost } from '../../core/ports.ts'
 import type {
   ApplicationSetupPage,
+  CueSettings,
+  StartInterview,
   HardwareKind,
   HardwareQuality,
   JobDescriptionProcessed,
   PrepProgress,
+  Saved,
 } from '../../core/contract/pageFlow.ts'
 import { defaultAi } from '../../core/setup/slots.ts'
 
@@ -29,20 +32,25 @@ export const defaultMockConfig: MockHostConfig = {
 /** Delays in the clock's milliseconds. Long enough to see each state; short enough not to wait. */
 export const MOCK_DELAYS = { load: 700, upload: 1500, preparing: 5000, retrying: 3000, verify: 2000 } as const
 
-const SAVED_RESUMES = [
+const SAVED_RESUMES: Saved = [
   ['res-2', 'Resume, 2026 (PDF)'],
   ['res-1', 'Resume, 2024 (PDF)'],
-] as const
-const SAVED_ROLES = [
+]
+const SAVED_ROLES: Saved = [
   ['role-1', 'Software Engineer'],
   ['role-2', 'Product Manager'],
-] as const
+]
+
+const documents = (all: Saved): { type: 'none' } | { type: 'ready'; all: Saved } => (all.length === 0 ? { type: 'none' } : { type: 'ready', all })
 
 /** A scripted stand-in for the server. No network, no models. */
 export class MockSetupHost implements SetupHost {
   private readonly clock: Clock
   private readonly config: () => MockHostConfig
   private counter = 0
+  /** What the user has uploaded this session, newest first for resumes. A real server keeps these, and the contract suite checks it. */
+  private addedResumes: Array<[string, string]> = []
+  private addedRoles: Array<[string, string]> = []
 
   constructor(clock: Clock, config: () => MockHostConfig = () => defaultMockConfig) {
     this.clock = clock
@@ -68,18 +76,26 @@ export class MockSetupHost implements SetupHost {
       return {
         type: 'ready',
         form: { ai: defaultAi(), interviewType: { type: 'cold' }, roleFocus: 'unanswered' },
-        resumes: c.saved === 'some' ? { type: 'ready', all: SAVED_RESUMES } : { type: 'none' },
-        roles: c.saved === 'some' ? { type: 'ready', all: SAVED_ROLES } : { type: 'none' },
+        resumes: documents([...this.addedResumes, ...(c.saved === 'some' ? SAVED_RESUMES : [])]),
+        roles: documents([...(c.saved === 'some' ? SAVED_ROLES : []), ...this.addedRoles]),
       }
     })
   }
 
   uploadResume(request: { displayName: string }) {
-    return this.after(MOCK_DELAYS.upload, () => ({ resumeId: `res-new-${++this.counter}`, displayName: request.displayName }))
+    return this.after(MOCK_DELAYS.upload, () => {
+      const processed = { resumeId: `res-new-${++this.counter}`, displayName: request.displayName }
+      this.addedResumes.unshift([processed.resumeId, processed.displayName])
+      return processed
+    })
   }
 
   uploadJobDescription(request: { displayName: string }): Promise<JobDescriptionProcessed> {
-    return this.after(MOCK_DELAYS.upload, () => ({ roleId: `role-new-${++this.counter}`, displayName: request.displayName }))
+    return this.after(MOCK_DELAYS.upload, () => {
+      const processed = { roleId: `role-new-${++this.counter}`, displayName: request.displayName }
+      this.addedRoles.push([processed.roleId, processed.displayName])
+      return processed
+    })
   }
 
   pasteJobDescription(request: { displayName: string }): Promise<JobDescriptionProcessed> {
@@ -103,6 +119,16 @@ export class MockSetupHost implements SetupHost {
       cancels.push(this.clock.schedule(at, () => onProgress(progress)))
     }
     return () => cancels.forEach((cancel) => cancel())
+  }
+
+  /** A clean call, as placeholders: the same values as the API prototype's `CleanCallProposal`. */
+  startInterview(_request: StartInterview): Promise<CueSettings> {
+    return this.after(0, () => ({
+      emulation: {
+        cadences: { speaking: 0, listening: 0, thinking: 0, variances: { floor: 1, ceiling: 1 } },
+        latencies: { network: 0, packetLossVariancePerSecond: 0, audioRamp: 'clipped-ending' },
+      },
+    }))
   }
 
   verifyHardware(kind: HardwareKind) {

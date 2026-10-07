@@ -1,5 +1,53 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-07 11:25:29 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked whether the ops/permission flag works like a claim routing specific user groups to the mock, accepted the other four proposals, asked that mock and test mode use ephemeral or in-memory persistence by dependency injection, said testing should be designed as a first-class concern (to be added to their task list), and asked for it all in an ADR.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: docs/decisions/0004 gained a "Mocks in production" section (five points, the claim clarification, in-memory persistence rule) and its Open list was updated; TASKS.MD gained two items (design testing as first class with ephemeral persistence; design identity and groups for the claim). No code changes.
+Tokens: ~6,000 (estimated)
+---
+## 2026-10-07 11:19:10 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Answered that prod does ship mocks, behind a feature flag, and asked what the industry says about testing in production before anything is built.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: docs/decisions/0004 Open item updated to record the decision (mocks in prod, feature flagged). No code changes. Answered from general knowledge, no web search; sources named from memory and unverified.
+Tokens: ~4,000 (estimated)
+---
+## 2026-10-07 11:03:59 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked for the writeups and the build of the mock/real switch, noting that another chat has the API prototype scaffolded with stubs that will be the eventual integration.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: wrote docs/decisions/0004-integration-modes-and-secrets.md (proposed), PATTERNS.MD P-013 to P-016 (proposed), a Secrets and real integrations section in CLAUDE.md, README and TASKS updates. Built in src/prototypes/ui: composition/ (mode reading, host wiring), adapters/http/httpSetupHost.ts (real API client), IntegrationBar, startInterview on the SetupHost port, slot choices now sent as the contract's values (default, interviewer, {type:custom-local}, {type:cloud}), .env.example and .env.real, a /api dev proxy, dev:real, test:integration and test:e2e:real scripts, a shared setupHostContract suite run against the mock and the real API, an env-file guard test, and flow.real.spec.ts. Running against the real API (started with dotnet run, then stopped) found two defects, both fixed: the mock forgot uploads, and the page keyed a success message off the mock's id format. Results: typecheck passes, lint one existing react(refs) warning, 156 vitest tests, 6 integration tests and 8 real e2e tests pass, 34 mock e2e tests pass. Did not touch src/prototypes/api. Hardware verification stays mock in real mode (no endpoint). Did not commit.
+Tokens: ~75,000 (estimated)
+---
+## 2026-10-07 10:51:59 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Stated the philosophy that prototypes rise from mockups to real integrations and prod falls from real to mockups, wanted mock mode as the default for prototype tests and the UI with a switch to real integrations, and asked whether the industry is moving away from .env files given that real integrations can expose secrets.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: no code changes; answered from general knowledge (no web search) and proposed separating the mode switch from secrets.
+Tokens: ~3,000 (estimated)
+---
+## 2026-10-07 10:41:40 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Decided to use SignalR for the WebSocket hubs and endpoints, and asked for the startup plus a basic TestHub with an Echo method (replies to the caller's echo method) and a Probe method (sends a message to the client method the caller names), ahead of designing session management.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: added src/prototypes/api/src/AiInterviewer.Api/Hubs/TestHub.cs, AddSignalR and a Development-only MapHub in Program.cs, the Microsoft.AspNetCore.SignalR.Client package to Api.Tests, TestHubTests.cs (6 tests over a real WebSocket transport), and a Real-time section in the api README. dotnet test: 39 Business and 25 Api tests pass. Did not commit. Session management and real hubs are not started.
+Tokens: ~6,500 (derived: counter 15,000,000 -> ~14,993,500)
+---
+## 2026-10-07 10:35:28 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked to start a C# .NET 10 hexagonal Web API in src/prototypes/api, after reading the spec, the page-flow contract and the docs.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: read SPEC.md, contracts/page-flow.md, specs/page-flow.md, docs decisions 0002 and 0003, docs/README.md, src/README.MD and PROMPT_HISTORY/README.MD. Created src/prototypes/api (AiInterviewer.slnx; Business, Adapters and Api projects; Business.Tests and Api.Tests; Directory.Build.props with warnings as errors; .gitignore; README.MD). Implemented the page-flow contract slice: GET /application-setup, POST /resumes, /job-descriptions/uploads, /job-descriptions/pastes, /interviews/prepare, /interviews/error-checks, /interviews/start, with in-memory stores and stub AI adapters. dotnet build clean; dotnet test: 39 Business and 19 Api tests pass. Did not run the server by hand, did not touch src/prod, did not commit. WebSocket cues, gRPC, Python workers and real document parsing are not built. Guessed values (custom-local and cloud wire shape, cue settings, hardware readiness) are listed as proposals in the api README.
+Tokens: ~146,900 (derived: counter 15,000,000 -> ~14,853,100)
+---
+## 2026-10-07 10:24:35 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Said the prototype is close to outrunning their comprehension and asked for guards against porting it to prod on passing tests alone, starting with a Development Manager Review protocol where they review every file and call out patterns to standardize.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: created DEV_MANAGER_REVIEW/ (README.MD protocol draft, PATTERNS.MD with 12 proposed patterns from the UI prototype, empty LEDGER.LOG), tools/review.mjs (status, check, stamp; stamp refuses under Claude Code) and tools/review.test.mjs (6 node tests pass), .githooks/pre-commit, .github/CODEOWNERS and .github/workflows/review-gate.yml (neither activated: they need GitHub settings), a Development Manager Review section in CLAUDE.md, a line in src/prod/ui/README.MD, and three items in TASKS.MD. The gate currently fails on the 13 unreviewed prod scaffold files, as intended. Did not run stamp or write ledger entries, did not set git core.hooksPath, did not push.
+Tokens: ~38,000 (derived: counter 15,000,000 -> ~14,975,000 plus earlier context)
+---
+## 2026-10-06 14:37:44 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Said the mockups are now committed and pulled, after the previous attempt found them missing; implied the Application setup and Hardware setup pages should now be built in the prototype.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: pulled main (Setup, SetupHot, Hardware, Transitions boards now present). src/prototypes/ui: added core/contract/pageFlow.ts, core/setup/{setupState,hardware,slots}.ts, the SetupHost port, adapters/mock/mockSetupHost.ts, SetupPage, HardwarePage, PageHeader, ModalDialog; App.tsx became the three-page flow and the old App moved to InterviewPage (App.test renamed InterviewPage.test); CSS, README and the WCAG audit log updated. Specs and tests: setupState.spec, hardware.spec, mockSetupHost.spec, flow.test, e2e/flow.spec (e2e interview tests now use ?page=interview). typecheck passes; lint has one react(refs) warning in App.tsx; 133 vitest tests and 34 Playwright tests (Chromium and Firefox, axe WCAG 2.2 AA) pass. Two screenshots checked by eye. Not built: Transitions board (cue state machine rework), the hot-resume board as its own page (covered by Setup), Advanced settings contents. Retrying and diagnosing preparation states are the board's, not the contract's, and are flagged as a proposal.
+Tokens: ~85,000 (derived: counter 15,000,000 -> ~14,915,000)
+---
 ## 2026-10-06 20:28:21 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Said the last PR was merged without the mockups, which were missed because attention went to the log entries, and asked for a new PR.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry

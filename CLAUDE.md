@@ -65,6 +65,25 @@ Rules:
 
 The QA ledger and the per-feature QA contract are created with the first promotion; until then, no code has been promoted. Open: whether "sufficiently tested" is judged per behavior (current assumption) or per line.
 
+## Development Manager Review
+
+A second gate beside the QA zones, because generated code outpaces Steven's reading and a green test run is not comprehension. Draft protocol, proposed 2026-10-07 and awaiting Steven's adoption. The full text is in `DEV_MANAGER_REVIEW/README.MD`; the rules for Claude are:
+
+- **A prod file is accepted only when `DEV_MANAGER_REVIEW/LEDGER.LOG` holds an approved review of its exact current content.** `node tools/review.mjs check` is the gate. Passing tests never satisfy it.
+- **Claude never records a review.** Claude does not run `tools/review.mjs stamp`, does not edit `LEDGER.LOG`, and does not edit another person's stamp note. Only Steven reviews, by running the command himself.
+- **Claude never changes a status in `DEV_MANAGER_REVIEW/PATTERNS.MD`.** It may add candidates, always `proposed`. It follows `adopted` patterns, does not follow `rejected` ones, and treats `proposed` ones as suggestions, not rules.
+- **Promotion also needs the review gate.** Before proposing a promotion, Claude runs `node tools/review.mjs status` on the files involved and says which are unreviewed. A promoted file must be byte-identical to a reviewed one, or be listed as a diff to review. Do not rewrite code while moving it.
+- **On request, write a review brief in chat** (what the file is for and its requirement IDs, imports, what Claude guessed or left unwired, patterns used). State no conclusion and no expected results.
+- **Flag a likely pattern violation when it is noticed**, instead of waiting to be asked, and do not silently fix an `adopted` pattern's exception.
+
+## Secrets and real integrations
+
+See `docs/decisions/0004-integration-modes-and-secrets.md` (proposed). Until Steven rules otherwise:
+
+- Mocks are the default in prototypes. A real integration is opt-in by mode, and the page says which parts are real.
+- **Never put a secret in any file in the repo**, an env file included. A `VITE_` variable is public. Do not read, print, summarize or paste the contents of secret files or secret stores (`.env.local`, key files, a keychain or manager). If a task needs a secret, say so and let Steven inject it for the command.
+- Run real-integration tests only through `test:integration` and `test:e2e:real`, and report a skip as a skip.
+
 ## Files
 
 - Design prototyping happens on a claude.ai Design canvas; only developer-ready iterations are committed, under `design/` at the root. See `design/README.MD`.

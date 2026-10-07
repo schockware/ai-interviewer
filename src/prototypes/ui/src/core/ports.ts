@@ -4,6 +4,7 @@
 import type { StreamEvent, StreamHeader } from './contract/index.ts'
 import type {
   ApplicationSetupPage,
+  CueSettings,
   HardwareKind,
   HardwareQuality,
   JobDescriptionPaste,
@@ -12,6 +13,7 @@ import type {
   PrepProgress,
   PrepareInterview,
   ResumeProcessed,
+  StartInterview,
   UploadResume,
 } from './contract/pageFlow.ts'
 
@@ -61,6 +63,8 @@ export interface SetupHost {
   pasteJobDescription(request: JobDescriptionPaste): Promise<JobDescriptionProcessed>
   /** Asynchronous: progress arrives as it happens. Returns a function that stops listening. */
   prepareInterview(request: PrepareInterview, onProgress: (progress: PrepProgress) => void): () => void
+  /** Rejects with the server's reason when the interview cannot start (not prepared, hardware not ready). */
+  startInterview(request: StartInterview): Promise<CueSettings>
   /** Open question in the contract: how the stream reaches the server. Settles with the quality the server estimates, or rejects. */
   verifyHardware(kind: HardwareKind): Promise<Exclude<HardwareQuality, 'pending' | 'skipped'>>
 }

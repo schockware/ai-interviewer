@@ -838,3 +838,16 @@ input[type='text'] {
   font-size: 18px;
   font-weight: 600;
 }
+.integration-bar {
+  margin: 0;
+  padding: 6px 16px;
+  font-size: 13px;
+  text-align: center;
+  background: var(--tint-idle);
+  color: var(--ink-idle);
+}
+.integration-real {
+  background: #fff1dc;
+  color: #7a3e00;
+  font-weight: 600;
+}

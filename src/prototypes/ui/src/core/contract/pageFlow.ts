@@ -1,6 +1,6 @@
 // Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author.
 // Types transcribed from contracts/page-flow.md (Steven's draft). Pure types, no framework or transport.
-// Where the contract leaves a shape open ({custom-local}, {cloud}) a slot holds a plain string here.
+// Where the contract leaves a shape open ({custom-local}, {cloud}) the shapes here are the API prototype's proposal.
 
 export type SessionId = string
 export type ResumeId = string
@@ -12,9 +12,14 @@ export type AiSlot = (typeof AI_SLOTS)[number]
 
 export type InterviewType = { type: 'cold' } | { type: 'hot-incomplete=>cold' } | { type: 'hot'; resumeId: ResumeId }
 
-/** The contract's ApplicationSetupForm. Slot values are the chosen option's label, `{custom-local}` and `{cloud}` included. */
+/**
+ * A named option is its contract string ("default", "whisper.cpp", "interviewer").
+ * PROPOSAL, from the API prototype: `{custom-local}` and `{cloud}` are these two objects.
+ */
+export type SlotChoice = string | { type: 'custom-local' } | { type: 'cloud' }
+
 export interface ApplicationSetupForm {
-  ai: Record<AiSlot, string>
+  ai: Record<AiSlot, SlotChoice>
   interviewType: InterviewType
   roleFocus: 'unanswered' | RoleId
 }
@@ -84,3 +89,11 @@ export type HardwareKind = 'audio' | 'video'
  * an error (retry quietly, then CheckErroredInterview). PROPOSAL: the server reports these.
  */
 export type PrepProgress = 'preparing' | 'retrying' | 'diagnosing' | 'ready'
+
+/** What the server sends back when the interview starts (contracts/page-flow.md, CueSettings). */
+export interface CueSettings {
+  emulation: {
+    cadences: { speaking: number; listening: number; thinking: number; variances: { floor: number; ceiling: number } }
+    latencies: { network: number; packetLossVariancePerSecond: number; audioRamp: 'clipped-beginning' | 'clipped-ending' | 'both' }
+  }
+}

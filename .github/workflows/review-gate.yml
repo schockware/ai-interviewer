@@ -1,0 +1,17 @@
+# Development Manager Review gate (DEV_MANAGER_REVIEW/README.MD). Fails when any file under src/prod
+# lacks an approved review of its current content. Mark this check as required in branch protection.
+name: review-gate
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  review-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: node --test tools/review.test.mjs
+      - run: node tools/review.mjs check
