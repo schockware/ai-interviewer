@@ -1,11 +1,14 @@
 // Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author. Prototype zone: unverified.
 using AiInterviewer.Adapters;
+using AiInterviewer.Adapters.Media;
 using AiInterviewer.Api;
 using AiInterviewer.Api.Hubs;
+using AiInterviewer.Api.Streams;
 using AiInterviewer.Api.Testing;
 using AiInterviewer.Api.Wire;
 using AiInterviewer.Business;
 using AiInterviewer.Business.Interview;
+using AiInterviewer.Business.Media;
 using AiInterviewer.Business.Setup;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,6 +41,13 @@ builder.Services.AddSingleton<ResumeUploadBroadcaster>();
 builder.Services.AddSingleton<IResumeUploadReporter>(services => services.GetRequiredService<ResumeUploadBroadcaster>());
 builder.Services.AddSingleton<ApplicationSetupService>();
 builder.Services.AddSingleton<InterviewService>();
+// Media streams: every track goes to a file; the audio track also to the transcription feed,
+// which is a counting stand-in until the Python service exists (TASKS.MD). The ingest fans out
+// over bounded channels (Business/Media/MediaIngestService.cs).
+builder.Services.AddSingleton<IMediaSinkFactory>(_ => new FileMediaStore(MediaStreams.Root(builder.Configuration, builder.Environment)));
+builder.Services.AddSingleton<TranscriptionFeedLedger>();
+builder.Services.AddSingleton<IMediaSinkFactory, CountingTranscriptionFeed>();
+builder.Services.AddSingleton<MediaIngestService>();
 
 var app = builder.Build();
 
@@ -57,6 +67,9 @@ if (app.Environment.IsDevelopment())
 
 app.MapPageFlow();
 app.MapHub<InterviewHub>(InterviewHub.Route);
+// The media streams ride plain WebSockets (Steven, 2026-10-26), not SignalR.
+app.UseWebSockets();
+app.MapMediaStreams();
 
 app.Run();
 

@@ -115,3 +115,8 @@ public sealed record ResumeUploadProgressDto(string ResumeId, string DisplayName
 
 /// <summary>How long the mock resume uploader pauses between steps, for one request. A seed makes the steps repeatable.</summary>
 public sealed record MockUploaderOptionsDto(int MinStepDelayMs, int MaxStepDelayMs, int? Seed = null);
+
+// ---- Media streams (Streams/MediaStreams.cs): the first WebSocket message, as text ----
+
+/// <summary>What the browser's recorder produces, so the file gets the right extension and a later reader knows what it holds.</summary>
+public sealed record MediaStreamHeaderDto(string MimeType);

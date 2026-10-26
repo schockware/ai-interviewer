@@ -1,6 +1,7 @@
 // Authored by Claude Sonnet 5.5 and Claude Fable 5.1 (Anthropic), with Steven Chock as co-author.
 import { HubConnectionBuilder } from '@microsoft/signalr'
 import type { SetupHost } from '../../core/ports.ts'
+import { PREP_STEP_TOTAL } from '../../core/setup/waitingRoom.ts'
 import type {
   ApplicationSetupPage,
   CueSettings,
@@ -8,7 +9,7 @@ import type {
   JobDescriptionProcessed,
   JobDescriptionUpload,
   PrepareInterview,
-  PrepProgress,
+  PrepReport,
   ResumeId,
   ResumeProcessed,
   ResumeUploadProgress,
@@ -107,16 +108,16 @@ export class HttpSetupHost implements Omit<SetupHost, 'verifyHardware'> {
   }
 
   /**
-   * The API answers 202 and the stub preparer finishes at once, so 202 is reported as `ready`.
-   * PROPOSAL / GUESS: how the real server reports InterviewPrepared (push or poll) is undecided,
-   * and `retrying` never happens here. A refusal is shown as `diagnosing`.
+   * The API answers 202 and the stub preparer finishes at once, so 202 is reported as `ready` with
+   * every step done. PROPOSAL / GUESS: how the real server reports InterviewPrepared and its steps
+   * (push or poll) is undecided, and `retrying` never happens here. A refusal is shown as `diagnosing`.
    */
-  prepareInterview(request: PrepareInterview, onProgress: (progress: PrepProgress) => void): () => void {
+  prepareInterview(request: PrepareInterview, onProgress: (report: PrepReport) => void): () => void {
     let live = true
-    onProgress('preparing')
+    onProgress({ progress: 'preparing', stepsDone: 0 })
     this.send('/interviews/prepare', request).then(
-      () => live && onProgress('ready'),
-      () => live && onProgress('diagnosing'),
+      () => live && onProgress({ progress: 'ready', stepsDone: PREP_STEP_TOTAL }),
+      () => live && onProgress({ progress: 'diagnosing', stepsDone: 0 }),
     )
     return () => {
       live = false

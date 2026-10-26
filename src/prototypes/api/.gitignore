@@ -1,6 +1,6 @@
 bin/
 obj/
-# The SQLite database written by a local run (Storage:Sqlite:Path). Never committed.
+# The SQLite database and the media files written by a local run (Storage:Sqlite:Path, Media:Root). Never committed.
 data/
 # A stray npm install must never land here; the API is a .NET project.
 node_modules/

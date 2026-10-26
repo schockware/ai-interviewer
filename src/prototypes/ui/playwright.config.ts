@@ -9,6 +9,8 @@ const port = process.env.E2E_PORT ?? '5173'
 // Autoplay: the harness must be able to start audio without a click (CUE-AMB-001 is about the
 // user's ability to stop sound, not about tests being blocked).
 // The Chromium flag is documented. The Firefox prefs are [unverified]; e2e/autoplay.spec.ts checks both.
+// Fake devices: the microphone and camera checks and the interview's capture open a synthetic
+// microphone and camera, with the permission prompt answered, so they run headless.
 export default defineConfig({
   testDir: './e2e',
   testMatch: real ? /.*\.real\.spec\.ts/ : /.*\.spec\.ts/,
@@ -36,13 +38,23 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { browserName: 'chromium', launchOptions: { args: ['--autoplay-policy=no-user-gesture-required'] } },
+      use: {
+        browserName: 'chromium',
+        launchOptions: { args: ['--autoplay-policy=no-user-gesture-required', '--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream'] },
+      },
     },
     {
       name: 'firefox',
       use: {
         browserName: 'firefox',
-        launchOptions: { firefoxUserPrefs: { 'media.autoplay.default': 0, 'media.autoplay.blocking_policy': 0 } },
+        launchOptions: {
+          firefoxUserPrefs: {
+            'media.autoplay.default': 0,
+            'media.autoplay.blocking_policy': 0,
+            'media.navigator.streams.fake': true,
+            'media.navigator.permission.disabled': true,
+          },
+        },
       },
     },
   ],

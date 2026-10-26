@@ -56,7 +56,7 @@ Rules for the C# structure:
 
 ## Open items
 
-1. Audio frame format and size over the WebSocket, and how backpressure is handled.
+1. Audio frame format and size over the WebSocket, and how backpressure is handled. Prototype proposal (2026-10-26, unverified): the browser's `MediaRecorder` chunks (WebM with Opus; VP8 or VP9 with Opus for the composite) every 250 ms, one plain WebSocket per track with a JSON header first; the server fans each chunk out over a bounded channel per consumer, so backpressure reaches the socket. See `src/prototypes/api/README.MD`, Media streams.
 2. What the data layer stores and where. Steven decided 2026-10-26: SQLite for local development, with the persistence ports kept agnostic of the engine; MSSQL, MySQL, PostgreSQL, MongoDB and CosmosDB adapters are a task (`TASKS.MD`). What is stored, and where in a deployment, is still open.
 3. Whether an AI agent would help coordination, to be evaluated once the plain coordinator exists.
 4. How C# supervises Python workers: start-up, health checks, restart and shutdown.

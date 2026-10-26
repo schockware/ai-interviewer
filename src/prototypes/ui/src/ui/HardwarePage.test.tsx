@@ -1,157 +1,116 @@
 // Authored by Claude Fable 5.1 (Anthropic), with Steven Chock as co-author.
-// Component behavior of the pre-flight check behind Start interview. Claude-written; not a human QA test.
-import { act, render, screen, waitFor } from '@testing-library/react'
+// Component behavior of the Hardware page under the new design: Ready for interview needs the audio check only. Claude-written; not a human QA test.
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useEffect } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import { defaultMockConfig } from '../adapters/mock/index.ts'
-import type { CueSettings, InterviewType, PrepareInterview, ResumeUploadProgress } from '../core/contract/pageFlow.ts'
-import type { SetupHost } from '../core/ports.ts'
+import type { PrepReport, PrepareInterview } from '../core/contract/pageFlow.ts'
+import type { MediaDevicesPort, OpenedStream, SetupHost } from '../core/ports.ts'
 import { HardwarePage } from './HardwarePage.tsx'
+import { PreparationProvider } from './PreparationProvider.tsx'
+import { usePreparation } from './preparation.ts'
 import { ResumeUploadProvider } from './ResumeUploadProvider.tsx'
-import { useResumeUploads } from './resumeUploads.ts'
 
-type OnProgress = (p: ResumeUploadProgress) => void
-
-const settings: CueSettings = {
-  emulation: {
-    cadences: { speaking: 0, listening: 0, thinking: 0, variances: { floor: 1, ceiling: 1 } },
-    latencies: { network: 0, packetLossVariancePerSecond: 0, audioRamp: 'clipped-ending' },
-  },
-}
-
-/** Prepared at once, audio clear, and resume processing driven by hand. */
-const fakeHost = (startInterview: SetupHost['startInterview'] = async () => settings) => {
-  const reporters: Array<{ resumeId: string; onProgress: OnProgress }> = []
-  const host: SetupHost = {
-    loadPage: async () => ({ type: 'loading' }),
-    uploadResume: async (r) => ({ resumeId: 'r1', displayName: r.displayName }),
-    uploadJobDescription: async (r) => ({ roleId: 'role-1', displayName: r.displayName }),
-    pasteJobDescription: async (r) => ({ roleId: 'role-1', displayName: r.displayName }),
-    prepareInterview: (_r, onProgress) => {
-      onProgress('ready')
+/** A host whose preparation is driven by hand, audio always clear. */
+const fakeHost = () => {
+  const reporters: Array<(report: PrepReport) => void> = []
+  const host = {
+    prepareInterview: vi.fn((_r: PrepareInterview, onProgress: (report: PrepReport) => void) => {
+      reporters.push(onProgress)
       return () => undefined
-    },
-    startInterview: vi.fn(startInterview),
-    verifyHardware: async () => 'clear',
-    watchResumeUpload: (resumeId, onProgress) => {
-      reporters.push({ resumeId, onProgress })
-      return () => undefined
-    },
-  }
-  return { host, reporters }
+    }),
+    verifyHardware: async () => 'clear' as const,
+    watchResumeUpload: () => () => undefined,
+  } as unknown as SetupHost
+  return { host, report: (r: PrepReport) => reporters.forEach((on) => on(r)) }
 }
 
-function TrackOnMount() {
-  const { track } = useResumeUploads()
-  useEffect(() => track('r1', 'CV'), [track])
-  return null
+const fakeStream = (id: string): OpenedStream => ({ id, stop: () => undefined, setEnabled: () => undefined })
+const fakeDevices: MediaDevicesPort = {
+  list: async () => [{ kind: 'audioinput', deviceId: 'mic-1', label: 'Desk microphone' }],
+  openAudio: async () => fakeStream('mic'),
+  openVideo: async () => fakeStream('cam'),
+  meter: () => ({ read: () => 0.6, stop: () => undefined }),
+  preview: () => undefined,
 }
 
-const request = (interviewType: InterviewType): PrepareInterview => ({
+const request: PrepareInterview = {
   sessionId: 's1',
   form: {
     ai: { listener: 'default', transcriber: 'default', followUp: 'interviewer', interviewer: 'default', evaluator: 'interviewer', speaker: 'default' },
-    interviewType,
+    interviewType: { type: 'cold' },
     roleFocus: 'role-1',
   },
-})
+}
 
-const renderPage = (host: SetupHost, interviewType: InterviewType, tracked = false) => {
-  const onStart = vi.fn()
+function StartOnMount() {
+  const { start } = usePreparation()
+  useEffect(() => start(request, { hot: false, roleSource: 'saved' }), [start])
+  return null
+}
+
+const renderPage = (host: SetupHost) => {
+  const onReady = vi.fn()
   render(
     <ResumeUploadProvider host={host}>
-      {tracked && <TrackOnMount />}
-      <HardwarePage
-        host={host}
-        request={request(interviewType)}
-        initialCaptions={false}
-        config={defaultMockConfig}
-        onConfig={() => undefined}
-        onBack={() => undefined}
-        onStart={onStart}
-        onOpenAccessibility={() => undefined}
-        preflightHoldMs={0}
-      />
+      <PreparationProvider host={host}>
+        <StartOnMount />
+        <HardwarePage host={host} media={fakeDevices} initialCaptions={false} config={defaultMockConfig} onConfig={() => undefined} onBack={() => undefined} onReady={onReady} onOpenAccessibility={() => undefined} />
+      </PreparationProvider>
     </ResumeUploadProvider>,
   )
-  return onStart
+  return onReady
 }
 
-const dialog = () => document.querySelector('dialog') as HTMLDialogElement
-const snapshot = (status: ResumeUploadProgress['status'], steps: ResumeUploadProgress['steps']): ResumeUploadProgress => ({ resumeId: 'r1', displayName: 'CV', status, steps })
+describe('Hardware page', () => {
+  it('keeps Ready for interview unavailable until audio is verified, and does not wait for preparation', async () => {
+    const { host, report } = fakeHost()
+    const onReady = renderPage(host)
+    await waitFor(() => expect(host.prepareInterview).toHaveBeenCalled())
+    const button = screen.getByRole('button', { name: /Ready for interview/ })
+    expect(button).toHaveAttribute('aria-disabled', 'true')
+    expect(screen.getByTestId('status-banner')).toHaveTextContent('Waiting for host…')
+    expect(screen.getByRole('list')).toHaveTextContent('Interview prepared · still preparing, you can wait for it in the waiting room')
 
-const verifyAudioAndStart = async () => {
-  await userEvent.click(screen.getByRole('button', { name: 'Start audio check' }))
-  // The checklist line is "<b>Audio</b> · verified, rated clear"; the matcher sees the span's own text only.
-  await waitFor(() => expect(screen.getByText(/verified, rated clear/)).toBeInTheDocument())
-  await userEvent.click(screen.getByRole('button', { name: /Start interview/ }))
-}
+    await userEvent.click(screen.getByRole('button', { name: 'Start audio check' }))
+    await waitFor(() => expect(screen.getByText(/verified, rated clear/)).toBeInTheDocument())
+    expect(button).toHaveAttribute('aria-disabled', 'false')
 
-describe('Start interview and the pre-flight check', () => {
-  it('for a cold interview, the check passes at once and the interview starts', async () => {
-    const { host } = fakeHost()
-    const onStart = renderPage(host, { type: 'cold' })
-    await verifyAudioAndStart()
-
-    expect(dialog()).toHaveAttribute('open')
-    expect(screen.getByTestId('preflight')).toHaveTextContent('Resume · not used in a cold interview')
-    await waitFor(() => expect(onStart).toHaveBeenCalledTimes(1))
-    expect(host.startInterview).toHaveBeenCalledTimes(1)
+    await userEvent.click(button)
+    expect(onReady).toHaveBeenCalledTimes(1)
+    expect(onReady.mock.calls[0][0]).toMatchObject({ sessionId: 's1', form: { audio: { status: 'verified', quality: 'clear' }, video: { status: 'skipped' } } })
+    expect(onReady.mock.calls[0][2]).toEqual({ audioDeviceId: null, videoDeviceId: null })
+    expect(screen.getByRole('option', { name: 'Desk microphone' })).toBeInTheDocument()
+    report({ progress: 'ready', stepsDone: 9 })
   })
 
-  it('for a hot interview, waits for the resume to finish processing, then starts', async () => {
-    const { host, reporters } = fakeHost()
-    const onStart = renderPage(host, { type: 'hot', resumeId: 'r1' }, true)
-    act(() => reporters[0].onProgress(snapshot('running', [{ name: 'Reading', status: 'running' }])))
-    await verifyAudioAndStart()
+  it('shows the shared banner and bar as preparation moves, and the diagnosis when it fails', async () => {
+    const { host, report } = fakeHost()
+    renderPage(host)
+    await waitFor(() => expect(host.prepareInterview).toHaveBeenCalled())
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '0')
 
-    expect(screen.getByTestId('preflight')).toHaveTextContent('Resume · still processing')
-    expect(screen.getByText('Waiting for the last pieces. This finishes on its own.')).toBeInTheDocument()
-    expect(onStart).not.toHaveBeenCalled()
+    report({ progress: 'preparing', stepsDone: 3 })
+    await waitFor(() => expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '33'))
 
-    act(() => reporters[0].onProgress(snapshot('done', [{ name: 'Reading', status: 'done' }])))
-    await waitFor(() => expect(onStart).toHaveBeenCalledTimes(1))
+    report({ progress: 'diagnosing', stepsDone: 3 })
+    await waitFor(() => expect(screen.getByTestId('status-banner')).toHaveTextContent('The host ran into a problem'))
+    expect(screen.getByRole('heading', { name: 'What the interviewer found' })).toBeInTheDocument()
+    expect(screen.getByRole('progressbar')).not.toHaveAttribute('aria-valuenow')
+    expect(screen.getByRole('list')).toHaveTextContent('Interview prepared · needs attention, shown in the waiting room')
+
+    await userEvent.click(screen.getByRole('button', { name: 'Try preparing again' }))
+    await waitFor(() => expect(host.prepareInterview).toHaveBeenCalledTimes(2))
   })
 
-  it('blocks when the resume failed to process, and Close returns to the page', async () => {
-    const { host, reporters } = fakeHost()
-    const onStart = renderPage(host, { type: 'hot', resumeId: 'r1' }, true)
-    act(() => reporters[0].onProgress(snapshot('failed', [{ name: 'Matching dates', status: 'failed' }])))
-    await verifyAudioAndStart()
-
-    expect(screen.getByTestId('preflight')).toHaveTextContent('Resume · Processing stopped at “Matching dates”')
-    expect(screen.getByText('Something still needs attention before the interview can start.')).toBeInTheDocument()
-    await userEvent.click(screen.getByRole('button', { name: 'Close' }))
-    expect(dialog()).not.toHaveAttribute('open')
-    await new Promise((r) => setTimeout(r, 20))
-    expect(onStart).not.toHaveBeenCalled()
-    expect(host.startInterview).not.toHaveBeenCalled()
-  })
-
-  it('cancelling while waiting closes the check, and a later report does not start the interview', async () => {
-    const { host, reporters } = fakeHost()
-    const onStart = renderPage(host, { type: 'hot', resumeId: 'r1' }, true)
-    act(() => reporters[0].onProgress(snapshot('running', [{ name: 'Reading', status: 'running' }])))
-    await verifyAudioAndStart()
-
-    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
-    expect(dialog()).not.toHaveAttribute('open')
-    act(() => reporters[0].onProgress(snapshot('done', [{ name: 'Reading', status: 'done' }])))
-    await new Promise((r) => setTimeout(r, 20))
-    expect(onStart).not.toHaveBeenCalled()
-  })
-
-  it('shows the server’s refusal inside the check and does not go on', async () => {
-    const { host } = fakeHost(async () => {
-      throw new Error('No interview was prepared for this session.')
-    })
-    const onStart = renderPage(host, { type: 'cold' })
-    await verifyAudioAndStart()
-
-    await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent('No interview was prepared for this session.'))
-    expect(screen.getByText('The interview did not start.')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Close' })).toBeInTheDocument()
-    expect(onStart).not.toHaveBeenCalled()
+  it('says the interview is ready once it is', async () => {
+    const { host, report } = fakeHost()
+    renderPage(host)
+    await waitFor(() => expect(host.prepareInterview).toHaveBeenCalled())
+    report({ progress: 'ready', stepsDone: 9 })
+    await waitFor(() => expect(screen.getByTestId('status-banner')).toHaveTextContent('The host is ready'))
+    expect(screen.getByText('Your interview is ready, so the waiting room lets you straight in.')).toBeInTheDocument()
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '100')
   })
 })

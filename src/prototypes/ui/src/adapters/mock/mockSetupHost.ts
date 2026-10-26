@@ -7,13 +7,14 @@ import type {
   HardwareKind,
   HardwareQuality,
   JobDescriptionProcessed,
-  PrepProgress,
+  PrepReport,
   ResumeId,
   ResumeUploadProgress,
   ResumeUploadStep,
   Saved,
 } from '../../core/contract/pageFlow.ts'
 import { defaultAi } from '../../core/setup/slots.ts'
+import { PREP_STEP_TOTAL } from '../../core/setup/waitingRoom.ts'
 
 /** What the scripted host does. The prototype's harness card edits this. */
 export interface MockHostConfig {
@@ -34,6 +35,9 @@ export const defaultMockConfig: MockHostConfig = {
   video: 'clear',
   upload: 'succeeds',
 }
+
+/** Where a retrying or failing preparation stalls, counted in steps done. */
+export const MOCK_STALL_STEP = 4
 
 /** Delays in the clock's milliseconds. Long enough to see each state; short enough not to wait. */
 export const MOCK_DELAYS = { load: 700, upload: 1500, preparing: 5000, retrying: 3000, verify: 2000, uploadStep: 900 } as const
@@ -119,21 +123,22 @@ export class MockSetupHost implements SetupHost {
     return this.uploadJobDescription(request)
   }
 
-  prepareInterview(_request: unknown, onProgress: (progress: PrepProgress) => void): () => void {
+  /**
+   * Steps land evenly across the preparing window, so the Waiting room has something to show.
+   * A retry stalls at the fifth step and then finishes; a failure stalls there and is diagnosed.
+   */
+  prepareInterview(_request: unknown, onProgress: (report: PrepReport) => void): () => void {
     const plan = this.config().preparation
-    const steps: Array<[number, PrepProgress]> =
-      plan === 'succeeds'
-        ? [[MOCK_DELAYS.preparing, 'ready']]
-        : [
-            [MOCK_DELAYS.preparing, 'retrying'],
-            [MOCK_DELAYS.retrying, plan === 'fails' ? 'diagnosing' : 'ready'],
-          ]
-    onProgress('preparing')
     const cancels: Array<() => void> = []
-    let at = 0
-    for (const [delay, progress] of steps) {
-      at += delay
-      cancels.push(this.clock.schedule(at, () => onProgress(progress)))
+    const at = (delay: number, report: PrepReport) => cancels.push(this.clock.schedule(delay, () => onProgress(report)))
+    onProgress({ progress: 'preparing', stepsDone: 0 })
+    const stall = plan === 'succeeds' ? PREP_STEP_TOTAL : MOCK_STALL_STEP
+    const slice = MOCK_DELAYS.preparing / PREP_STEP_TOTAL
+    for (let step = 1; step <= stall && step < PREP_STEP_TOTAL; step++) at(Math.round(step * slice), { progress: 'preparing', stepsDone: step })
+    if (plan === 'succeeds') at(MOCK_DELAYS.preparing, { progress: 'ready', stepsDone: PREP_STEP_TOTAL })
+    else {
+      at(MOCK_DELAYS.preparing, { progress: 'retrying', stepsDone: stall })
+      at(MOCK_DELAYS.preparing + MOCK_DELAYS.retrying, plan === 'fails' ? { progress: 'diagnosing', stepsDone: stall } : { progress: 'ready', stepsDone: PREP_STEP_TOTAL })
     }
     return () => cancels.forEach((cancel) => cancel())
   }

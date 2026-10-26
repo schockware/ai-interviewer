@@ -77,6 +77,20 @@ Under `dotnet run` the file lands at `src/AiInterviewer.Api/data/ai-interviewer.
 | `POST /interviews/error-checks` | `CheckErroredInterview` -> `Error` | 200 | 404, 409 nothing failed |
 | `POST /interviews/start` | `StartInterview` -> `CueSettings` | 200 | 404 not prepared, 409 not ready |
 
+### Media streams (plain WebSockets)
+
+Steven's call (2026-10-26): the browser's audio, and optional video, travel over a regular WebSocket, not SignalR. One stream per track at `/streams/{sessionId}/{track}`, `track` being `audio` or `composite`. PROPOSAL for decision 0003's open item 1:
+
+| Message | Meaning |
+|---|---|
+| First, text | A JSON header: `{ "mimeType": "audio/webm;codecs=opus" }`, whatever the browser's `MediaRecorder` produces |
+| Then, binary | One recorder chunk each (the UI sends one every 250 ms), in order. A chunk may arrive in several frames; it is reassembled |
+| Close | Ends the stream. The server completes every sink and closes with `"{n} chunks stored"` |
+
+A missing or malformed header, or a text message after it, closes the socket with a policy violation. A plain HTTP request, a blank session id or an unknown track is a 400. Any non-blank session id is accepted, because session management is not designed yet.
+
+Inside, `MediaIngestService` (Business) fans each chunk out over one **bounded channel per sink** (`System.Threading.Channels`, capacity 32 chunks), so a slow sink holds the socket's read loop instead of losing chunks. Two sinks exist: `FileMediaStore` writes every track to `{Media:Root}/{sessionId}/{track}-{startedUtc}.{ext}` (`data/media` by default, gitignored), appending and flushing chunk by chunk so the file is valid as far as it got; the audio file stands alone so the post-question transcription reads clean audio, and the composite keeps video with its audio. `CountingTranscriptionFeed` takes the audio track only and counts it: it stands in for the real-time transcription service (the Python worker) until that exists, and the real adapter will forward the same chunks over gRPC (`TASKS.MD`).
+
 ### Real-time (SignalR)
 
 SignalR carries the WebSocket channel. Hubs speak the same JSON as the endpoints (`Wire/WireJson.cs`: camelCase, enums as the contract's strings).
@@ -111,7 +125,7 @@ Any malformed body (missing or null field, unknown property, unknown discriminat
 - `RandomStepsResumeUploader` stands in for resume processing (see Proposals). A reporter failure ends its run silently; a real pipeline would record its outcome.
 - `InstantInterviewPreparer` marks every session `Ok` immediately, so the `Error` path and `InterviewPrepared` delivery are only reachable in tests. How `InterviewPrepared` reaches the client (push or poll) is undecided.
 - `ServerCue`, `ClientCue`, `VerifyHardware`, `HardwareVerified` and the audio stream need the WebSocket channel, which is not built. The audio frame format is an open item in decision 0003.
-- Storage is a single SQLite file with no migrations (see Storage above). No Python worker, gRPC contract or LLM runtime is connected.
+- Storage is a single SQLite file with no migrations (see Storage above). Media files land under `data/media` with no index. No Python worker, gRPC contract or LLM runtime is connected; the transcription feed counts chunks and transcribes nothing.
 - `ApplicationSetupPage` `loading` has no server path: the server answers `ready`, or `error` if a store is unreachable.
 
 ## Conventions here

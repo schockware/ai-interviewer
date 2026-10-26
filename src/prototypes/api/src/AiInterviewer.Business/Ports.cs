@@ -1,4 +1,5 @@
 // Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author. Prototype zone: unverified.
+using AiInterviewer.Business.Media;
 using AiInterviewer.Business.Setup;
 
 namespace AiInterviewer.Business;
@@ -73,4 +74,26 @@ public interface IResumeUploader
 public interface IResumeUploadReporter
 {
     Task ReportAsync(ResumeUploadProgress progress, CancellationToken ct);
+}
+
+/// <summary>
+/// One consumer of one track stream: a file, the transcription service. The ingest opens it when
+/// the stream begins, hands it every chunk in order from its own channel, and completes it when
+/// the stream ends.
+/// </summary>
+public interface IMediaSink
+{
+    Task OpenAsync(MediaTrackOpened track, CancellationToken ct);
+
+    Task WriteAsync(MediaChunk chunk, CancellationToken ct);
+
+    Task CompleteAsync(CancellationToken ct);
+}
+
+/// <summary>Makes a sink for each track stream it wants. The file store wants both tracks; the transcription feed wants audio only.</summary>
+public interface IMediaSinkFactory
+{
+    bool Wants(MediaTrack track);
+
+    IMediaSink Create();
 }

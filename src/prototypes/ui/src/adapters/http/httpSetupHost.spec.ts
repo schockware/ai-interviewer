@@ -1,6 +1,8 @@
 // Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author.
 // The HTTP adapter against a stand-in for the network: no API needs to run.
 import { describe, expect, it } from 'vitest'
+import type { PrepReport } from '../../core/contract/pageFlow.ts'
+import { PREP_STEP_TOTAL } from '../../core/setup/waitingRoom.ts'
 import { HttpSetupHost, toBase64 } from './httpSetupHost.ts'
 
 interface Seen {
@@ -64,27 +66,30 @@ describe('HttpSetupHost', () => {
 
   it('reports preparing, then ready on 202', async () => {
     const { fn } = fakeFetch(() => new Response(null, { status: 202 }))
-    const seen: string[] = []
+    const seen: PrepReport[] = []
     new HttpSetupHost('/api', fn).prepareInterview({ sessionId: 's', form: {} as never }, (p) => seen.push(p))
-    expect(seen).toEqual(['preparing'])
+    expect(seen).toEqual([{ progress: 'preparing', stepsDone: 0 }])
     await Promise.resolve()
     await Promise.resolve()
     await new Promise((r) => setTimeout(r))
-    expect(seen).toEqual(['preparing', 'ready'])
+    expect(seen).toEqual([
+      { progress: 'preparing', stepsDone: 0 },
+      { progress: 'ready', stepsDone: PREP_STEP_TOTAL },
+    ])
   })
 
   it('reports diagnosing when the API refuses to prepare, and nothing once cancelled', async () => {
     const refused = fakeFetch(() => json({ message: 'not ready' }, 422))
-    const seen: string[] = []
+    const seen: PrepReport[] = []
     new HttpSetupHost('/api', refused.fn).prepareInterview({ sessionId: 's', form: {} as never }, (p) => seen.push(p))
     await new Promise((r) => setTimeout(r))
-    expect(seen).toEqual(['preparing', 'diagnosing'])
+    expect(seen.map((s) => s.progress)).toEqual(['preparing', 'diagnosing'])
 
-    const cancelled: string[] = []
+    const cancelled: PrepReport[] = []
     const stop = new HttpSetupHost('/api', fakeFetch(() => new Response(null, { status: 202 })).fn).prepareInterview({ sessionId: 's', form: {} as never }, (p) => cancelled.push(p))
     stop()
     await new Promise((r) => setTimeout(r))
-    expect(cancelled).toEqual(['preparing'])
+    expect(cancelled.map((s) => s.progress)).toEqual(['preparing'])
   })
 })
 

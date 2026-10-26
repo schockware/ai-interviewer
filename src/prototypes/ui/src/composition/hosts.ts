@@ -10,6 +10,8 @@ export interface HostParts {
   hardware: IntegrationMode
   /** Resume processing reports, over the InterviewHub in real mode. */
   uploadProgress: IntegrationMode
+  /** The microphone and camera streams, over plain WebSockets in real mode (composition/media.ts). */
+  media: IntegrationMode
 }
 
 /**
@@ -26,7 +28,7 @@ export function buildSetupHost(
   testHeaders: () => Record<string, string> = () => ({}),
 ): { host: SetupHost; parts: HostParts } {
   const mock = new MockSetupHost(clock, mockConfig)
-  if (integration.mode === 'mock') return { host: mock, parts: { setup: 'mock', hardware: 'mock', uploadProgress: 'mock' } }
+  if (integration.mode === 'mock') return { host: mock, parts: { setup: 'mock', hardware: 'mock', uploadProgress: 'mock', media: 'mock' } }
   const http = new HttpSetupHost(integration.apiBaseUrl, undefined, undefined, testHeaders)
   const host: SetupHost = {
     loadPage: () => http.loadPage(),
@@ -38,5 +40,5 @@ export function buildSetupHost(
     verifyHardware: (kind) => mock.verifyHardware(kind),
     watchResumeUpload: (id, onProgress, onError) => http.watchResumeUpload(id, onProgress, onError),
   }
-  return { host, parts: { setup: 'real', hardware: 'mock', uploadProgress: 'real' } }
+  return { host, parts: { setup: 'real', hardware: 'mock', uploadProgress: 'real', media: 'real' } }
 }

@@ -3,7 +3,7 @@
 // `npm run test:integration`. If the mock passes and the real one fails, the mock is lying
 // (docs/decisions/0004). Not a spec file itself: callers register it.
 import { describe, expect, it } from 'vitest'
-import type { PrepProgress, ResumeUploadProgress } from '../core/contract/pageFlow.ts'
+import type { PrepReport, ResumeUploadProgress } from '../core/contract/pageFlow.ts'
 import type { SetupHost } from '../core/ports.ts'
 
 export interface HostRig {
@@ -76,7 +76,7 @@ export function describeSetupHostContract(name: string, makeRig: () => HostRig):
       const { host, run, until } = makeRig()
       const role = await run(host.pasteJobDescription({ displayName: 'Prepared role', text: 'Lead the team.' }))
       const sessionId = `contract-${Math.random().toString(36).slice(2, 10)}`
-      const progress: PrepProgress[] = []
+      const progress: PrepReport[] = []
       host.prepareInterview(
         {
           sessionId,
@@ -88,8 +88,11 @@ export function describeSetupHostContract(name: string, makeRig: () => HostRig):
         },
         (p) => progress.push(p),
       )
-      await until(() => progress.at(-1) === 'ready')
-      expect(progress[0]).toBe('preparing')
+      await until(() => progress.at(-1)?.progress === 'ready')
+      expect(progress[0]).toEqual({ progress: 'preparing', stepsDone: 0 })
+      // Steps only ever count up, and a ready host has finished every one.
+      for (let i = 1; i < progress.length; i++) expect(progress[i].stepsDone).toBeGreaterThanOrEqual(progress[i - 1].stepsDone)
+      expect(progress.at(-1)?.stepsDone).toBeGreaterThan(0)
 
       const settings = await run(
         host.startInterview({

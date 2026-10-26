@@ -19,7 +19,7 @@ Tags: **S** Steven decides. **C** Claude can do it unaided. **S/C** Claude propo
 - [ ] **S** Go through [PATTERNS.MD](DEV_MANAGER_REVIEW/PATTERNS.MD): 12 patterns proposed by Claude, none judged.
 
 - [ ] **S** Rule on [decision 0004](docs/decisions/0004-integration-modes-and-secrets.md) (integration modes and secrets), starting with its Open list: does prod ship mock adapters, and which secret manager at the first cloud integration.
-- [ ] **S/C** Ask the API chat for a hardware-verify endpoint and a decided `InterviewPrepared` delivery, so real mode can drop the hardware mock and the guessed `ready` on `202`.
+- [ ] **S/C** Ask the API chat for a hardware-verify endpoint and a decided `InterviewPrepared` delivery, so real mode can drop the hardware mock and the guessed `ready` on `202`. The Waiting room (2026-10-26) also needs the server to report each preparation step; today the UI counts them from the host's `PrepReport.stepsDone`, which the real API jumps to the total.
 - [ ] **S/C** Have `POST /interviews/start` refuse a hot interview whose resume is still processing or failed to process, so the UI's pre-flight check (2026-10-26) is backed by the server. Needs the uploader's outcome recorded somewhere the interview service can read.
 
 - [ ] **S** Design testing as a first-class part of the system, starting with the ephemeral or in-memory persistence layer that mock and test mode inject, so mock mode cannot construct a real store. ([decision 0004](docs/decisions/0004-integration-modes-and-secrets.md), Mocks in production, point 5)
@@ -51,6 +51,17 @@ Tags: **S** Steven decides. **C** Claude can do it unaided. **S/C** Claude propo
 - [ ] **C** Audio frame format and size over the WebSocket, and backpressure. (decision 0003; src/design/events)
 - [ ] **C** Check SPEC.MD ~119: the scan reports it still says transport is "not decided" though decision 0003 settled it. Fix if confirmed.
 - [ ] **C** Decision 0001 risks: Kokoro on 4 cores, whisper.cpp base is not streaming, no combined-stack benchmark, native OS speech as a Tier 0 fallback never researched.
+
+## 3b. Media, transcription and summaries (Steven's plan, 2026-10-26)
+
+The first slice is built: the browser streams audio, and optional video, over plain WebSockets; the API fans each chunk out over a channel to the file store and to a transcription consumer port. What remains:
+
+- [ ] **C** The real-time transcription consumer: forward the audio channel to the Python service (gRPC, decision 0003) and raise transcript segments. Replaces `CountingTranscriptionFeed`.
+- [ ] **S/C** The first-pass summary AI, reading the real-time transcript as it arrives.
+- [ ] **S/C** The post-question summary AI, reading the isolated audio file after the question, and the accuracy comparison between the two passes (what is compared, how, and where the result goes).
+- [ ] **S** Later phase: the interviewing AI generates follow-up questions from the two summaries.
+- [ ] **C** Validate the stream's session id against the session store once session management exists; today any non-blank id opens a stream.
+- [ ] **S/C** Hardware verification could now estimate quality from the real audio stream instead of the mock (`verifyHardware`).
 
 ## 4. Contracts (the lesson learned)
 

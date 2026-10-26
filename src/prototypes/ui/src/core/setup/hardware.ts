@@ -72,37 +72,8 @@ const qualityViews: Record<Exclude<HardwareQuality, 'pending' | 'skipped'>, Omit
 export const audioPasses = (phase: CheckPhase): boolean =>
   phase.type === 'done' && phase.quality !== 'unreadable'
 
-export const canStart = (prep: PrepProgress, audio: CheckPhase): boolean => prep === 'ready' && audioPasses(audio)
-
-export interface HostView {
-  title: string
-  body: string
-  tone: Tone
-  busy: boolean
-}
-
-export const hostView: Record<PrepProgress, HostView> = {
-  preparing: { title: 'Waiting for host…', body: 'The interviewer is building your interview. You can set up your hardware while you wait.', tone: 'warn', busy: true },
-  retrying: { title: 'Waiting for host…', body: 'This is taking a little longer than usual. We are retrying quietly, and you can keep going.', tone: 'warn', busy: true },
-  diagnosing: { title: 'The host ran into a problem', body: 'We tried again and it did not work. The interviewer is checking what went wrong.', tone: 'bad', busy: false },
-  ready: { title: 'The host is ready', body: 'Your interview is prepared. Finish the audio check to start.', tone: 'ok', busy: false },
-}
-
-export interface BarView {
-  label: string
-  note: string
-  /** null is indeterminate: no value is claimed (ARIA progressbar without aria-valuenow). */
-  now: number | null
-  tone: Tone
-}
-
-/** The percentages are the board's illustration. The real server reports no percentage (open item). */
-export const barView: Record<PrepProgress, BarView> = {
-  preparing: { label: 'Preparing your interview', note: 'Setting up the interviewer', now: 45, tone: 'ok' },
-  retrying: { label: 'Preparing your interview', note: 'Taking longer than usual. Retrying', now: 62, tone: 'warn' },
-  diagnosing: { label: 'Preparing your interview', note: 'Checking what went wrong', now: null, tone: 'warn' },
-  ready: { label: 'Your interview is ready', note: '', now: 100, tone: 'ok' },
-}
+/** Ready for interview needs the audio check only; the Waiting room covers the rest (specs/page-flow.md, section 2). */
+export const canStart = (audio: CheckPhase): boolean => audioPasses(audio)
 
 export interface ChecklistItem {
   name: string
@@ -110,13 +81,13 @@ export interface ChecklistItem {
   tone: Tone
 }
 
-/** The list under Start interview, so a disabled button is always explained. */
+/** The list under Ready for interview, so a disabled button is always explained and the waiting room is foretold. */
 export function checklist(prep: PrepProgress, audio: CheckPhase, video: CheckPhase): ChecklistItem[] {
   const audioView = checkView(audio, 'audio')
   return [
     {
       name: 'Interview prepared',
-      state: prep === 'ready' ? 'done' : prep === 'diagnosing' ? 'needs attention' : 'still preparing',
+      state: prep === 'ready' ? 'done' : prep === 'diagnosing' ? 'needs attention, shown in the waiting room' : 'still preparing, you can wait for it in the waiting room',
       tone: prep === 'ready' ? 'ok' : prep === 'diagnosing' ? 'bad' : 'warn',
     },
     {

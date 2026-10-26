@@ -90,6 +90,17 @@ export type HardwareKind = 'audio' | 'video'
  */
 export type PrepProgress = 'preparing' | 'retrying' | 'diagnosing' | 'ready'
 
+/**
+ * One preparation report. PROPOSAL: `stepsDone` counts the preparation steps the server has
+ * finished, out of the Waiting room's list (core/setup/waitingRoom.ts, PREP_STEP_TOTAL), so the
+ * room can show each one. The contract's InterviewPrepared has no steps; a real server would
+ * report them itself, and how it delivers them is undecided.
+ */
+export interface PrepReport {
+  progress: PrepProgress
+  stepsDone: number
+}
+
 /** What the server sends back when the interview starts (contracts/page-flow.md, CueSettings). */
 export interface CueSettings {
   emulation: {

@@ -7,7 +7,8 @@ export function IntegrationBar({ parts }: { parts: HostParts }) {
   return (
     <p className={real ? 'integration-bar integration-real' : 'integration-bar'} data-testid="integration-bar">
       Integration: {real ? 'real API for setup' : 'all mock'}
-      {real && parts.uploadProgress === 'real' && ' and resume processing'}
+      {real && parts.uploadProgress === 'real' && ', resume processing'}
+      {real && parts.media === 'real' && ' and media streams'}
       {real && parts.hardware === 'mock' && ' · hardware checks still mock'} · the interview cues are always scripted
     </p>
   )
