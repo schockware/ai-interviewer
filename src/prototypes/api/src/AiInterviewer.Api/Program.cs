@@ -36,9 +36,7 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
 
 // Composition root: the only place that knows which adapter implements which port.
 builder.Services.AddSingleton(TimeProvider.System);
-builder.Services.AddSingleton<IResumeStore, InMemoryResumeStore>();
-builder.Services.AddSingleton<IRoleStore, InMemoryRoleStore>();
-builder.Services.AddSingleton<ISessionStore, InMemorySessionStore>();
+builder.Services.AddStorage(builder.Configuration, builder.Environment);
 builder.Services.AddSingleton<IDocumentReader, PlainTextDocumentReader>();
 builder.Services.AddSingleton<IInterviewPreparer, InstantInterviewPreparer>();
 builder.Services.AddSingleton<IPreparationDiagnoser, CannedPreparationDiagnoser>();
@@ -46,6 +44,9 @@ builder.Services.AddSingleton<ApplicationSetupService>();
 builder.Services.AddSingleton<InterviewService>();
 
 var app = builder.Build();
+
+// Opens the database now, so a bad Storage path fails at startup and not on the first request.
+app.Services.GetRequiredService<ISessionStore>();
 
 app.UseCors();
 

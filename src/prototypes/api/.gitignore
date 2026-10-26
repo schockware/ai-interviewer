@@ -1,2 +1,4 @@
 bin/
 obj/
+# The SQLite database written by a local run (Storage:Sqlite:Path). Never committed.
+data/

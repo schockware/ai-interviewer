@@ -38,6 +38,7 @@ Tags: **S** Steven decides. **C** Claude can do it unaided. **S/C** Claude propo
 
 - [ ] **S** Folder layout for three languages in one repo: per language or per layer. (src/README.MD, src/design/README.MD)
 - [ ] **S** What the data layer stores and where. (decision 0003)
+- [ ] **C** Persistence adapters for MSSQL, MySQL, PostgreSQL, MongoDB and CosmosDB behind the existing store ports (`IResumeStore`, `IRoleStore`, `ISessionStore`), each passing the store contract suite in `tests/AiInterviewer.Adapters.Tests`. Steven decided 2026-10-26: SQLite is the local-development store and the persistence interfaces stay completely agnostic of the engine.
 - [ ] **S** ai-models manifest format (YAML assumed), schema, seeding, keeping it current. (ai-models/README.md)
 - [ ] **S** Confirm the layer-to-language mapping, including the audio I/O language. (decision 0002)
 - [ ] **S/C** Language-neutral test runner, or one runner per language reading shared vectors. (decision 0002; testing/README.md)

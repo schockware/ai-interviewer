@@ -8,7 +8,7 @@ namespace AiInterviewer.Api.Tests;
 /// The UI prototype's dev server (http://localhost:5173) may call this API directly, by the origins
 /// in appsettings.Development.json. Any other origin gets no CORS headers, so the browser blocks it.
 /// </summary>
-public class CorsTests(WebApplicationFactory<Program> factory) : IClassFixture<WebApplicationFactory<Program>>
+public class CorsTests(ApiFactory factory) : IClassFixture<ApiFactory>
 {
     private HttpClient NewClient() => factory.WithWebHostBuilder(_ => { }).CreateClient();
 

@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-26 06:55:49 | Claude Fable 5.1 (claude-fable-5-1)
+Summary prompt: While reviewing the API, noted that only the in-memory (fake) stores exist and asked for a SQLite adapter so items persist.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: src/prototypes/api: added Microsoft.Data.Sqlite 10.0.12 to Adapters; new Adapters/Sqlite/ (SqliteDatabase.cs: one database, schema created on open, file or private :memory:, failures mapped to PortUnavailableException; SqliteStores.cs: resume, role and session stores; SetupFormJson.cs: hand-built JSON for the stored setup form, strict on read). Api/Storage.cs composes the stores from a Storage config section (Provider Sqlite default or InMemory, Sqlite:Path default data/ai-interviewer.sqlite, unknown value fails startup); Program.cs uses it and opens the database at startup; appsettings.json gained the section; api .gitignore ignores data/. New tests/AiInterviewer.Adapters.Tests (StoreContract run against in-memory and SQLite, SqliteDatabaseTests for persistence across reopen and ephemeral :memory:, SetupFormJsonTests) added to the slnx; Api.Tests gained ApiFactory (private :memory: SQLite per server) and StorageTests, and the three HTTP test classes moved onto it. Bumped Microsoft.AspNetCore.SignalR.Client to 10.0.14 in Api.Tests because NuGet audit GHSA-334f-vvp4-7g6p on 10.0.12 failed the restore under warnings-as-errors. Docs: api README (layout, Storage section, stubs, conventions), PATTERNS P-014 seen-in, decision 0004 point 5 note. Results: dotnet test 39 + 29 + 31 pass; UI test:integration 6 pass against the live API; a role added over HTTP survived a hard kill and restart; the local data folder was deleted afterwards. Did not commit.
+Tokens: ~69,000 (derived: counter 15,000,000 -> ~14,931,000)
+---
 ## 2026-10-26 06:39:08 | Claude Fable 5.1 (claude-fable-5-1)
 Summary prompt: Asked to check in the UI-to-API connection work, and said the next step is extending the server side with endpoints to handle the setups.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry

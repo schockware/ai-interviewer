@@ -10,11 +10,12 @@ C# .NET 10 hexagonal Web API. **Prototype zone: nothing here is verified.** It f
 AiInterviewer.slnx
 src/
   AiInterviewer.Business/   the hexagon: contract types, ports, use cases. References nothing.
-  AiInterviewer.Adapters/   tier 3: in-memory stores and stub AI layers. References Business.
-  AiInterviewer.Api/        tier 1: endpoints, wire DTOs, JSON, composition root. References both.
+  AiInterviewer.Adapters/   tier 3: SQLite stores (Sqlite/), in-memory stores and stub AI layers. References Business.
+  AiInterviewer.Api/        tier 1: endpoints, wire DTOs, JSON, composition root (Program.cs, Storage.cs). References both.
 tests/
   AiInterviewer.Business.Tests/   unit tests against hand-written fakes, plus an architecture guard
-  AiInterviewer.Api.Tests/        HTTP tests through the real pipeline (WebApplicationFactory)
+  AiInterviewer.Adapters.Tests/   one store contract suite run against the in-memory and SQLite adapters, plus SQLite persistence tests
+  AiInterviewer.Api.Tests/        HTTP tests through the real pipeline (WebApplicationFactory), on a private SQLite database per server
 ```
 
 Dependencies point inward only. `ArchitectureTests` fails if Business references anything beyond the base class library.
@@ -37,6 +38,17 @@ The connection information is public and lives in committed files on both sides;
 | UI | `../ui/.env.dev` | The mode, the proxy target (this API's address) and the URL the browser calls |
 
 Start this API, then `npm run dev:real` in `../ui`. The UI's dev server proxies `/api` here, so CORS is not needed on that path; the CORS policy is for calling this API directly from the page.
+
+## Storage
+
+Resumes, roles and sessions are kept in SQLite by default and survive a restart. The `Storage` section of `appsettings.json` picks the adapter; a value it does not know stops the app from starting instead of falling back.
+
+| Setting | Values | Default |
+|---|---|---|
+| `Storage:Provider` | `Sqlite` persists. `InMemory` is for mock and test mode and forgets everything on restart (decision 0004, mocks in production, point 5) | `Sqlite` |
+| `Storage:Sqlite:Path` | A file path, relative to the project folder, or `:memory:` for a private database that lives as long as the process | `data/ai-interviewer.sqlite` |
+
+Under `dotnet run` the file lands at `src/AiInterviewer.Api/data/ai-interviewer.sqlite`, which is gitignored. Delete the folder to start over. The schema is created on open; there is no migration step yet, so a schema change means deleting the file. The HTTP tests use `:memory:`, so they run through the SQLite adapter and never touch that file. Steven decided 2026-10-26: SQLite is the local-development store, and the persistence ports stay completely agnostic of the engine. The `Sqlite/` folder is the only place that knows SQLite; adapters for MSSQL, MySQL, PostgreSQL, MongoDB and CosmosDB are a task (`TASKS.MD`), each to pass the same store contract suite.
 
 ## Endpoints
 
@@ -79,10 +91,10 @@ Any malformed body (missing or null field, unknown property, unknown discriminat
 - `PlainTextDocumentReader` reads `.txt` and `.md` only. PDF and Word are refused with a message, not guessed at.
 - `InstantInterviewPreparer` marks every session `Ok` immediately, so the `Error` path and `InterviewPrepared` delivery are only reachable in tests. How `InterviewPrepared` reaches the client (push or poll) is undecided.
 - `ServerCue`, `ClientCue`, `VerifyHardware`, `HardwareVerified` and the audio stream need the WebSocket channel, which is not built. The audio frame format is an open item in decision 0003.
-- Storage is in memory and is forgotten on restart. No Python worker, gRPC contract or LLM runtime is connected.
+- Storage is a single SQLite file with no migrations (see Storage above). No Python worker, gRPC contract or LLM runtime is connected.
 - `ApplicationSetupPage` `loading` has no server path: the server answers `ready`, or `error` if a store is unreachable.
 
 ## Conventions here
 
 - Explicit declarations: ids and names are types that cannot be blank, results are `Outcome` (`Succeeded` or `Failed`), unions are sealed record hierarchies, and `required` wire fields reject null. Nullable reference types are on and warnings are errors.
-- JSON attributes and converters live only in `AiInterviewer.Api/Wire`.
+- JSON attributes and converters live only in `AiInterviewer.Api/Wire`. The SQLite session store writes the setup form with its own hand-built JSON (`Sqlite/SetupFormJson.cs`), so the business types stay free of serialization attributes and the stored shape is not the wire shape.

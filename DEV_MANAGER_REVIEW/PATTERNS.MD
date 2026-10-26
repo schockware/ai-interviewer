@@ -110,7 +110,7 @@ Steven's call:
 ## P-014 One contract suite per port, run against the mock and the real adapter
 Status: proposed
 Rule: Behavior every implementation must share is written once (`adapters/setupHostContract.ts`) and registered for each adapter. The real run lives in `*.integration.spec.ts` and skips loudly.
-Seen in: `adapters/setupHostContract.ts`, `mock/mockSetupHost.contract.spec.ts`, `http/httpSetupHost.integration.spec.ts`.
+Seen in: `adapters/setupHostContract.ts`, `mock/mockSetupHost.contract.spec.ts`, `http/httpSetupHost.integration.spec.ts`. On the API side, `tests/AiInterviewer.Adapters.Tests/StoreContract.cs` runs one suite against the in-memory and SQLite stores.
 Why: it caught the mock forgetting uploads, and a UI message keyed off the mock's id format.
 Steven's call:
 
