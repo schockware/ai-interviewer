@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-26 13:29:12 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Asked for a canvas that teaches a QA tester to become a candidate who needs an accommodation: a blind profile (set up an OS or top-three screen reader, prove it works on a test page, then black out the screen with a key cheat sheet that does not interfere), a deaf profile (set up speech to text), color and other visual impairments by CSS filters, and research on whether scrambling words to emulate dyslexia is reasonable.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: built the canvas as a second page of the UI prototype, src/prototypes/ui/qa.html, with src/qa/ (QaCanvas, TestStage, CheatSheet, checks, profiles, simulations, qa.css, simulations.test.ts), e2e/qa.spec.ts (axe at WCAG 2.2 AA on every profile, blackout, cheat sheet, filters, embedded interviewer, text spacing), audit/qa-canvas.md, a README section, and a qa build input in vite.config.ts. Dyslexia finding: word scrambling is easy but misrepresents dyslexia (IDA: "compelling, powerful, and wrong"), so it is an optional, labeled empathy toggle on a sample question only, beside a WCAG 1.4.12 text spacing toggle. Key commands, menu paths and filter strengths are marked as proposals. Results: typecheck passes, lint one existing warning, 161 vitest tests pass, 23 Chromium e2e tests pass; Firefox not run (not installed); run on Node 22, not 24. No screen reader pass. Did not touch src/prod.
+Tokens: ~160,000 (derived: counter 15,000,000 -> ~14,840,000)
+---
 ## 2026-10-07 11:25:29 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Asked whether the ops/permission flag works like a claim routing specific user groups to the mock, accepted the other four proposals, asked that mock and test mode use ephemeral or in-memory persistence by dependency injection, said testing should be designed as a first-class concern (to be added to their task list), and asked for it all in an ADR.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry

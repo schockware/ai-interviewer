@@ -1,0 +1,233 @@
+/* Authored by Claude Opus 5.5 (Anthropic), with Steven Chock as co-author.
+   The QA accommodation canvas. Builds on index.css; light only, like the rest of the prototype. */
+html {
+  scroll-padding-top: 24px;
+}
+.qa-head {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.qa-head h1 {
+  font-size: 26px;
+  font-weight: 600;
+}
+.qa-nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.qa-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  background: var(--card);
+  color: var(--ink);
+  text-decoration: none;
+}
+.qa-nav a:hover {
+  text-decoration: underline;
+}
+.qa-nav a[aria-current='page'] {
+  background: var(--ink);
+  color: #fff;
+  font-weight: 600;
+}
+a {
+  color: var(--accent);
+}
+
+/* The controls bar stays out of every simulation, so the tester can always see and reach it. */
+.qa-controls {
+  max-width: 1200px;
+  width: calc(100% - 32px);
+  margin: 16px auto 0;
+  padding: 12px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  z-index: 2;
+}
+@media (min-width: 900px) and (min-height: 720px) {
+  .qa-controls {
+    position: sticky;
+    top: 8px;
+  }
+  html {
+    scroll-padding-top: 180px;
+  }
+}
+.qa-controls .btn[aria-pressed='true'] {
+  background: #b42318;
+  border-color: #b42318;
+}
+.qa-result {
+  flex: 1 1 240px;
+  font-weight: 600;
+}
+.qa-filters {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+}
+.qa-filters legend {
+  font-weight: 600;
+  padding: 0;
+  margin-bottom: 4px;
+}
+
+.qa-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0 20px;
+}
+@media (min-width: 900px) {
+  .qa-body-cheat {
+    grid-template-columns: minmax(0, 1fr) 340px;
+  }
+}
+.qa-main {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+}
+.qa-cheat {
+  align-self: start;
+  margin: 24px 16px;
+  border: 2px solid var(--ink);
+}
+@media (min-width: 900px) {
+  .qa-cheat {
+    position: sticky;
+    top: 180px;
+    margin: 24px 16px 24px 0;
+    max-height: calc(100vh - 200px);
+    overflow: auto;
+  }
+}
+.qa-keys {
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.qa-keys th,
+.qa-keys td {
+  text-align: left;
+  vertical-align: top;
+  padding: 6px 8px;
+  border-top: 1px solid var(--line);
+}
+.qa-keys thead th {
+  border-top: 0;
+  color: var(--muted);
+}
+kbd {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.qa-check {
+  color: #7a3e00;
+  font-weight: 600;
+}
+
+.qa-steps {
+  margin: 0;
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 75ch;
+}
+.qa-plain {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.qa-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.qa-stage {
+  border: 2px dashed var(--line-strong);
+}
+.qa-frame {
+  width: 100%;
+  height: 900px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--bg);
+}
+.qa-align-end {
+  align-self: flex-end;
+}
+.qa-fit {
+  align-self: flex-start;
+}
+.qa-input {
+  min-height: 44px;
+  max-width: 320px;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  padding: 0 12px;
+  font: inherit;
+}
+.qa-sample {
+  font-weight: 600;
+}
+.qa-listening {
+  background: var(--tint-listening);
+  color: var(--ink-listening);
+}
+.qa-thinking {
+  background: var(--tint-thinking);
+  color: var(--ink-thinking);
+}
+.qa-talking {
+  background: var(--tint-talking);
+  color: var(--ink-talking);
+}
+.qa-idle {
+  background: var(--tint-idle);
+  color: var(--ink-idle);
+}
+.qa-large {
+  font-size: 22px;
+}
+.qa-passage {
+  font-size: 18px;
+  max-width: 60ch;
+}
+/* `.card` sets display, which would override the hidden attribute. */
+[hidden] {
+  display: none !important;
+}
+select {
+  max-width: 100%;
+}
+.qa-inline select {
+  min-width: min(220px, 100%);
+}
+.qa-main .field,
+.qa-controls .field {
+  min-width: 0;
+  max-width: 100%;
+}
