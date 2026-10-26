@@ -4,6 +4,18 @@
 
 Accessibility is always visible and is the first button focused, in case someone with an accessibility device is reading the page.
 
+## Status banner and preparation progress (shared)
+
+Two shared components, so every page looks and behaves the same.
+
+- **Status banner.** A slot under the header on every page. It is empty and takes no space when there is nothing to say. One banner at a time; if several apply, the most urgent wins: problem, then uploading, then waiting or retrying, then ready.
+  - **Uploading:** says only what is being uploaded: "Uploading your resume…", "Uploading your role…" or "Uploading your resume and role…". The step-by-step detail lives in the waiting room.
+  - **Waiting for host…:** the pacifier banner, while the AI prepares the interview. A slower version says it is taking longer and is retrying quietly.
+  - **The host ran into a problem:** nothing interrupts the user. The AI models diagnose it.
+  - **The host is ready.**
+  - It is a status message (polite). It is announced when it appears or changes, never moves focus, and has a text label as well as an icon and colour.
+- **Preparing your interview** progress bar. At the bottom of every setup page (Application setup, Hardware setup and the waiting room), once preparation has started. It slows if preparation is retrying, and shows no percentage while the problem is diagnosed. It has a name and a fixed text value, and its movement is not announced.
+
 ## 1. Application setup
 
 *Required settings to generate an interview experience, with standard AI disclaimers.*
@@ -33,6 +45,8 @@ Accessibility is always visible and is the first button focused, in case someone
   - The AI needs time to build out an interview based on the Role and Resume (if provided).
   - *Disabled while anything is missing or still processing, with a list that says what is missing.*
   - It takes the user to the Hardware setup and verification screen right away, with a progress bar at the bottom of the screen.
+  - If the user comes back to this page while the interview is preparing, the status banner and the progress bar show here too.
+  - While a resume or role is uploading, the status banner says so, and Prepare interview stays disabled.
 
 ## 2. Hardware setup and verification
 
@@ -42,6 +56,7 @@ Accessibility is always visible and is the first button focused, in case someone
 - Advanced training options in the bottom right.
   - Lets the user turn on training modules, turn on captions by default, turn on simulated network latency and packet loss, etc.
 - To add some immersion, display a "Waiting for host..." message with a pacifier icon while the AI prepares the interview. The progress bar stays visible.
+  - This is the shared status banner. It also says when a resume or role is still uploading.
 - **Ready for interview**
   - *Disabled until the required hardware settings are verified and rated clear, intermittent or readable.*
   - It no longer waits for the interview to be prepared. The waiting room (next) covers that.

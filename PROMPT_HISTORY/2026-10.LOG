@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-26 15:15:29 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked to pull the latest main, then to add a banner to Application Setup and Hardware Setup saying a resume and/or role is uploading (without details, which belong to the waiting room), to reuse the Waiting for host banner, to show that the banner could exist on all pages, and to put the Preparing your interview progress on all setups.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: merged origin/main (resolved the PROMPT_HISTORY log conflict by keeping both sides, newest first). Design canvas version 27: new shared components StatusBanner (uploading with resume, role or both; waiting; retrying; problem; ready) and PrepProgress (preparing, retrying, diagnosing, ready), imported by Setup, Hardware and Waiting; the banner slot also added to the Interview screen (Tweak, hidden by default); new SharedStatus overview board showing the slot placement, which page shows what, every state and the rules. Setup gained Tweaks to preview a banner and the bar when coming back during preparation; Hardware gained an uploading Tweak. Copied the three new boards and the changed Setup, Hardware, Waiting and Main into design/mockups/ui/ (Main is now synced; States, Timeline and Recovery still iteration 1) and updated its canvas.json and README. specs/page-flow.md: new shared status banner and progress section and notes in sections 1 and 2. Not rendered; the sticky behaviour of the imported progress bar is untested.
+Tokens: ~40,000 (derived: counter 15,000,000 -> ~14,960,000)
+---
 ## 2026-10-26 15:00:41 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Asked to update everything in the specs for the renamed button, and gave three waiting-room changes: when ready, gently collapse the display and count down to the interview; let the user pause the countdown in the testing panel as an anxiety accommodation; and add under the When you join panel a "Pez dispenser" offering interview tips, a battery of FAQ or a role review as a proactive wait pacifier.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry

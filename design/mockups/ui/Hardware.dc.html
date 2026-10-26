@@ -37,20 +37,9 @@ Accessibility
 <a href="Setup.dc.html" style="font-size: 15px; font-weight: 500">Back to application setup</a>
 </header>
 
-<section aria-label="Host status" style="{{hostStyle}}">
-<div aria-hidden="true" style="width: 48px; height: 48px; flex: none; border-radius: 50%; background: #FFFFFF; display: flex; align-items: center; justify-content: center; color: {{hostColor}}">
-<sc-if value="{{showWaiting}}" hint-placeholder-val="{{ true }}">
-<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12"></path><path d="M6 22h12"></path><path d="M6 2v4l6 6-6 6v4"></path><path d="M18 2v4l-6 6 6 6v4"></path></svg>
+<sc-if value="{{bannerOn}}" hint-placeholder-val="{{ false }}">
+<dc-import name="StatusBanner" kind="{{bannerKind}}" what="{{bannerWhat}}" hint-size="100%,88px"></dc-import>
 </sc-if>
-<sc-if value="{{showHostReady}}" hint-placeholder-val="{{ false }}">
-<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"></path></svg>
-</sc-if>
-</div>
-<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
-<h2 style="margin: 0; font-size: 20px; font-weight: 600; color: {{hostColor}}">{{hostTitle}}</h2>
-<p style="margin: 0; font-size: 15px; line-height: 1.5; color: #2B3540">{{hostBody}}</p>
-</div>
-</section>
 
 <sc-if value="{{showDiagnosis}}" hint-placeholder-val="{{ false }}">
 <section aria-label="What went wrong" style="background: #FFFFFF; border-radius: 16px; padding: 24px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 12px">
@@ -175,26 +164,13 @@ Ready for interview
 </div>
 </div>
 
-<section aria-label="Interview preparation progress" style="{{barStyle}}">
-<div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px">
-<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 14px">
-<span id="prep-label" style="font-weight: 600; color: #16202A">{{barLabel}}</span>
-<span style="color: #4A5562">{{barNote}}</span>
-</div>
-<div role="progressbar" aria-labelledby="prep-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{barNow}}" aria-valuetext="{{barValueText}}" style="height: 12px; border-radius: 6px; background: #D5DAE0; overflow: hidden; position: relative">
-<sc-if value="{{barDeterminate}}" hint-placeholder-val="{{ true }}">
-<div style="width: {{barWidth}}; height: 100%; background: {{barColor}}; border-radius: 6px"></div>
+<sc-if value="{{progressOn}}" hint-placeholder-val="{{ false }}">
+<dc-import name="PrepProgress" state="{{progressState}}" percent="{{progressPercent}}" hint-size="100%,76px"></dc-import>
 </sc-if>
-<sc-if value="{{barIndeterminate}}" hint-placeholder-val="{{ false }}">
-<div class="sweep" style="width: 40%; height: 100%; background: #9A4D00; border-radius: 6px"></div>
-</sc-if>
-</div>
-</div>
-</section>
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"prep":{"editor":"enum","options":["preparing","retrying","diagnosing","ready"],"default":"preparing","section":"Preview"},"audio":{"editor":"enum","options":["pending","checking","clear","intermittent","readable","unreadable","errored"],"default":"pending","section":"Preview"},"video":{"editor":"enum","options":["skipped","pending","checking","clear","intermittent","readable","unreadable","errored"],"default":"skipped","section":"Preview"},"captions":{"editor":"boolean","default":false,"section":"Preview"},"preset":{"editor":"enum","options":["clean","decent_call","laggy_clipped","bad_connection","rough_day"],"default":"clean","section":"Preview"},"$preview":{"width":1280,"height":1200}}'>
+<script type="text/x-dc" data-dc-script data-props='{"prep":{"editor":"enum","options":["preparing","retrying","diagnosing","ready"],"default":"preparing","section":"Preview"},"audio":{"editor":"enum","options":["pending","checking","clear","intermittent","readable","unreadable","errored"],"default":"pending","section":"Preview"},"video":{"editor":"enum","options":["skipped","pending","checking","clear","intermittent","readable","unreadable","errored"],"default":"skipped","section":"Preview"},"captions":{"editor":"boolean","default":false,"section":"Preview"},"uploading":{"editor":"enum","options":["none","resume","role","both"],"default":"none","section":"Preview"},"preset":{"editor":"enum","options":["clean","decent_call","laggy_clipped","bad_connection","rough_day"],"default":"clean","section":"Preview"},"$preview":{"width":1280,"height":1200}}'>
 class Component extends DCLogic {
   renderVals() {
     const p = this.props;
@@ -202,6 +178,10 @@ class Component extends DCLogic {
     const audioKey = p.audio ?? 'pending';
     const videoKey = p.video ?? 'skipped';
     const captionsOn = p.captions ?? false;
+    const upl = p.uploading ?? 'none';
+    let bannerKind = { preparing: 'waiting', retrying: 'retrying', diagnosing: 'problem', ready: 'ready' }[prep];
+    if (upl !== 'none' && prep !== 'diagnosing') bannerKind = 'uploading';
+    const progressPct = { preparing: 45, retrying: 62, diagnosing: 0, ready: 100 }[prep];
     const preset = p.preset ?? 'clean';
 
     const OK = '#0F6B5C', WARN = '#7A3E00', BAD = '#B42318', NEUTRAL = '#4B5563';
@@ -252,6 +232,12 @@ class Component extends DCLogic {
     const note = (c, t) => 'display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: 10px; background: ' + t + '; border: 1px solid ' + c;
 
     return {
+      bannerOn: true,
+      bannerKind: bannerKind,
+      bannerWhat: upl === 'none' ? 'both' : upl,
+      progressOn: true,
+      progressState: prep,
+      progressPercent: progressPct,
       hostStyle: 'background: ' + host.bg + '; border: 1px solid ' + host.border + '; border-radius: 16px; padding: 20px 24px; display: flex; align-items: center; gap: 16px',
       hostColor: host.color,
       hostTitle: host.title,
