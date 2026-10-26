@@ -851,3 +851,224 @@ input[type='text'] {
   color: #7a3e00;
   font-weight: 600;
 }
+
+/* Test mode (?mode=test): a right-side drawer for testers and QA, over the page. Not in the mockups. */
+.drawer-toggle {
+  position: fixed;
+  top: 8px;
+  right: 16px;
+  z-index: 30;
+}
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(360px, 100vw);
+  overflow-y: auto;
+  background: var(--card);
+  border-left: 1px solid var(--line-strong);
+  box-shadow: -8px 0 24px rgba(22, 32, 42, 0.12);
+  padding: 64px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 20;
+}
+.drawer[hidden] {
+  display: none;
+}
+.drawer section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.drawer code {
+  font-size: 12px;
+  word-break: break-all;
+}
+
+/* Shared status banner and preparation progress (design/mockups/ui/StatusBanner, PrepProgress) */
+.banner-slot {
+  display: block;
+}
+.banner-icon {
+  width: 48px;
+  height: 48px;
+  flex: none;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fill-preparing {
+  background: var(--accent);
+}
+.fill-retrying {
+  background: var(--ink-thinking);
+}
+.fill-ready {
+  background: var(--ink-talking);
+}
+.tone-ok {
+  color: var(--ink-talking);
+}
+.tone-warn {
+  color: #7a3e00;
+}
+.tone-bad {
+  color: #b42318;
+}
+.tone-neutral {
+  color: var(--ink-idle);
+}
+
+/* Waiting room (design/mockups/ui/Waiting) */
+.link-btn {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.now {
+  font-size: 20px;
+  font-weight: 600;
+}
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--bg);
+}
+.step-ok {
+  background: var(--tint-talking);
+}
+.step-warn {
+  background: #fff1dc;
+}
+.step-bad {
+  background: #fce4e1;
+}
+.step-mark {
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 2px solid currentColor;
+  font-size: 14px;
+  font-weight: 700;
+}
+.stack-tight {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.step-label {
+  font-size: 16px;
+  font-weight: 500;
+}
+.countdown {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 28px;
+}
+.dial {
+  width: 132px;
+  height: 132px;
+  flex: none;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--tint-talking);
+  box-shadow: 0 0 0 4px currentColor;
+}
+.dial.tone-neutral {
+  background: var(--tint-idle);
+}
+.dial-number {
+  font-size: 40px;
+  line-height: 1;
+  font-weight: 600;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+}
+.dial-unit {
+  font-size: 13px;
+  font-weight: 600;
+}
+.card-purple {
+  background: #efe8fa;
+  border-color: #5b2a9e;
+  color: #2a1450;
+}
+.card-purple p {
+  color: #2a1450;
+}
+.tile {
+  min-height: 52px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+.tile-on {
+  border: 2px solid var(--accent);
+  background: #eef3fd;
+  color: #1d3a9e;
+}
+details.card summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+}
+.btn-danger {
+  border-color: #b42318;
+  color: #b42318;
+  background: #fff;
+}
+
+/* Capture: the camera preview on the Hardware page and in the microphone row */
+.preview {
+  width: 160px;
+  max-width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  background: #000;
+  object-fit: cover;
+}

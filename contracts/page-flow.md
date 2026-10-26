@@ -178,6 +178,7 @@ Server owns this. Sent once it can estimate the stream quality.
 */
 HardwareVerified: { type: "audio" | "video", quality: HardwareQuality }
 
+/* The button is labelled "Ready for interview" in the UI. The name StartInterview is unchanged on the wire. */
 StartInterview:
 {
   form: HardwareSetupForm,

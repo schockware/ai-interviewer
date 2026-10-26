@@ -116,4 +116,10 @@ public static class Mapping
             settings.Latencies.Network.Value,
             settings.Latencies.PacketLossVariancePerSecond,
             settings.Latencies.AudioRamp)));
+
+    public static ResumeUploadProgressDto ToDto(this ResumeUploadProgress progress) => new(
+        progress.ResumeId.Value,
+        progress.DisplayName.Value,
+        progress.Status,
+        progress.Steps.Select(step => new ResumeUploadStepDto(step.Name, step.Status)).ToList());
 }

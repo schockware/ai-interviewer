@@ -1,21 +1,17 @@
-// Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author.
-import { useEffect, useState } from 'react'
+// Authored by Claude Sonnet 5.5 and Claude Fable 5.1 (Anthropic), with Steven Chock as co-author.
+import { useEffect, useRef, useState } from 'react'
 import type { MockHostConfig } from '../adapters/mock/index.ts'
-import type { HardwareKind, PrepProgress, PrepareInterview, StartInterview } from '../core/contract/pageFlow.ts'
-import type { SetupHost } from '../core/ports.ts'
-import {
-  audioPrompt,
-  barView,
-  canStart,
-  checklist,
-  checkView,
-  hostView,
-  toHardwareForm,
-  type CheckPhase,
-  type Tone,
-} from '../core/setup/hardware.ts'
-import { ArrowIcon, CheckIcon, ErrorIcon, HourglassIcon } from './icons.tsx'
+import type { HardwareKind, StartInterview } from '../core/contract/pageFlow.ts'
+import { errorNameOf, litBars, permissionMessage } from '../core/media/capture.ts'
+import type { LevelMeter, MediaDeviceChoice, MediaDevicesPort, OpenedStream, SetupHost } from '../core/ports.ts'
+import { audioPrompt, canStart, checklist, checkView, toHardwareForm, type CheckPhase, type Tone } from '../core/setup/hardware.ts'
+import { bannerKind } from '../core/setup/status.ts'
+import { ArrowIcon } from './icons.tsx'
 import { PageHeader } from './PageHeader.tsx'
+import { PrepProgressBar } from './PrepProgressBar.tsx'
+import { StatusBanner } from './StatusBanner.tsx'
+import { usePreparation } from './preparation.ts'
+import { usePreparationSteps } from './usePreparationSteps.ts'
 
 const MARK: Record<Tone, string> = { ok: '✓', warn: '!', bad: '✕', neutral: '–' }
 const PRESETS: ReadonlyArray<[string, string]> = [
@@ -25,100 +21,166 @@ const PRESETS: ReadonlyArray<[string, string]> = [
   ['bad_connection', 'Bad connection'],
   ['rough_day', 'Rough day'],
 ]
+const METER = [8, 16, 24, 14, 6, 6]
+
+/** The devices the interview will capture with. `videoDeviceId` null means no video; '' the default camera. */
+export interface ChosenDevices {
+  audioDeviceId: string | null
+  videoDeviceId: string | null
+}
 
 /**
- * Hardware setup and verification, built from design/mockups/ui/Hardware.dc.html. Preparation
- * runs while the user checks hardware, and Start interview waits for both (contracts/page-flow.md).
- *
- * Prototype: nothing is streamed from a microphone or camera. The host returns a scripted quality.
+ * Hardware setup and verification, built from design/mockups/ui/Hardware.dc.html. The checks open
+ * the real microphone and camera through the devices port: the meter shows the live level and the
+ * camera a preview, while the host rates the quality (still scripted: the API has no verify
+ * endpoint). Ready for interview needs the audio check only; the Waiting room covers whatever is
+ * still being built (specs/page-flow.md, section 2).
  */
 export function HardwarePage({
   host,
-  request,
+  media,
   initialCaptions,
   config,
   onConfig,
   onBack,
-  onStart,
+  onReady,
   onOpenAccessibility,
 }: {
   host: SetupHost
-  request: PrepareInterview
+  media: MediaDevicesPort
   initialCaptions: boolean
   config: MockHostConfig
   onConfig: (config: MockHostConfig) => void
   onBack: () => void
-  onStart: (start: StartInterview, captions: boolean) => void
+  /** The user is ready: on to the Waiting room with the hardware form the interview will start with, and the devices it will use. */
+  onReady: (start: StartInterview, captions: boolean, devices: ChosenDevices) => void
   onOpenAccessibility: () => void
 }) {
-  const [prep, setPrep] = useState<PrepProgress>('preparing')
-  const [attempt, setAttempt] = useState(0)
+  const preparation = usePreparation()
+  const steps = usePreparationSteps()
+  const prep = steps.prep ?? 'preparing'
   const [audio, setAudio] = useState<CheckPhase>({ type: 'pending' })
   const [video, setVideo] = useState<CheckPhase>({ type: 'skipped' })
   const [captions, setCaptions] = useState(initialCaptions)
   const [preset, setPreset] = useState('clean')
-  const [starting, setStarting] = useState(false)
-  const [startError, setStartError] = useState<string | null>(null)
+  const [choices, setChoices] = useState<MediaDeviceChoice[]>([])
+  const [audioDeviceId, setAudioDeviceId] = useState<string | null>(null)
+  const [videoDeviceId, setVideoDeviceId] = useState<string | null>(null)
+  const [level, setLevel] = useState(0)
+  const [deviceError, setDeviceError] = useState<{ kind: HardwareKind; message: string } | null>(null)
+  const camera = useRef<OpenedStream | null>(null)
+  const previewRef = useRef<HTMLVideoElement>(null)
 
+  // Device names only appear once the browser has allowed a device, so the list is read again after each check.
   useEffect(() => {
-    return host.prepareInterview(request, setPrep)
-  }, [host, request, attempt])
-
-  const check = async (kind: HardwareKind, set: (phase: CheckPhase) => void) => {
-    set({ type: 'checking' })
-    try {
-      set({ type: 'done', quality: await host.verifyHardware(kind) })
-    } catch {
-      set({ type: 'errored' })
+    let live = true
+    media
+      .list()
+      .then((all) => live && setChoices(all))
+      .catch(() => undefined)
+    return () => {
+      live = false
     }
-  }
+  }, [media, audio.type, video.type])
 
-  const startable = canStart(prep, audio)
-  const start = async () => {
-    if (!startable || starting) return
-    setStarting(true)
-    setStartError(null)
-    const startRequest = { form: toHardwareForm(audio, video, captions), sessionId: request.sessionId }
+  // Leaving the page closes the camera.
+  useEffect(
+    () => () => {
+      camera.current?.stop()
+      camera.current = null
+    },
+    [],
+  )
+
+  const checkAudio = async () => {
+    setAudio({ type: 'checking' })
+    setDeviceError(null)
+    let stream: OpenedStream
+    let meter: LevelMeter
     try {
-      await host.startInterview(startRequest) // the server can still refuse (not prepared, hardware not ready)
-      onStart(startRequest, captions)
+      stream = await media.openAudio(audioDeviceId)
+      meter = media.meter(stream)
     } catch (e) {
-      setStartError(e instanceof Error ? e.message : 'The interview could not start.')
-      setStarting(false)
+      setDeviceError({ kind: 'audio', message: permissionMessage(errorNameOf(e), 'microphone') })
+      setAudio({ type: 'errored' })
+      return
+    }
+    const timer = setInterval(() => setLevel(meter.read()), 100)
+    try {
+      setAudio({ type: 'done', quality: await host.verifyHardware('audio') })
+    } catch {
+      setAudio({ type: 'errored' })
+    } finally {
+      clearInterval(timer)
+      meter.stop()
+      stream.stop()
+      setLevel(0)
     }
   }
 
-  const host_ = hostView[prep]
-  const bar = barView[prep]
-  const barLabelId = 'prep-label'
+  const checkVideo = async () => {
+    setVideo({ type: 'checking' })
+    setDeviceError(null)
+    camera.current?.stop()
+    try {
+      const stream = await media.openVideo(videoDeviceId)
+      camera.current = stream
+      if (previewRef.current) media.preview(stream, previewRef.current)
+    } catch (e) {
+      setDeviceError({ kind: 'video', message: permissionMessage(errorNameOf(e), 'camera') })
+      setVideo({ type: 'errored' })
+      return
+    }
+    try {
+      setVideo({ type: 'done', quality: await host.verifyHardware('video') })
+    } catch {
+      setVideo({ type: 'errored' })
+    }
+  }
+
+  const skipVideo = () => {
+    camera.current?.stop()
+    camera.current = null
+    setVideo({ type: 'skipped' })
+  }
+
+  const startable = canStart(audio)
+  const ready = () => {
+    if (!startable || !preparation.request) return
+    camera.current?.stop()
+    camera.current = null
+    onReady({ form: toHardwareForm(audio, video, captions), sessionId: preparation.request.sessionId }, captions, {
+      audioDeviceId,
+      videoDeviceId: video.type === 'done' ? (videoDeviceId ?? '') : null,
+    })
+  }
+
+  const startNote =
+    prep === 'ready'
+      ? 'Your interview is ready, so the waiting room lets you straight in.'
+      : prep === 'diagnosing'
+        ? 'The host hit a problem. The waiting room shows what we found.'
+        : 'Your interview is still being built. You will wait for it in the waiting room.'
+  const mics = choices.filter((c) => c.kind === 'audioinput')
+  const cams = choices.filter((c) => c.kind === 'videoinput')
+  const lit = audio.type === 'checking' ? litBars(level, METER.length) : audio.type === 'done' ? 4 : 0
 
   return (
     <div className="page page-with-dock">
-      <PageHeader title="Check your setup" subtitle="Step 2 of 2 · Hardware setup and verification" onOpenAccessibility={onOpenAccessibility}>
+      <PageHeader title="Check your setup" subtitle="Step 2 of 3 · Hardware setup and verification" onOpenAccessibility={onOpenAccessibility}>
         <button type="button" className="btn" onClick={onBack}>
           Back to application setup
         </button>
       </PageHeader>
 
-      <section aria-label="Host status" className={`banner banner-${host_.tone}`}>
-        <span aria-hidden="true" className="banner-icon">
-          {prep === 'ready' ? <CheckIcon /> : prep === 'diagnosing' ? <ErrorIcon /> : <HourglassIcon />}
-        </span>
-        <div>
-          <h2>{host_.title}</h2>
-          <p role="status">{host_.body}</p>
-        </div>
-      </section>
+      <StatusBanner kind={bannerKind(steps.uploading, prep)} what={steps.uploading} />
 
       {prep === 'diagnosing' && (
         <section aria-label="What went wrong" className="card">
           <h2>What the interviewer found</h2>
           <p>[DIAGNOSIS FROM THE AI MODELS, WITH STEPS TO FIX]</p>
           <div className="row">
-            <button type="button" className="btn btn-primary" onClick={() => {
-                setPrep('preparing')
-                setAttempt(attempt + 1)
-              }}>
+            <button type="button" className="btn btn-primary" onClick={preparation.retry}>
               Try preparing again
             </button>
             <button type="button" className="btn" onClick={onBack}>
@@ -139,21 +201,26 @@ export function HardwarePage({
             </div>
             <div className="field">
               <label htmlFor="mic-pick">Microphone</label>
-              <select id="mic-pick">
-                <option>[DEFAULT MICROPHONE]</option>
+              <select id="mic-pick" value={audioDeviceId ?? ''} onChange={(e) => setAudioDeviceId(e.target.value || null)} disabled={audio.type === 'checking'}>
+                <option value="">Default microphone</option>
+                {mics.map((m) => (
+                  <option key={m.deviceId} value={m.deviceId}>
+                    {m.label}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="row">
               <div className="meter meter-lg" aria-hidden="true">
-                {[8, 16, 24, 14, 6, 6].map((h, i) => (
-                  <span key={i} className={audio.type === 'checking' || audio.type === 'done' ? 'bar bar-on' : 'bar'} style={{ height: h }} />
+                {METER.map((h, i) => (
+                  <span key={i} className={i < lit ? 'bar bar-on' : 'bar'} style={{ height: h }} />
                 ))}
               </div>
               <p>{audioPrompt(audio)}</p>
             </div>
-            <CheckStatus phase={audio} kind="audio" />
+            <CheckStatus phase={audio} kind="audio" detail={deviceError?.kind === 'audio' ? deviceError.message : undefined} />
             <div>
-              <button type="button" className="btn" aria-disabled={audio.type === 'checking'} onClick={() => audio.type !== 'checking' && void check('audio', setAudio)}>
+              <button type="button" className="btn" aria-disabled={audio.type === 'checking'} onClick={() => audio.type !== 'checking' && void checkAudio()}>
                 {checkView(audio, 'audio').action}
               </button>
             </div>
@@ -166,29 +233,39 @@ export function HardwarePage({
               </h2>
               <Chip tone={checkView(video, 'video').tone} text={checkView(video, 'video').chip} />
             </div>
-            <p>{checkView(video, 'video').detail}</p>
+            <div className="field">
+              <label htmlFor="cam-pick">Camera</label>
+              <select id="cam-pick" value={videoDeviceId ?? ''} onChange={(e) => setVideoDeviceId(e.target.value || null)} disabled={video.type === 'checking'}>
+                <option value="">Default camera</option>
+                {cams.map((c) => (
+                  <option key={c.deviceId} value={c.deviceId}>
+                    {c.label}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="row">
-              <button type="button" className="btn" aria-disabled={video.type === 'checking'} onClick={() => video.type !== 'checking' && void check('video', setVideo)}>
+              {(video.type === 'checking' || video.type === 'done') && <video ref={previewRef} className="preview" autoPlay playsInline muted aria-label="Your camera" data-testid="camera-preview" />}
+              <p className="grow">{deviceError?.kind === 'video' ? deviceError.message : checkView(video, 'video').detail}</p>
+            </div>
+            <div className="row">
+              <button type="button" className="btn" aria-disabled={video.type === 'checking'} onClick={() => video.type !== 'checking' && void checkVideo()}>
                 {checkView(video, 'video').action}
               </button>
-              <button type="button" className="btn" onClick={() => setVideo({ type: 'skipped' })}>
+              <button type="button" className="btn" onClick={skipVideo}>
                 Skip video
               </button>
             </div>
           </section>
 
-          <section aria-label="Start the interview" className="card">
+          <section aria-label="Ready for the interview" className="card">
             <div>
-              <button type="button" className={startable ? 'btn btn-big btn-primary' : 'btn btn-big btn-disabled'} aria-disabled={!startable} aria-describedby="start-reasons" onClick={() => void start()}>
-                Start interview
+              <button type="button" className={startable ? 'btn btn-big btn-primary' : 'btn btn-big btn-disabled'} aria-disabled={!startable} aria-describedby="start-reasons" onClick={ready}>
+                Ready for interview
                 <ArrowIcon />
               </button>
             </div>
-            {startError && (
-              <p role="alert" className="note-box note-bad">
-                {startError}
-              </p>
-            )}
+            <p className="muted">{startNote}</p>
             <ul id="start-reasons" className="checklist">
               {checklist(prep, audio, video).map((c) => (
                 <li key={c.name}>
@@ -242,6 +319,7 @@ export function HardwarePage({
 
           <section className="card" aria-labelledby="hw-harness-title">
             <h3 id="hw-harness-title">Prototype harness: mock devices</h3>
+            <p className="note">The microphone and camera are real. The quality rating is still scripted, because the API has no verify endpoint.</p>
             {(['audio', 'video'] as const).map((kind) => (
               <div key={kind} className="field">
                 <label htmlFor={`h-${kind}`} className="muted">
@@ -259,25 +337,7 @@ export function HardwarePage({
         </aside>
       </div>
 
-      <section aria-label="Interview preparation progress" className="dock">
-        <div className="dock-inner">
-          <div className="row row-between">
-            <span id={barLabelId}>{bar.label}</span>
-            <span className="muted">{bar.note}</span>
-          </div>
-          <div
-            role="progressbar"
-            aria-labelledby={barLabelId}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={bar.now ?? undefined}
-            aria-valuetext={bar.now === null ? `${bar.label}, in progress` : `${bar.label}, ${bar.now} percent`}
-            className="track"
-          >
-            <div className={`fill fill-${bar.tone}${bar.now === null ? ' sweep' : ''}`} style={bar.now === null ? undefined : { width: `${bar.now}%` }} />
-          </div>
-        </div>
-      </section>
+      <PrepProgressBar prep={steps.prep} percent={steps.percent} />
     </div>
   )
 }
@@ -291,12 +351,12 @@ function Chip({ tone, text }: { tone: Tone; text: string }) {
   )
 }
 
-function CheckStatus({ phase, kind }: { phase: CheckPhase; kind: HardwareKind }) {
+function CheckStatus({ phase, kind, detail }: { phase: CheckPhase; kind: HardwareKind; detail?: string }) {
   const view = checkView(phase, kind)
   return (
     <div role="status" className={`note-box note-${view.tone}`}>
       <span className="eyebrow">{view.chip}</span>
-      <span>{view.detail}</span>
+      <span>{detail ?? view.detail}</span>
     </div>
   )
 }

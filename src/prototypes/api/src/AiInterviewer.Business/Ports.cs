@@ -1,4 +1,5 @@
 // Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author. Prototype zone: unverified.
+using AiInterviewer.Business.Media;
 using AiInterviewer.Business.Setup;
 
 namespace AiInterviewer.Business;
@@ -53,4 +54,46 @@ public interface IInterviewPreparer
 public interface IPreparationDiagnoser
 {
     Task<string> DiagnoseAsync(InterviewSession session, CancellationToken ct);
+}
+
+/// <summary>
+/// Processes a stored resume after its upload (reading, sectioning, indexing). Returns once
+/// processing has begun and its first progress is reported; the rest reaches the client through
+/// <see cref="IResumeUploadReporter"/>.
+/// </summary>
+public interface IResumeUploader
+{
+    /// <summary>With the uploader's default options.</summary>
+    Task BeginAsync(ResumeId id, DisplayName name, CancellationToken ct);
+
+    /// <summary>With explicit options for this upload only (test mode).</summary>
+    Task BeginAsync(ResumeId id, DisplayName name, ResumeUploaderOptions options, CancellationToken ct);
+}
+
+/// <summary>How resume processing progress reaches the client. The transport is the adapter's business.</summary>
+public interface IResumeUploadReporter
+{
+    Task ReportAsync(ResumeUploadProgress progress, CancellationToken ct);
+}
+
+/// <summary>
+/// One consumer of one track stream: a file, the transcription service. The ingest opens it when
+/// the stream begins, hands it every chunk in order from its own channel, and completes it when
+/// the stream ends.
+/// </summary>
+public interface IMediaSink
+{
+    Task OpenAsync(MediaTrackOpened track, CancellationToken ct);
+
+    Task WriteAsync(MediaChunk chunk, CancellationToken ct);
+
+    Task CompleteAsync(CancellationToken ct);
+}
+
+/// <summary>Makes a sink for each track stream it wants. The file store wants both tracks; the transcription feed wants audio only.</summary>
+public interface IMediaSinkFactory
+{
+    bool Wants(MediaTrack track);
+
+    IMediaSink Create();
 }

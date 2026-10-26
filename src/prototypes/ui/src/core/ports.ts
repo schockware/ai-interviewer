@@ -10,9 +10,12 @@ import type {
   JobDescriptionPaste,
   JobDescriptionProcessed,
   JobDescriptionUpload,
-  PrepProgress,
   PrepareInterview,
+  PrepReport,
+  ResumeId,
   ResumeProcessed,
+  ResumeUploadProgress,
+  SessionId,
   StartInterview,
   UploadResume,
 } from './contract/pageFlow.ts'
@@ -61,10 +64,72 @@ export interface SetupHost {
   uploadResume(request: UploadResume): Promise<ResumeProcessed>
   uploadJobDescription(request: JobDescriptionUpload): Promise<JobDescriptionProcessed>
   pasteJobDescription(request: JobDescriptionPaste): Promise<JobDescriptionProcessed>
-  /** Asynchronous: progress arrives as it happens. Returns a function that stops listening. */
-  prepareInterview(request: PrepareInterview, onProgress: (progress: PrepProgress) => void): () => void
+  /** Asynchronous: reports arrive as it happens, each with the steps done so far. Returns a function that stops listening. */
+  prepareInterview(request: PrepareInterview, onProgress: (report: PrepReport) => void): () => void
   /** Rejects with the server's reason when the interview cannot start (not prepared, hardware not ready). */
   startInterview(request: StartInterview): Promise<CueSettings>
   /** Open question in the contract: how the stream reaches the server. Settles with the quality the server estimates, or rejects. */
   verifyHardware(kind: HardwareKind): Promise<Exclude<HardwareQuality, 'pending' | 'skipped'>>
+  /**
+   * Follows the processing of a resume this host just processed (PROPOSAL: the InterviewHub's
+   * WatchResumeUpload). The first snapshot arrives as soon as the server answers; `onError` fires
+   * instead when it cannot. Returns a function that stops watching.
+   */
+  watchResumeUpload(resumeId: ResumeId, onProgress: (progress: ResumeUploadProgress) => void, onError: (message: string) => void): () => void
+}
+
+// ---- Media capture and the media streams (decision 0003; the shapes are the prototype's proposal, core/media/capture.ts) ----
+
+export type MediaTrackKind = 'audio' | 'composite'
+
+/** One open stream to the server for one track. Chunks go out as they come; close ends the track. */
+export interface Uplink {
+  send(chunk: Blob): void
+  close(): Promise<void>
+}
+
+/** The server end of the media streams: one plain WebSocket per track in real mode, a counter in mock mode. */
+export interface MediaUplink {
+  open(sessionId: SessionId, track: MediaTrackKind, mimeType: string, onError: (message: string) => void): Uplink
+}
+
+export interface MediaDeviceChoice {
+  kind: 'audioinput' | 'videoinput'
+  deviceId: string
+  label: string
+}
+
+/** A microphone or camera the browser opened. The browser's own stream object stays inside the adapter. */
+export interface OpenedStream {
+  readonly id: string
+  stop(): void
+  /** Off is mute: the track keeps running and the recorder keeps going, with silence. */
+  setEnabled(on: boolean): void
+}
+
+export interface LevelMeter {
+  /** 0 to 1. */
+  read(): number
+  stop(): void
+}
+
+/** The browser's devices. Local in every mode; a test stands in for them. */
+export interface MediaDevicesPort {
+  list(): Promise<MediaDeviceChoice[]>
+  /** null: the default device. Rejects with the browser's reason (a DOMException name) when refused or missing. */
+  openAudio(deviceId: string | null): Promise<OpenedStream>
+  openVideo(deviceId: string | null): Promise<OpenedStream>
+  meter(stream: OpenedStream): LevelMeter
+  preview(stream: OpenedStream, element: HTMLVideoElement): void
+}
+
+export interface Recording {
+  /** Flushes the last chunk, then settles. */
+  stop(): Promise<void>
+}
+
+/** The browser's recorder: cuts the streams' tracks into chunks of one format. */
+export interface MediaRecorderPort {
+  supports(mimeType: string): boolean
+  record(streams: OpenedStream[], mimeType: string, onChunk: (chunk: Blob) => void, timesliceMs?: number): Recording
 }

@@ -1,0 +1,94 @@
+<!doctype html>
+<!-- Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author. Added after iteration 1; see README.MD. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Shared status banner and progress</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1280px; min-height: 1900px; box-sizing: border-box; padding: 48px; background: #F3F5F7; color: #16202A; font-family: 'IBM Plex Sans', system-ui, sans-serif; display: flex; flex-direction: column; gap: 36px">
+
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h1 style="margin: 0; font-size: 30px; font-weight: 600">Status banner and preparation progress</h1>
+<p style="margin: 0; font-size: 16px; color: #4A5562">Two shared components. The banner has a reserved slot on every page. The progress bar is on every setup page. Each page imports them, so they look and behave the same everywhere.</p>
+</div>
+
+<section aria-labelledby="where-title" style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
+<div style="flex: none; width: 460px; display: flex; flex-direction: column; gap: 10px">
+<h2 id="where-title" style="margin: 0; font-size: 20px; font-weight: 600">Where they sit</h2>
+<div style="border: 2px solid #C5CCD3; border-radius: 16px; background: #FFFFFF; padding: 16px; display: flex; flex-direction: column; gap: 12px; height: 440px; box-sizing: border-box">
+<div style="padding: 12px 14px; border-radius: 10px; background: #EEF3FD; border: 1px solid #1D4ED8; font-size: 14px; font-weight: 600; color: #1D3A9E">Header · Accessibility button is first</div>
+<div style="padding: 14px; border-radius: 12px; background: #FFF1DC; border: 2px dashed #7A3E00; font-size: 14px; line-height: 1.5; color: #4A2600"><b>Status banner slot</b><br>Under the header on every page. Empty and out of the way when there is nothing to say.</div>
+<div style="flex: 1 1 auto; padding: 14px; border-radius: 12px; background: #F3F5F7; border: 1px solid #E1E5EA; font-size: 14px; color: #4A5562; display: flex; align-items: center; justify-content: center">Page content</div>
+<div style="padding: 12px 14px; border-radius: 10px; background: #E3EBFC; border: 2px dashed #1D4ED8; font-size: 14px; line-height: 1.5; color: #1D3A9E"><b>Preparation progress</b> · bottom of every setup page</div>
+</div>
+</div>
+<div style="flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 20px; font-weight: 600">Which page shows what</h2>
+<table style="width: 100%; border-collapse: collapse; background: #FFFFFF; border: 1px solid #E1E5EA; border-radius: 12px; font-size: 14px; line-height: 1.5; color: #2B3540">
+<thead><tr><th scope="col" style="text-align: left; padding: 10px 12px; font-weight: 600">Page</th><th scope="col" style="text-align: left; padding: 10px 12px; font-weight: 600">Banner</th><th scope="col" style="text-align: left; padding: 10px 12px; font-weight: 600">Progress bar</th></tr></thead>
+<tbody>
+<tr><th scope="row" style="text-align: left; padding: 10px 12px; font-weight: 600; border-top: 1px solid #E1E5EA; vertical-align: top">Application setup</th><td style="padding: 10px 12px; border-top: 1px solid #E1E5EA; vertical-align: top">Uploading, and waiting, retrying or problem when you come back while the interview is preparing</td><td style="padding: 10px 12px; border-top: 1px solid #E1E5EA; vertical-align: top">Shown when you come back while it is preparing</td></tr>
+<tr><th scope="row" style="text-align: left; padding: 10px 12px; font-weight: 600; border-top: 1px solid #E1E5EA; vertical-align: top">Hardware setup</th><td style="padding: 10px 12px; border-top: 1px solid #E1E5EA; vertical-align: top">Uploading, waiting, retrying, problem, ready</td><td style="padding: 10px 12px; border-top: 1px solid #E1E5EA; vertical-align: top">Always, until you move on</td></tr>
+<tr><th scope="row" style="text-align: left; padding: 10px 12px; font-weight: 600; border-top: 1px solid #E1E5EA; vertical-align: top">Waiting room</th><td style="padding: 10px 12px; border-top: 1px solid #E1E5EA; vertical-align: top">Waiting, retrying, problem, ready. The steps list carries the upload detail</td><td style="padding: 10px 12px; border-top: 1px solid #E1E5EA; vertical-align: top">Always, with the step percentage</td></tr>
+<tr><th scope="row" style="text-align: left; padding: 10px 12px; font-weight: 600; border-top: 1px solid #E1E5EA; vertical-align: top">Interview</th><td style="padding: 10px 12px; border-top: 1px solid #E1E5EA; vertical-align: top">Slot reserved for any state, for example a problem</td><td style="padding: 10px 12px; border-top: 1px solid #E1E5EA; vertical-align: top">Not shown</td></tr>
+<tr><th scope="row" style="text-align: left; padding: 10px 12px; font-weight: 600; border-top: 1px solid #E1E5EA; vertical-align: top">Every other page</th><td style="padding: 10px 12px; border-top: 1px solid #E1E5EA; vertical-align: top">Slot reserved, hidden when there is nothing to say</td><td style="padding: 10px 12px; border-top: 1px solid #E1E5EA; vertical-align: top">Not shown</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section aria-labelledby="banner-title" style="display: flex; flex-direction: column; gap: 14px">
+<h2 id="banner-title" style="margin: 0; font-size: 20px; font-weight: 600">Status banner states</h2>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #4A5562">Uploading says only what is being uploaded: the resume, the role, or both. The step-by-step detail lives in the waiting room.</p>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.04em; color: #4A5562">uploading · resume and role</span><dc-import name="StatusBanner" kind="uploading" what="both" hint-size="100%,88px"></dc-import></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.04em; color: #4A5562">uploading · resume only</span><dc-import name="StatusBanner" kind="uploading" what="resume" hint-size="100%,88px"></dc-import></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.04em; color: #4A5562">uploading · role only</span><dc-import name="StatusBanner" kind="uploading" what="role" hint-size="100%,88px"></dc-import></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.04em; color: #4A5562">waiting · the host is building the interview</span><dc-import name="StatusBanner" kind="waiting" what="both" hint-size="100%,88px"></dc-import></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.04em; color: #4A5562">retrying · slow, retrying quietly</span><dc-import name="StatusBanner" kind="retrying" what="both" hint-size="100%,88px"></dc-import></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.04em; color: #4A5562">problem · the host hit an error</span><dc-import name="StatusBanner" kind="problem" what="both" hint-size="100%,88px"></dc-import></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.04em; color: #4A5562">ready · the host is ready</span><dc-import name="StatusBanner" kind="ready" what="both" hint-size="100%,88px"></dc-import></div>
+</div>
+</section>
+
+<section aria-labelledby="prog-title" style="display: flex; flex-direction: column; gap: 14px">
+<h2 id="prog-title" style="margin: 0; font-size: 20px; font-weight: 600">Preparation progress states</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.04em; color: #4A5562">preparing · 45%</span><div style="border: 1px solid #E1E5EA; border-radius: 12px; overflow: hidden; background: #FFFFFF"><dc-import name="PrepProgress" state="preparing" percent="45" hint-size="100%,76px"></dc-import></div></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.04em; color: #4A5562">retrying · slows down</span><div style="border: 1px solid #E1E5EA; border-radius: 12px; overflow: hidden; background: #FFFFFF"><dc-import name="PrepProgress" state="retrying" percent="62" hint-size="100%,76px"></dc-import></div></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.04em; color: #4A5562">diagnosing · no percentage</span><div style="border: 1px solid #E1E5EA; border-radius: 12px; overflow: hidden; background: #FFFFFF"><dc-import name="PrepProgress" state="diagnosing" percent="0" hint-size="100%,76px"></dc-import></div></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.04em; color: #4A5562">ready</span><div style="border: 1px solid #E1E5EA; border-radius: 12px; overflow: hidden; background: #FFFFFF"><dc-import name="PrepProgress" state="ready" percent="100" hint-size="100%,76px"></dc-import></div></div>
+</div>
+</section>
+
+<section aria-labelledby="rules-title" style="background: #FFFFFF; border: 1px solid #E1E5EA; border-radius: 16px; padding: 24px 28px; display: flex; flex-direction: column; gap: 10px">
+<h2 id="rules-title" style="margin: 0; font-size: 18px; font-weight: 600">Rules</h2>
+<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 1.5; color: #2B3540">
+<li>One banner at a time. If several apply, the most urgent wins: problem, then uploading, then waiting or retrying, then ready.</li>
+<li>The banner is a status message (role status, polite). It is announced when it appears or changes, never moves focus, and keeps its text label as well as its icon and colour.</li>
+<li>The progress bar has a name and a fixed text value. Its movement is not announced.</li>
+<li>If preparation fails, nothing interrupts the user. The bar slows, the banner says so, and the diagnosis appears on the page.</li>
+<li>The banner is not dismissible while it is true. It clears itself when the work is done.</li>
+</ul>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

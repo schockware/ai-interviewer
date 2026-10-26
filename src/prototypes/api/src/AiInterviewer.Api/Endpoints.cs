@@ -1,4 +1,5 @@
 // Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author. Prototype zone: unverified.
+using AiInterviewer.Api.Testing;
 using AiInterviewer.Api.Wire;
 using AiInterviewer.Business;
 using AiInterviewer.Business.Interview;
@@ -18,9 +19,16 @@ public static class Endpoints
         app.MapGet("/application-setup", async (ApplicationSetupService setup, CancellationToken ct) =>
             TypedResults.Ok((await setup.LoadPageAsync(ct)).ToDto()));
 
-        app.MapPost("/resumes", async (UploadResumeRequest request, ApplicationSetupService setup, CancellationToken ct) =>
-            await Upload(request.DisplayName, request.FileName, request.Payload, setup.UploadResumeAsync,
-                r => new ResumeProcessedDto(r.ResumeId.Value, r.DisplayName.Value), ct));
+        app.MapPost("/resumes", async (UploadResumeRequest request, ApplicationSetupService setup, HttpContext http, CancellationToken ct) =>
+        {
+            // Test mode may have put explicit uploader options on this request (Testing/TestModeMiddleware.cs).
+            Func<DisplayName, UploadedFile, CancellationToken, Task<Outcome<ResumeProcessed>>> process =
+                TestMode.ExplicitUploaderOptions(http) is { } options
+                    ? (name, file, token) => setup.UploadResumeAsync(name, file, options, token)
+                    : setup.UploadResumeAsync;
+            return await Upload(request.DisplayName, request.FileName, request.Payload, process,
+                r => new ResumeProcessedDto(r.ResumeId.Value, r.DisplayName.Value), ct);
+        });
 
         app.MapPost("/job-descriptions/uploads", async (JobDescriptionUploadRequest request, ApplicationSetupService setup, CancellationToken ct) =>
             await Upload(request.DisplayName, request.FileName, request.Payload, setup.UploadJobDescriptionAsync,

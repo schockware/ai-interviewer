@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 namespace AiInterviewer.Api.Tests;
 
 /// <summary>Connects real SignalR clients over the WebSocket transport to the in-memory server.</summary>
-public class TestHubTests(WebApplicationFactory<Program> factory) : IClassFixture<WebApplicationFactory<Program>>
+public class TestHubTests(ApiFactory factory) : IClassFixture<ApiFactory>
 {
     private static readonly TimeSpan Wait = TimeSpan.FromSeconds(5);
 

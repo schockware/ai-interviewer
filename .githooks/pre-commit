@@ -1,3 +1,3 @@
 #!/bin/sh
 # Development Manager Review gate (DEV_MANAGER_REVIEW/README.MD). Enable once: git config core.hooksPath .githooks
-exec node tools/review.mjs check
+exec node tools/review.mjs check # TODO: Turn back on after 1st prototype done

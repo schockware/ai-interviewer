@@ -1,4 +1,4 @@
-// Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author.
+// Authored by Claude Sonnet 5.5 and Claude Fable 5.1 (Anthropic), with Steven Chock as co-author.
 import { HttpSetupHost } from '../adapters/http/httpSetupHost.ts'
 import { MockSetupHost, type MockHostConfig } from '../adapters/mock/mockSetupHost.ts'
 import type { Clock, SetupHost } from '../core/ports.ts'
@@ -8,6 +8,10 @@ import type { Integration, IntegrationMode } from './integration.ts'
 export interface HostParts {
   setup: IntegrationMode
   hardware: IntegrationMode
+  /** Resume processing reports, over the InterviewHub in real mode. */
+  uploadProgress: IntegrationMode
+  /** The microphone and camera streams, over plain WebSockets in real mode (composition/media.ts). */
+  media: IntegrationMode
 }
 
 /**
@@ -16,10 +20,16 @@ export interface HostParts {
  * because the API has no endpoint for it yet (the audio stream is an open item in
  * contracts/page-flow.md). Remove that line when the endpoint exists.
  */
-export function buildSetupHost(integration: Integration, clock: Clock, mockConfig: () => MockHostConfig): { host: SetupHost; parts: HostParts } {
+export function buildSetupHost(
+  integration: Integration,
+  clock: Clock,
+  mockConfig: () => MockHostConfig,
+  /** Test mode's server-side settings as headers, read on every request (composition/testMode.ts). None by default. */
+  testHeaders: () => Record<string, string> = () => ({}),
+): { host: SetupHost; parts: HostParts } {
   const mock = new MockSetupHost(clock, mockConfig)
-  if (integration.mode === 'mock') return { host: mock, parts: { setup: 'mock', hardware: 'mock' } }
-  const http = new HttpSetupHost(integration.apiBaseUrl)
+  if (integration.mode === 'mock') return { host: mock, parts: { setup: 'mock', hardware: 'mock', uploadProgress: 'mock', media: 'mock' } }
+  const http = new HttpSetupHost(integration.apiBaseUrl, undefined, undefined, testHeaders)
   const host: SetupHost = {
     loadPage: () => http.loadPage(),
     uploadResume: (r) => http.uploadResume(r),
@@ -28,6 +38,7 @@ export function buildSetupHost(integration: Integration, clock: Clock, mockConfi
     prepareInterview: (r, onProgress) => http.prepareInterview(r, onProgress),
     startInterview: (r) => http.startInterview(r),
     verifyHardware: (kind) => mock.verifyHardware(kind),
+    watchResumeUpload: (id, onProgress, onError) => http.watchResumeUpload(id, onProgress, onError),
   }
-  return { host, parts: { setup: 'real', hardware: 'mock' } }
+  return { host, parts: { setup: 'real', hardware: 'mock', uploadProgress: 'real', media: 'real' } }
 }

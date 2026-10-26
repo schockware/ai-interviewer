@@ -5,6 +5,7 @@
     <Project Path="src/AiInterviewer.Business/AiInterviewer.Business.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/AiInterviewer.Adapters.Tests/AiInterviewer.Adapters.Tests.csproj" />
     <Project Path="tests/AiInterviewer.Api.Tests/AiInterviewer.Api.Tests.csproj" />
     <Project Path="tests/AiInterviewer.Business.Tests/AiInterviewer.Business.Tests.csproj" />
   </Folder>

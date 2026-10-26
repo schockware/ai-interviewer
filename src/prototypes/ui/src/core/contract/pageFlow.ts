@@ -90,10 +90,39 @@ export type HardwareKind = 'audio' | 'video'
  */
 export type PrepProgress = 'preparing' | 'retrying' | 'diagnosing' | 'ready'
 
+/**
+ * One preparation report. PROPOSAL: `stepsDone` counts the preparation steps the server has
+ * finished, out of the Waiting room's list (core/setup/waitingRoom.ts, PREP_STEP_TOTAL), so the
+ * room can show each one. The contract's InterviewPrepared has no steps; a real server would
+ * report them itself, and how it delivers them is undecided.
+ */
+export interface PrepReport {
+  progress: PrepProgress
+  stepsDone: number
+}
+
 /** What the server sends back when the interview starts (contracts/page-flow.md, CueSettings). */
 export interface CueSettings {
   emulation: {
     cadences: { speaking: number; listening: number; thinking: number; variances: { floor: number; ceiling: number } }
     latencies: { network: number; packetLossVariancePerSecond: number; audioRamp: 'clipped-beginning' | 'clipped-ending' | 'both' }
   }
+}
+
+/**
+ * PROPOSAL (API prototype): the processing of an uploaded resume, reported step by step over the
+ * InterviewHub after POST /resumes has answered. Every report is a whole snapshot, so a late
+ * listener needs only the latest one. The contract has no shape for this yet.
+ */
+export type UploadStepStatus = 'pending' | 'running' | 'done' | 'failed'
+export interface ResumeUploadStep {
+  name: string
+  status: UploadStepStatus
+}
+export type ResumeUploadStatus = 'running' | 'done' | 'failed'
+export interface ResumeUploadProgress {
+  resumeId: ResumeId
+  displayName: DisplayName
+  status: ResumeUploadStatus
+  steps: ResumeUploadStep[]
 }

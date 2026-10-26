@@ -8,9 +8,9 @@ using Microsoft.AspNetCore.Mvc.Testing;
 namespace AiInterviewer.Api.Tests;
 
 /// <summary>Drives the real pipeline over HTTP, so JSON shapes and status codes are checked as a client sees them.</summary>
-public class PageFlowTests(WebApplicationFactory<Program> factory) : IClassFixture<WebApplicationFactory<Program>>
+public class PageFlowTests(ApiFactory factory) : IClassFixture<ApiFactory>
 {
-    // Each test gets its own server, so the in-memory stores start empty.
+    // Each test gets its own server and its own private database, so the stores start empty.
     private HttpClient NewClient() => factory.WithWebHostBuilder(_ => { }).CreateClient();
 
     private static StringContent Json(string json) => new(json, Encoding.UTF8, "application/json");

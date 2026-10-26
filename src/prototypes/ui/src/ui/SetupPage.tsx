@@ -7,21 +7,30 @@ import {
   blockers,
   displayNameOf,
   initialSetup,
+  interviewTypeOf,
   roleValidation,
   setupReducer,
   toForm,
   type SetupState,
 } from '../core/setup/setupState.ts'
+import { bannerKind, uploadingOf } from '../core/setup/status.ts'
+import type { Materials } from '../core/setup/waitingRoom.ts'
 import { changedSlots, choiceFromKey, choiceKey, SLOT_VIEWS } from '../core/setup/slots.ts'
 import { ArrowIcon, CheckIcon, ErrorIcon, HourglassIcon, PasteIcon, SettingsIcon, UploadIcon } from './icons.tsx'
 import { ModalDialog } from './ModalDialog.tsx'
 import { PageHeader } from './PageHeader.tsx'
+import { PrepProgressBar } from './PrepProgressBar.tsx'
+import { useResumeUploads } from './resumeUploads.ts'
+import { StatusBanner } from './StatusBanner.tsx'
+import { usePreparationSteps } from './usePreparationSteps.ts'
 
 const nameOf = (fileName: string): string => fileName.replace(/\.[^.]+$/, '')
 
 /**
  * Application setup, built from design/mockups/ui/Setup.dc.html and SetupHot.dc.html. It holds
- * the page states (loading, error, ready) and talks to the host through the SetupHost port.
+ * the page states (loading, error, ready) and talks to the host through the SetupHost port. The
+ * shared banner says what is uploading, and shows the preparation if the user comes back while
+ * it runs; the shared bar then shows at the bottom too (specs/page-flow.md, section 1).
  */
 export function SetupPage({
   host,
@@ -36,12 +45,13 @@ export function SetupPage({
   onConfig: (config: MockHostConfig) => void
   /** The harness card only means something while the host is the mock. */
   showMockServer: boolean
-  onPrepare: (request: PrepareInterview) => void
+  onPrepare: (request: PrepareInterview, materials: Materials) => void
   onOpenAccessibility: () => void
 }) {
   const [page, setPage] = useState<ApplicationSetupPage>({ type: 'loading' })
   const [attempt, setAttempt] = useState(0)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const steps = usePreparationSteps()
 
   // Loads on mount and on "Try again". The harness changing what the server holds remounts the page (App sets a key).
   useEffect(() => {
@@ -56,8 +66,8 @@ export function SetupPage({
   }, [host, attempt])
 
   return (
-    <div className="page">
-      <PageHeader title="Set up your interview" subtitle="Step 1 of 2 · Application setup" onOpenAccessibility={onOpenAccessibility}>
+    <div className={steps.prep ? 'page page-with-dock' : 'page'}>
+      <PageHeader title="Set up your interview" subtitle="Step 1 of 3 · Application setup" onOpenAccessibility={onOpenAccessibility}>
         <button type="button" className="btn" aria-expanded={settingsOpen} aria-controls="app-settings" onClick={() => setSettingsOpen(!settingsOpen)}>
           <SettingsIcon />
           Application settings
@@ -93,6 +103,8 @@ export function SetupPage({
       {page.type === 'ready' && (
         <SetupForm key={attempt} page={page} host={host} settingsOpen={settingsOpen} config={config} onConfig={onConfig} showMockServer={showMockServer} onPrepare={onPrepare} />
       )}
+
+      <PrepProgressBar prep={steps.prep} percent={steps.percent} />
     </div>
   )
 }
@@ -112,14 +124,16 @@ function SetupForm({
   config: MockHostConfig
   onConfig: (config: MockHostConfig) => void
   showMockServer: boolean
-  onPrepare: (request: PrepareInterview) => void
+  onPrepare: (request: PrepareInterview, materials: Materials) => void
 }) {
   const [s, dispatch] = useReducer(setupReducer, page, initialSetup)
+  const steps = usePreparationSteps()
   const [error, setError] = useState<string | null>(null)
   const [pasting, setPasting] = useState(false)
   const [advanced, setAdvanced] = useState(false)
   const resumeInput = useRef<HTMLInputElement>(null)
   const jdInput = useRef<HTMLInputElement>(null)
+  const uploads = useResumeUploads()
 
   const reasons = blockers(s)
   const disabled = reasons.length > 0
@@ -131,6 +145,7 @@ function SetupForm({
     try {
       const processed = await host.uploadResume({ displayName: nameOf(file.name), fileName: file.name, payload: new Uint8Array(await file.arrayBuffer()) })
       dispatch({ type: 'resumeProcessed', processed })
+      uploads.track(processed.resumeId, processed.displayName) // the server keeps processing; the banner and the waiting room show it
     } catch (e) {
       dispatch({ type: 'resumeFailed' })
       fail(e)
@@ -149,8 +164,15 @@ function SetupForm({
 
   const prepare = () => {
     if (disabled) return
-    onPrepare({ form: toForm(s), sessionId: crypto.randomUUID() })
+    const materials: Materials = {
+      hot: interviewTypeOf(s).type === 'hot',
+      roleSource: s.addedRoleId !== null && s.addedRoleId === s.roleId ? 'uploaded' : 'saved',
+    }
+    onPrepare({ form: toForm(s), sessionId: crypto.randomUUID() }, materials)
   }
+
+  // Uploading: a request in flight, or a resume loaded this session that the server is still reading.
+  const uploading = uploadingOf(s.resumeProcessing !== null || steps.uploading !== 'none', s.jdProcessing)
 
   const hot = s.wants === 'hot'
   const resumeName = displayNameOf(s.resumes, s.resumeId)
@@ -158,7 +180,9 @@ function SetupForm({
   const role = roleValidation(s)
 
   return (
-    <div className="layout">
+    <>
+      <StatusBanner kind={bannerKind(uploading, steps.prep)} what={uploading} />
+      <div className="layout">
       <main className="layout-main">
         {settingsOpen && (
           <section id="app-settings" aria-labelledby="settings-title" className="card">
@@ -381,7 +405,8 @@ function SetupForm({
           Close
         </button>
       </ModalDialog>
-    </div>
+      </div>
+    </>
   )
 }
 
@@ -469,6 +494,7 @@ function Harness({ config, onConfig }: { config: MockHostConfig; onConfig: (conf
       {pick('saved', 'Saved resumes and roles', ['some', 'none'])}
       {pick('load', 'Loading this page', ['works', 'fails'])}
       {pick('preparation', 'Preparing the interview', ['succeeds', 'retries-then-succeeds', 'fails'])}
+      {pick('upload', 'Processing a loaded resume', ['succeeds', 'fails'])}
     </section>
   )
 }

@@ -1,6 +1,8 @@
 // Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author.
 // The HTTP adapter against a stand-in for the network: no API needs to run.
 import { describe, expect, it } from 'vitest'
+import type { PrepReport } from '../../core/contract/pageFlow.ts'
+import { PREP_STEP_TOTAL } from '../../core/setup/waitingRoom.ts'
 import { HttpSetupHost, toBase64 } from './httpSetupHost.ts'
 
 interface Seen {
@@ -64,26 +66,124 @@ describe('HttpSetupHost', () => {
 
   it('reports preparing, then ready on 202', async () => {
     const { fn } = fakeFetch(() => new Response(null, { status: 202 }))
-    const seen: string[] = []
+    const seen: PrepReport[] = []
     new HttpSetupHost('/api', fn).prepareInterview({ sessionId: 's', form: {} as never }, (p) => seen.push(p))
-    expect(seen).toEqual(['preparing'])
+    expect(seen).toEqual([{ progress: 'preparing', stepsDone: 0 }])
     await Promise.resolve()
     await Promise.resolve()
     await new Promise((r) => setTimeout(r))
-    expect(seen).toEqual(['preparing', 'ready'])
+    expect(seen).toEqual([
+      { progress: 'preparing', stepsDone: 0 },
+      { progress: 'ready', stepsDone: PREP_STEP_TOTAL },
+    ])
   })
 
   it('reports diagnosing when the API refuses to prepare, and nothing once cancelled', async () => {
     const refused = fakeFetch(() => json({ message: 'not ready' }, 422))
-    const seen: string[] = []
+    const seen: PrepReport[] = []
     new HttpSetupHost('/api', refused.fn).prepareInterview({ sessionId: 's', form: {} as never }, (p) => seen.push(p))
     await new Promise((r) => setTimeout(r))
-    expect(seen).toEqual(['preparing', 'diagnosing'])
+    expect(seen.map((s) => s.progress)).toEqual(['preparing', 'diagnosing'])
 
-    const cancelled: string[] = []
+    const cancelled: PrepReport[] = []
     const stop = new HttpSetupHost('/api', fakeFetch(() => new Response(null, { status: 202 })).fn).prepareInterview({ sessionId: 's', form: {} as never }, (p) => cancelled.push(p))
     stop()
     await new Promise((r) => setTimeout(r))
-    expect(cancelled).toEqual(['preparing'])
+    expect(cancelled.map((s) => s.progress)).toEqual(['preparing'])
+  })
+})
+
+describe('HttpSetupHost watching resume processing over the hub', () => {
+  type Handler = (payload: unknown) => void
+  const fakeHub = (startError?: Error) => {
+    const handlers = new Map<string, Handler>()
+    const invoked: unknown[][] = []
+    const urls: string[] = []
+    let stopped = 0
+    const link = {
+      on: (method: string, handler: Handler) => void handlers.set(method, handler),
+      start: async () => {
+        if (startError) throw startError
+      },
+      invoke: async <T,>(method: string, ...args: unknown[]): Promise<T> => {
+        invoked.push([method, ...args])
+        return { resumeId: args[0], displayName: 'cv', status: 'running', steps: [{ name: 'Reading', status: 'running' }] } as T
+      },
+      stop: async () => {
+        stopped += 1
+      },
+    }
+    const connect = (url: string) => {
+      urls.push(url)
+      return link
+    }
+    return { connect, urls, invoked, push: (payload: unknown) => handlers.get('resumeUploadProgress')?.(payload), stopped: () => stopped }
+  }
+  const flush = () => new Promise((r) => setTimeout(r, 0))
+
+  it('connects to the interview hub under the base URL, asks to watch the resume, and passes the first snapshot on', async () => {
+    const hub = fakeHub()
+    const seen: unknown[] = []
+    new HttpSetupHost('/api', fetch, hub.connect).watchResumeUpload('r1', (p) => seen.push(p), () => undefined)
+    await flush()
+    expect(hub.urls).toEqual(['/api/hubs/interview'])
+    expect(hub.invoked).toEqual([['WatchResumeUpload', 'r1']])
+    expect(seen).toEqual([{ resumeId: 'r1', displayName: 'cv', status: 'running', steps: [{ name: 'Reading', status: 'running' }] }])
+  })
+
+  it('passes on pushes for the watched resume only', async () => {
+    const hub = fakeHub()
+    const seen: Array<{ resumeId: string }> = []
+    new HttpSetupHost('/api', fetch, hub.connect).watchResumeUpload('r1', (p) => seen.push(p), () => undefined)
+    await flush()
+    hub.push({ resumeId: 'other', displayName: 'x', status: 'done', steps: [] })
+    hub.push({ resumeId: 'r1', displayName: 'cv', status: 'done', steps: [] })
+    expect(seen.map((p) => p.resumeId)).toEqual(['r1', 'r1'])
+  })
+
+  it('reports a hub it cannot reach as an error, and stops the connection on unsubscribe', async () => {
+    const hub = fakeHub(new Error('Failed to start the connection'))
+    const errors: string[] = []
+    const stop = new HttpSetupHost('/api', fetch, hub.connect).watchResumeUpload('r1', () => undefined, (m) => errors.push(m))
+    await flush()
+    expect(errors).toEqual(['Failed to start the connection'])
+    stop()
+    expect(hub.stopped()).toBe(1)
+  })
+
+  it('delivers nothing after unsubscribing', async () => {
+    const hub = fakeHub()
+    const seen: unknown[] = []
+    const stop = new HttpSetupHost('/api', fetch, hub.connect).watchResumeUpload('r1', (p) => seen.push(p), () => undefined)
+    stop()
+    await flush()
+    hub.push({ resumeId: 'r1', displayName: 'cv', status: 'done', steps: [] })
+    expect(seen).toEqual([])
+  })
+})
+
+describe('HttpSetupHost test-mode headers', () => {
+  it('sends the headers it is given on every request, GET and POST alike, and none when there are none', async () => {
+    const { fn, calls } = fakeFetch(() => json({ type: 'ready', form: {}, resumes: { type: 'none' }, roles: { type: 'none' } }))
+    const host = new HttpSetupHost('/api', fn, undefined, () => ({ 'X-Mock-Uploader-Options': '{"minStepDelayMs":0,"maxStepDelayMs":0}' }))
+    await host.loadPage()
+    await host.pasteJobDescription({ displayName: 'r', text: 't' })
+    expect(calls[0].init?.headers).toEqual({ 'X-Mock-Uploader-Options': '{"minStepDelayMs":0,"maxStepDelayMs":0}' })
+    expect(calls[1].init?.headers).toEqual({ 'X-Mock-Uploader-Options': '{"minStepDelayMs":0,"maxStepDelayMs":0}', 'Content-Type': 'application/json' })
+
+    const plain = fakeFetch(() => json({ type: 'ready', form: {}, resumes: { type: 'none' }, roles: { type: 'none' } }))
+    await new HttpSetupHost('/api', plain.fn).loadPage()
+    expect(plain.calls[0].init).toBeUndefined()
+  })
+
+  it('reads the headers at request time, so the drawer can change them without a new host', async () => {
+    const { fn, calls } = fakeFetch(() => json({ type: 'ready', form: {}, resumes: { type: 'none' }, roles: { type: 'none' } }))
+    let current: Record<string, string> = {}
+    const host = new HttpSetupHost('/api', fn, undefined, () => current)
+    await host.loadPage()
+    current = { 'X-Mock-Uploader-Options': '{"minStepDelayMs":1,"maxStepDelayMs":2}' }
+    await host.loadPage()
+    expect(calls[0].init).toBeUndefined()
+    expect(calls[1].init?.headers).toEqual(current)
   })
 })

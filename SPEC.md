@@ -259,6 +259,7 @@ The accessibility options are also **practice supports** for any candidate. One 
 | Screen reader mode and timing profiles (4.3-4.5) | Screen reader users | More room around each handoff while learning the turn-taking rhythm |
 | "Give me a sec", pause timing, push-to-talk | Slower or disfluent speech, second-language speakers | Practice thinking before answering without being cut off |
 | Cue sounds and visual cues | Redundant channels for any single sense | The core UX; turning cues off rehearses a plain video call |
+| Pause the countdown, and the "While you wait" tips, FAQ and role review | People with test anxiety, or interrupted before a test interview | Settle in and prepare before starting |
 
 Rules:
 - **Defaults are the realistic interview.** Supports are opt-in, one step away, and offered at setup.

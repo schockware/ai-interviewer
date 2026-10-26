@@ -25,9 +25,9 @@ describe('reading the integration mode', () => {
 describe('building the setup host', () => {
   const clock = new SimulatedClock()
   it('is all mock in mock mode', () => {
-    expect(buildSetupHost({ mode: 'mock', apiBaseUrl: '/api' }, clock, () => defaultMockConfig).parts).toEqual({ setup: 'mock', hardware: 'mock' })
+    expect(buildSetupHost({ mode: 'mock', apiBaseUrl: '/api' }, clock, () => defaultMockConfig).parts).toEqual({ setup: 'mock', hardware: 'mock', uploadProgress: 'mock', media: 'mock' })
   })
-  it('uses the real API for setup but still mocks hardware, and says so', () => {
-    expect(buildSetupHost({ mode: 'real', apiBaseUrl: '/api' }, clock, () => defaultMockConfig).parts).toEqual({ setup: 'real', hardware: 'mock' })
+  it('uses the real API for setup and upload progress but still mocks hardware, and says so', () => {
+    expect(buildSetupHost({ mode: 'real', apiBaseUrl: '/api' }, clock, () => defaultMockConfig).parts).toEqual({ setup: 'real', hardware: 'mock', uploadProgress: 'real', media: 'real' })
   })
 })

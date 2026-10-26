@@ -78,6 +78,24 @@ internal sealed class FakePreparer : IInterviewPreparer
     }
 }
 
+internal sealed class FakeUploader : IResumeUploader
+{
+    /// <summary>Options is null when the default overload was used.</summary>
+    public List<(ResumeId Id, DisplayName Name, ResumeUploaderOptions? Options)> Begun { get; } = [];
+
+    public Task BeginAsync(ResumeId id, DisplayName name, CancellationToken ct)
+    {
+        Begun.Add((id, name, null));
+        return Task.CompletedTask;
+    }
+
+    public Task BeginAsync(ResumeId id, DisplayName name, ResumeUploaderOptions options, CancellationToken ct)
+    {
+        Begun.Add((id, name, options));
+        return Task.CompletedTask;
+    }
+}
+
 internal sealed class FakeDiagnoser : IPreparationDiagnoser
 {
     public Task<string> DiagnoseAsync(InterviewSession session, CancellationToken ct) => Task.FromResult("diagnosis");
