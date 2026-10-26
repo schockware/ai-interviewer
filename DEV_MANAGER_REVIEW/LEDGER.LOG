@@ -1,2 +1,17 @@
 DEV MANAGER REVIEW LEDGER (newest first; see DEV_MANAGER_REVIEW/README.MD)
 ---
+2026-10-26 09:28:15 | c4e02b62eab66143 | approved | src/prod/ui/src/App.tsx | Steven Chock | Stub approved
+2026-10-26 09:27:57 | baca4d80e64c2bc0 | approved | src/prod/ui/src/main.tsx | Steven Chock | Boiler plate when spinning up a new project
+2026-10-26 09:27:46 | e20f6c79ce7842f2 | approved | src/prod/ui/src/test-setup.ts | Steven Chock | Boiler plate when spinning up a new project
+2026-10-26 09:27:28 | e3b0c44298fc1c14 | approved | src/prod/ui/e2e/.gitkeep | Steven Chock | Boiler plate when spinning up a new project
+2026-10-26 09:27:12 | b4d344818a1e1bf4 | approved | src/prod/ui/.oxlintrc.json | Steven Chock | Boiler plate when spinning up a new project
+2026-10-26 09:26:58 | b49644452628dac2 | approved | src/prod/ui/index.html | Steven Chock | Boiler plate when spinning up a new project
+2026-10-26 09:26:40 | 6a573d9682143fad | approved | src/prod/ui/package-lock.json | Steven Chock | Boiler plate when spinning up a new project. Consider rubber stamping this one. Because it's largely touched by an automated process.
+2026-10-26 09:26:11 | 0f63452e3a47f115 | approved | src/prod/ui/package.json | Steven Chock | Boiler plate when spinning up a new project
+2026-10-26 09:26:00 | 9295c6df3b076130 | approved | src/prod/ui/playwright.config.ts | Steven Chock | Boiler plate when spinning up a new project
+2026-10-26 09:25:49 | 5d471e9a36728d3d | approved | src/prod/ui/README.MD | Steven Chock | Boiler plate when spinning up a new project
+2026-10-26 09:25:36 | 8e5d12ba330e7d86 | approved | src/prod/ui/tsconfig.app.json | Steven Chock | Boiler plate when spinning up a new project
+2026-10-26 09:25:23 | d366cc0827139db3 | approved | src/prod/ui/tsconfig.node.json | Steven Chock | Boiler plate when spinning up a new project
+2026-10-26 09:25:13 | 770b4140bbb581e2 | approved | src/prod/ui/tsconfig.json | Steven Chock | Boiler plate when spinning up a new project
+2026-10-26 09:24:54 | cde70ebd7bf96316 | approved | src/prod/ui/vite.config.ts | Steven Chock | Boiler plate when spinning up a new project
+2026-10-26 09:24:09 | fe718e7babb14f3c | approved | src/prod/ui/.gitignore | Steven Chock | Our standard gitignore. Plus a great test of the new stamp process
