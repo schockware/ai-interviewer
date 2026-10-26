@@ -36,6 +36,17 @@ Open http://localhost:5173. The app is the whole page flow from `specs/page-flow
 
 There is no server. A scripted mock host (`src/adapters/mock/mockSetupHost.ts`) stands in for it, and each page has a "Prototype harness" card, which is not in the mockups, to make it fail, hold no saved data, retry or fail preparation, or return another audio or video quality. The cue engine and the mock interviewer are live on the interview page. Drawn but not wired: the Controls buttons, the microphone row, the caption text (the mockup's sample lines), every Accessibility setting except captions, Advanced settings (a placeholder dialog), and the simulated call condition chosen on the Hardware page (the interview still plays the simulation-off scenario). No microphone or camera is read: the audio and video checks return a scripted quality (the contract leaves the streaming open). The port is fixed at 5173 because the Playwright tests use it.
 
+## QA accommodation canvas
+
+Open http://localhost:5173/qa.html. It is a page for QA testers, not part of the candidate flow: pick a profile (Blind, Deaf or hard of hearing, Color vision deficiency, Low vision, Dyslexia), follow its setup steps, prove the accommodation works, then load the interviewer in the page's test stage and use it as that candidate. `?profile=blind` (or `deaf`, `color`, `low-vision`, `dyslexia`) opens one directly. The code is in `src/qa/`.
+
+- **Blind:** setup steps for NVDA, JAWS and VoiceOver (the top three in WebAIM's 2024 survey) and for Narrator, TalkBack and Orca. **Black out the page** turns all content black on black without hiding anything from the accessibility tree, including inside the embedded interviewer. A random passphrase appears only while blacked out, so the tester can only find it by ear. The key cheat sheet stays visible, opens only from its button, never takes focus and is not a live region.
+- **Deaf:** setup steps for OS and browser live captions (Windows, macOS, Chrome, Android, iOS, or the candidate's own service), and a spoken test phrase (browser speech synthesis) to check them.
+- **Color vision and low vision:** CSS and SVG filters on the test stage only: protanopia, deuteranopia and tritanopia (Machado 2009 matrices), achromatopsia, two blurs and low contrast, plus zoom, magnifier and contrast-theme steps.
+- **Dyslexia:** WCAG 1.4.12 text spacing on the stage and the interviewer. An optional word scramble on a sample question only, labeled as an empathy approximation and not a test: the International Dyslexia Association calls that kind of demo "compelling, powerful, and wrong", because dyslexia is mainly a phonological difficulty.
+
+**Every key command, menu path, blur size and filter strength is a proposal**, written from memory or research and not checked on each device. The cheat sheet marks the least certain rows "check" and links each vendor's own list. The audit log is [`audit/qa-canvas.md`](audit/qa-canvas.md).
+
 ## Mock or real
 
 Everything runs on mocks by default. Real integrations are opt-in, per [decision 0004](../../../docs/decisions/0004-integration-modes-and-secrets.md) (proposed).

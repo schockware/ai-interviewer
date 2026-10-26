@@ -1,5 +1,23 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-26 17:25:56 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Said they are ready for a new pull request for the canvas branch.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: confirmed the branch is up to date with main, opened PR 9 against main (replacing the closed PR 6), assigned it to the requester, and subscribed to its activity. No code changes.
+Tokens: ~4,000 (estimated)
+---
+## 2026-10-26 17:22:28 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Said they had closed the canvas pull request to fix things on main, and asked to pull main into the canvas branch and resolve the conflicts.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: merged origin/main into claude/qa-accommodation-canvas-xdcp9n. Two conflicts: PROMPT_HISTORY/2026-10.LOG (kept both sides, this branch's entry on top) and src/prototypes/ui/vite.config.ts (took main's loadEnv and ws proxy version whole, then re-added the qa.html build input). Results: typecheck clean, lint three pre-existing warnings, 229 vitest tests pass, 32 Chromium e2e tests pass (6 of them the canvas), review gate passes. Firefox not run.
+Tokens: ~14,000 (derived: counter 14,816,500 -> ~14,802,000)
+---
+## 2026-10-26 13:29:12 | Claude Opus 5.5 (claude-opus-5-5)
+Summary prompt: Asked for a canvas that teaches a QA tester to become a candidate who needs an accommodation: a blind profile (set up an OS or top-three screen reader, prove it works on a test page, then black out the screen with a key cheat sheet that does not interfere), a deaf profile (set up speech to text), color and other visual impairments by CSS filters, and research on whether scrambling words to emulate dyslexia is reasonable.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: built the canvas as a second page of the UI prototype, src/prototypes/ui/qa.html, with src/qa/ (QaCanvas, TestStage, CheatSheet, checks, profiles, simulations, qa.css, simulations.test.ts), e2e/qa.spec.ts (axe at WCAG 2.2 AA on every profile, blackout, cheat sheet, filters, embedded interviewer, text spacing), audit/qa-canvas.md, a README section, and a qa build input in vite.config.ts. Dyslexia finding: word scrambling is easy but misrepresents dyslexia (IDA: "compelling, powerful, and wrong"), so it is an optional, labeled empathy toggle on a sample question only, beside a WCAG 1.4.12 text spacing toggle. Key commands, menu paths and filter strengths are marked as proposals. Results: typecheck passes, lint one existing warning, 161 vitest tests pass, 23 Chromium e2e tests pass; Firefox not run (not installed); run on Node 22, not 24. No screen reader pass. Did not touch src/prod.
+Tokens: ~160,000 (derived: counter 15,000,000 -> ~14,840,000)
+---
 ## 2026-10-26 10:25:30 | Claude Fable 5.1 (claude-fable-5-1)
 Summary prompt: Asked to wire up the browser's navigator for audio and optional video, stream them over a regular WebSocket rather than SignalR, write the audio to its own file in real time (isolated for the post-question transcription) and the video-plus-audio composite as well, feed the stream into a Channel that both writes the files and sends to a Python real-time transcription service, with a first-pass summary AI reading the transcript, a post-question summary AI for accuracy comparison, and later follow-up questions from both summaries.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry

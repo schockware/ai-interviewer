@@ -1,5 +1,6 @@
 // Authored by Claude Sonnet 5.5 and Claude Fable 5.1 (Anthropic), with Steven Chock as co-author.
 import react from '@vitejs/plugin-react'
+import { fileURLToPath } from 'node:url'
 import { loadEnv } from 'vite'
 import { defineConfig } from 'vitest/config'
 
@@ -13,6 +14,15 @@ export default defineConfig(({ mode }) => {
   const apiTarget = env.VITE_API_PROXY_TARGET || DEFAULT_API_PROXY_TARGET
   return {
     plugins: [react()],
+    // Two pages: the app, and the QA accommodation canvas (qa.html), which embeds the app.
+    build: {
+      rollupOptions: {
+        input: {
+          main: fileURLToPath(new URL('./index.html', import.meta.url)),
+          qa: fileURLToPath(new URL('./qa.html', import.meta.url)),
+        },
+      },
+    },
     server: {
       proxy: {
         // The browser calls /api/..., so it needs no CORS setup. The prefix is stripped on the way through.
