@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Channels;
 using AiInterviewer.Api.Hubs;
+using AiInterviewer.Api.Testing;
 using AiInterviewer.Api.Wire;
 using AiInterviewer.Business.Setup;
 using Microsoft.AspNetCore.Http.Connections;
@@ -16,8 +17,8 @@ using Microsoft.Extensions.DependencyInjection;
 namespace AiInterviewer.Api.Tests;
 
 /// <summary>
-/// Uploads a resume over HTTP and watches its processing over a real WebSocket. The mock uploader
-/// runs instantly here (ApiFactory), so a watch may already find the upload finished.
+/// Uploads a resume over HTTP and watches its processing over a real WebSocket. The uploads carry
+/// the test header that makes the mock uploader instant, so a watch may already find the upload finished.
 /// </summary>
 public class InterviewHubTests(ApiFactory factory) : IClassFixture<ApiFactory>
 {
@@ -61,10 +62,17 @@ public class InterviewHubTests(ApiFactory factory) : IClassFixture<ApiFactory>
         return channel.Reader;
     }
 
-    private static async Task<string> UploadResume(HttpClient http, string displayName)
+    private const string InstantUploader = """{"minStepDelayMs":0,"maxStepDelayMs":0}""";
+
+    private static async Task<string> UploadResume(HttpClient http, string displayName, bool instant = true)
     {
         var payload = Convert.ToBase64String(Encoding.UTF8.GetBytes("Ten years of building things."));
-        var response = await http.PostAsJsonAsync("/resumes", new { displayName, fileName = "cv.txt", payload });
+        var request = new HttpRequestMessage(HttpMethod.Post, "/resumes")
+        {
+            Content = JsonContent.Create(new { displayName, fileName = "cv.txt", payload }),
+        };
+        if (instant) request.Headers.TryAddWithoutValidation(TestMode.MockUploaderOptionsHeader, InstantUploader);
+        var response = await http.SendAsync(request);
         response.EnsureSuccessStatusCode();
         return JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement.GetProperty("resumeId").GetString()!;
     }
@@ -115,6 +123,21 @@ public class InterviewHubTests(ApiFactory factory) : IClassFixture<ApiFactory>
         var failedAt = settled.Steps.ToList().IndexOf(failed);
         Assert.All(settled.Steps.Take(failedAt), s => Assert.Equal(UploadStepStatus.Done, s.Status));
         Assert.All(settled.Steps.Skip(failedAt + 1), s => Assert.Equal(UploadStepStatus.Pending, s.Status));
+    }
+
+    [Fact]
+    public async Task An_upload_without_the_test_header_runs_at_the_default_pace_and_is_still_running_a_moment_later()
+    {
+        using var rig = NewRig();
+        await using var client = await Connect(rig.Server.Server);
+        var pushes = Pushed(client);
+        var resumeId = await UploadResume(rig.Http, "Slow one", instant: false);
+
+        var snapshot = await client.InvokeAsync<ResumeUploadProgressDto>("WatchResumeUpload", resumeId);
+        await Task.Delay(500);
+
+        Assert.Equal(ResumeUploadStatus.Running, snapshot.Status);
+        while (pushes.TryRead(out var push)) Assert.Equal(ResumeUploadStatus.Running, push.Status);
     }
 
     [Fact]

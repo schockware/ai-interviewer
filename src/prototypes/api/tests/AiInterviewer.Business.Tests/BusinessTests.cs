@@ -149,7 +149,18 @@ public class ApplicationSetupServiceTests
         var result = await Service().UploadResumeAsync(Make.Name("CV"), new UploadedFile("cv.txt", new byte[] { 1 }), default);
 
         var ok = Assert.IsType<Succeeded<ResumeProcessed>>(result);
-        Assert.Equal((ok.Value.ResumeId, Make.Name("CV")), Assert.Single(uploader.Begun));
+        Assert.Equal((ok.Value.ResumeId, Make.Name("CV"), (ResumeUploaderOptions?)null), Assert.Single(uploader.Begun));
+    }
+
+    [Fact]
+    public async Task Explicit_uploader_options_reach_the_uploader_for_that_upload()
+    {
+        var options = new ResumeUploaderOptions(TimeSpan.Zero, TimeSpan.Zero, Seed: 7);
+
+        var result = await Service().UploadResumeAsync(Make.Name("CV"), new UploadedFile("cv.txt", new byte[] { 1 }), options, default);
+
+        var ok = Assert.IsType<Succeeded<ResumeProcessed>>(result);
+        Assert.Equal((ok.Value.ResumeId, Make.Name("CV"), options), Assert.Single(uploader.Begun));
     }
 
     [Fact]

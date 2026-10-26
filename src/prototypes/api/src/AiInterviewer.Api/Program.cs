@@ -2,6 +2,7 @@
 using AiInterviewer.Adapters;
 using AiInterviewer.Api;
 using AiInterviewer.Api.Hubs;
+using AiInterviewer.Api.Testing;
 using AiInterviewer.Api.Wire;
 using AiInterviewer.Business;
 using AiInterviewer.Business.Interview;
@@ -28,7 +29,10 @@ builder.Services.AddSingleton<IDocumentReader, PlainTextDocumentReader>();
 builder.Services.AddSingleton<IInterviewPreparer, InstantInterviewPreparer>();
 builder.Services.AddSingleton<IPreparationDiagnoser, CannedPreparationDiagnoser>();
 // Resume processing is a mock that invents steps; its progress goes out over the InterviewHub.
-builder.Services.AddSingleton(MockUploaderOptions.Default);
+// The injected options are its defaults (configuration, else the adapter's own). In test mode a
+// request's X-Mock-Uploader-Options header gives explicit options, which the endpoint hands to
+// the uploader for that upload only (Testing/TestMode.cs).
+builder.Services.AddSingleton(TestMode.DefaultUploaderOptions(builder.Configuration));
 builder.Services.AddSingleton<IResumeUploader, RandomStepsResumeUploader>();
 builder.Services.AddSingleton<ResumeUploadBroadcaster>();
 builder.Services.AddSingleton<IResumeUploadReporter>(services => services.GetRequiredService<ResumeUploadBroadcaster>());
@@ -41,6 +45,8 @@ var app = builder.Build();
 app.Services.GetRequiredService<ISessionStore>();
 
 app.UseCors();
+// Test headers are read, checked and either applied or refused before any endpoint runs.
+app.UseMiddleware<TestModeMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

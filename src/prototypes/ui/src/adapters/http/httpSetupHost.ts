@@ -37,7 +37,8 @@ const RESUME_UPLOAD_PROGRESS = 'resumeUploadProgress'
  * Bytes travel as base64, as the OpenAPI draft's `format: byte` says. Resume processing progress
  * comes over the InterviewHub (SignalR), through the same base URL.
  *
- * Takes `fetch` and the hub connector as parameters so a test can stand in for the network.
+ * Takes `fetch` and the hub connector as parameters so a test can stand in for the network, and
+ * `headers`, read on every request, for the test drawer's server-side settings (composition/testMode.ts).
  * No credentials: the browser holds no secrets, and the API's own configuration is the
  * server's business (decision 0004).
  */
@@ -45,22 +46,30 @@ export class HttpSetupHost implements Omit<SetupHost, 'verifyHardware'> {
   private readonly baseUrl: string
   private readonly fetchFn: typeof fetch
   private readonly connect: HubConnect
+  private readonly headers: () => Record<string, string>
 
-  constructor(baseUrl: string, fetchFn: typeof fetch = (...args) => fetch(...args), connect: HubConnect = signalRConnect) {
+  constructor(
+    baseUrl: string,
+    fetchFn: typeof fetch = (...args) => fetch(...args),
+    connect: HubConnect = signalRConnect,
+    headers: () => Record<string, string> = () => ({}),
+  ) {
     this.baseUrl = baseUrl.replace(/\/+$/, '')
     this.fetchFn = fetchFn
     this.connect = connect
+    this.headers = headers
   }
 
   private async send(path: string, body?: unknown): Promise<Response> {
+    const extra = this.headers()
     let response: Response
     try {
       response =
         body === undefined
-          ? await this.fetchFn(`${this.baseUrl}${path}`)
+          ? await this.fetchFn(`${this.baseUrl}${path}`, Object.keys(extra).length ? { headers: extra } : undefined)
           : await this.fetchFn(`${this.baseUrl}${path}`, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { ...extra, 'Content-Type': 'application/json' },
               body: JSON.stringify(body),
             })
     } catch {

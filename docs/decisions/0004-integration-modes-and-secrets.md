@@ -67,6 +67,13 @@ Industry background (Claude's knowledge, unverified): testing in production is a
 
 Steven also wants testing treated as a **first-class part of the system's design**, including this persistence layer. That design is a task, not part of this ADR (see `TASKS.MD`).
 
+## Test mode (added 2026-10-26, proposed)
+
+Steven's call: integration tests must run quickly while UX sessions play with the UI at design pace, so mock options are settable per request. The UI's `?mode=test` opens a test drawer and sends each setting as an `X-Mock-*` request header; the API passes it explicitly to the port that uses it, for that request only (the injected options stay the defaults; nothing is swapped per request). Two rules keep this inside the philosophy above:
+
+- **The server decides whether test headers count.** `TestMode:Enabled` is a server setting (on in Development, off otherwise). With it off, a request carrying a test header is refused with a 400 and the reason, never silently ignored and never honored. The client never puts the server into test mode (point 1 of Mocks in production).
+- **Test headers are public knobs, never secrets**, and each is parsed strictly: an unknown header, a malformed value or an impossible value is a 400.
+
 ## Consequences
 
 - A developer can run the whole UI with no server and no setup, and the tests prove behavior without a network.

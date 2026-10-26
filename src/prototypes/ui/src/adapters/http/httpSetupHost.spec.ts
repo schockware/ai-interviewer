@@ -156,3 +156,29 @@ describe('HttpSetupHost watching resume processing over the hub', () => {
     expect(seen).toEqual([])
   })
 })
+
+describe('HttpSetupHost test-mode headers', () => {
+  it('sends the headers it is given on every request, GET and POST alike, and none when there are none', async () => {
+    const { fn, calls } = fakeFetch(() => json({ type: 'ready', form: {}, resumes: { type: 'none' }, roles: { type: 'none' } }))
+    const host = new HttpSetupHost('/api', fn, undefined, () => ({ 'X-Mock-Uploader-Options': '{"minStepDelayMs":0,"maxStepDelayMs":0}' }))
+    await host.loadPage()
+    await host.pasteJobDescription({ displayName: 'r', text: 't' })
+    expect(calls[0].init?.headers).toEqual({ 'X-Mock-Uploader-Options': '{"minStepDelayMs":0,"maxStepDelayMs":0}' })
+    expect(calls[1].init?.headers).toEqual({ 'X-Mock-Uploader-Options': '{"minStepDelayMs":0,"maxStepDelayMs":0}', 'Content-Type': 'application/json' })
+
+    const plain = fakeFetch(() => json({ type: 'ready', form: {}, resumes: { type: 'none' }, roles: { type: 'none' } }))
+    await new HttpSetupHost('/api', plain.fn).loadPage()
+    expect(plain.calls[0].init).toBeUndefined()
+  })
+
+  it('reads the headers at request time, so the drawer can change them without a new host', async () => {
+    const { fn, calls } = fakeFetch(() => json({ type: 'ready', form: {}, resumes: { type: 'none' }, roles: { type: 'none' } }))
+    let current: Record<string, string> = {}
+    const host = new HttpSetupHost('/api', fn, undefined, () => current)
+    await host.loadPage()
+    current = { 'X-Mock-Uploader-Options': '{"minStepDelayMs":1,"maxStepDelayMs":2}' }
+    await host.loadPage()
+    expect(calls[0].init).toBeUndefined()
+    expect(calls[1].init?.headers).toEqual(current)
+  })
+})

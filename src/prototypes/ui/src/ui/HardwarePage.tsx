@@ -1,5 +1,5 @@
-// Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author.
-import { useEffect, useState } from 'react'
+// Authored by Claude Sonnet 5.5 and Claude Fable 5.1 (Anthropic), with Steven Chock as co-author.
+import { useCallback, useEffect, useState } from 'react'
 import type { MockHostConfig } from '../adapters/mock/index.ts'
 import type { HardwareKind, PrepProgress, PrepareInterview, StartInterview } from '../core/contract/pageFlow.ts'
 import type { SetupHost } from '../core/ports.ts'
@@ -14,9 +14,12 @@ import {
   type CheckPhase,
   type Tone,
 } from '../core/setup/hardware.ts'
+import { PREFLIGHT_HOLD_MS, preflight, preflightOutcome } from '../core/setup/preflight.ts'
 import { ArrowIcon, CheckIcon, ErrorIcon, HourglassIcon } from './icons.tsx'
 import { PageHeader } from './PageHeader.tsx'
+import { PreflightDialog } from './PreflightDialog.tsx'
 import { ResumeUploadCard } from './ResumeUploadCard.tsx'
+import { useResumeUploadsIfAny } from './resumeUploads.ts'
 
 const MARK: Record<Tone, string> = { ok: '✓', warn: '!', bad: '✕', neutral: '–' }
 const PRESETS: ReadonlyArray<[string, string]> = [
@@ -30,6 +33,8 @@ const PRESETS: ReadonlyArray<[string, string]> = [
 /**
  * Hardware setup and verification, built from design/mockups/ui/Hardware.dc.html. Preparation
  * runs while the user checks hardware, and Start interview waits for both (contracts/page-flow.md).
+ * The resume and role uploads never block this page; Start opens a pre-flight check that waits
+ * for them and every other requirement before the interview starts (core/setup/preflight.ts).
  *
  * Prototype: nothing is streamed from a microphone or camera. The host returns a scripted quality.
  */
@@ -42,6 +47,7 @@ export function HardwarePage({
   onBack,
   onStart,
   onOpenAccessibility,
+  preflightHoldMs = PREFLIGHT_HOLD_MS,
 }: {
   host: SetupHost
   request: PrepareInterview
@@ -51,6 +57,8 @@ export function HardwarePage({
   onBack: () => void
   onStart: (start: StartInterview, captions: boolean) => void
   onOpenAccessibility: () => void
+  /** Tests pass 0. */
+  preflightHoldMs?: number
 }) {
   const [prep, setPrep] = useState<PrepProgress>('preparing')
   const [attempt, setAttempt] = useState(0)
@@ -60,6 +68,14 @@ export function HardwarePage({
   const [preset, setPreset] = useState('clean')
   const [starting, setStarting] = useState(false)
   const [startError, setStartError] = useState<string | null>(null)
+  const [preflightOpenedAt, setPreflightOpenedAt] = useState<number | null>(null)
+
+  // The hot interview's resume, as this session tracks its processing (null when it was not loaded this session).
+  const uploads = useResumeUploadsIfAny()
+  const hotResumeId = request.form.interviewType.type === 'hot' ? request.form.interviewType.resumeId : null
+  const resumeUpload = hotResumeId === null ? null : (uploads?.uploads.find((u) => u.resumeId === hotResumeId) ?? null)
+  const checks = preflight({ prep, audio, interviewType: request.form.interviewType, roleFocus: request.form.roleFocus, resumeUpload })
+  const outcome = preflightOutcome(checks)
 
   useEffect(() => {
     return host.prepareInterview(request, setPrep)
@@ -75,8 +91,7 @@ export function HardwarePage({
   }
 
   const startable = canStart(prep, audio)
-  const start = async () => {
-    if (!startable || starting) return
+  const start = useCallback(async () => {
     setStarting(true)
     setStartError(null)
     const startRequest = { form: toHardwareForm(audio, video, captions), sessionId: request.sessionId }
@@ -87,7 +102,25 @@ export function HardwarePage({
       setStartError(e instanceof Error ? e.message : 'The interview could not start.')
       setStarting(false)
     }
+  }, [audio, video, captions, request.sessionId, host, onStart])
+
+  // Start interview opens the pre-flight check. It starts by itself once every check is ok, after a short hold.
+  const openPreflight = () => {
+    if (!startable || starting) return
+    setStartError(null)
+    setPreflightOpenedAt(Date.now())
   }
+  const closePreflight = () => {
+    setPreflightOpenedAt(null)
+    setStartError(null)
+  }
+  const preflightOpen = preflightOpenedAt !== null
+  useEffect(() => {
+    if (preflightOpenedAt === null || outcome !== 'ready' || starting || startError !== null) return
+    const remaining = Math.max(0, preflightHoldMs - (Date.now() - preflightOpenedAt))
+    const timer = setTimeout(() => void start(), remaining)
+    return () => clearTimeout(timer)
+  }, [preflightOpenedAt, outcome, starting, startError, preflightHoldMs, start])
 
   const host_ = hostView[prep]
   const bar = barView[prep]
@@ -181,12 +214,12 @@ export function HardwarePage({
 
           <section aria-label="Start the interview" className="card">
             <div>
-              <button type="button" className={startable ? 'btn btn-big btn-primary' : 'btn btn-big btn-disabled'} aria-disabled={!startable} aria-describedby="start-reasons" onClick={() => void start()}>
+              <button type="button" className={startable ? 'btn btn-big btn-primary' : 'btn btn-big btn-disabled'} aria-disabled={!startable} aria-describedby="start-reasons" onClick={openPreflight}>
                 Start interview
                 <ArrowIcon />
               </button>
             </div>
-            {startError && (
+            {startError && !preflightOpen && (
               <p role="alert" className="note-box note-bad">
                 {startError}
               </p>
@@ -260,6 +293,8 @@ export function HardwarePage({
           </section>
         </aside>
       </div>
+
+      <PreflightDialog open={preflightOpen} items={checks} outcome={outcome} starting={starting} error={startError} onClose={closePreflight} />
 
       <section aria-label="Interview preparation progress" className="dock">
         <div className="dock-inner">

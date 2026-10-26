@@ -51,9 +51,11 @@ test.describe('setup pages against the real API', () => {
 })
 
 test.describe('resume processing against the real API', () => {
-  test('a loaded resume reports its steps over the hub until the Hardware page shows it processed', async ({ page }) => {
-    await page.goto('/')
+  test('in test mode, the drawer makes the uploader instant and the Hardware page shows the resume processed', async ({ page }) => {
+    await page.goto('/?mode=test')
     await expect(page.getByRole('heading', { name: 'Interview type' })).toBeVisible()
+    // The header rides on the upload request; the API applies it to that resume's processing.
+    await page.getByLabel('Pace').selectOption('Instant')
     await page.getByRole('radio', { name: /Hot interview/ }).check()
     await page.getByTestId('resume-file').setInputFiles({ name: 'cv.txt', mimeType: 'text/plain', buffer: Buffer.from('Ten years of building things.') })
     await expect(page.getByText('cv is loaded and selected.')).toBeVisible({ timeout: 5000 })
@@ -67,7 +69,7 @@ test.describe('resume processing against the real API', () => {
 
     const card = page.getByTestId('resume-uploads')
     await expect(card).toContainText('Resume processing')
-    await expect(card.getByText('Processed')).toBeVisible({ timeout: 15_000 })
+    await expect(card.getByText('Processed')).toBeVisible({ timeout: 10_000 })
     await expect(card.getByRole('list', { name: 'Steps for cv' })).toContainText('done')
   })
 })

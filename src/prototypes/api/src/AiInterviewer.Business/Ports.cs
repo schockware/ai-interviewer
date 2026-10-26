@@ -62,7 +62,11 @@ public interface IPreparationDiagnoser
 /// </summary>
 public interface IResumeUploader
 {
+    /// <summary>With the uploader's default options.</summary>
     Task BeginAsync(ResumeId id, DisplayName name, CancellationToken ct);
+
+    /// <summary>With explicit options for this upload only (test mode).</summary>
+    Task BeginAsync(ResumeId id, DisplayName name, ResumeUploaderOptions options, CancellationToken ct);
 }
 
 /// <summary>How resume processing progress reaches the client. The transport is the adapter's business.</summary>

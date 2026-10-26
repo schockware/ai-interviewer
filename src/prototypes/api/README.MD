@@ -39,6 +39,21 @@ The connection information is public and lives in committed files on both sides;
 
 Start this API, then `npm run dev:real` in `../ui`. The UI's dev server proxies `/api` here, so CORS is not needed on that path; the CORS policy is for calling this API directly from the page.
 
+## Test mode
+
+Steven's call (2026-10-26): integration tests must run quickly while UX sessions play with the UI at design pace, so mock options are settable per request. A request may carry `X-Mock-*` headers; `Testing/TestModeMiddleware.cs` reads them before any endpoint runs. The injected `ResumeUploaderOptions` stay the **defaults**; `IResumeUploader` has a second `BeginAsync` that takes explicit options, and the `/resumes` endpoint uses it for a request that brought a header. Nothing is scoped or swapped.
+
+| Setting | Meaning | Default |
+|---|---|---|
+| `TestMode:Enabled` | Whether `X-Mock-*` headers are honored. Off: any such header is a **400** with the reason, never silently ignored. The client never decides the server's mode (decision 0004) | `false`; `true` in `appsettings.Development.json` |
+| `MockUploader:MinStepDelayMs`, `MaxStepDelayMs` | The uploader's pace when no header says otherwise | 3000, 8000 |
+
+| Header | Value | Effect |
+|---|---|---|
+| `X-Mock-Uploader-Options` | JSON `{ "minStepDelayMs": 0, "maxStepDelayMs": 0, "seed": 42 }` (`seed` optional) | Explicit options for the resume this request uploads; a seed makes its steps and pauses repeatable. Malformed JSON, an unknown field, a negative minimum or a minimum above the maximum is a 400 |
+
+Header names are case-insensitive, as HTTP headers are. A header starting with `X-Mock-` that this server does not know is a 400. The UI sends these headers from its test drawer (`?mode=test`); the HTTP tests send them too, instead of overriding the options in the test host.
+
 ## Storage
 
 Resumes, roles and sessions are kept in SQLite by default and survive a restart. The `Storage` section of `appsettings.json` picks the adapter; a value it does not know stops the app from starting instead of falling back.
@@ -88,7 +103,7 @@ Any malformed body (missing or null field, unknown property, unknown discriminat
 - **Preparing the same `sessionId` again replaces the session** (treated as a retry).
 - **The error-checks response** reuses `Error` as a diagnosis message, as the OpenAPI draft does.
 - **Roles** are only those the user adds. The "industry-standard titles" list from the spec is not built.
-- **Mock resume processing.** `RandomStepsResumeUploader` invents three to six steps from a fixed pool, pauses 400 to 1200 ms between them, and reads no file. A display name containing `fail` fails at a random step (a harness hook).
+- **Mock resume processing.** `RandomStepsResumeUploader` invents three to six steps from a fixed pool, pauses 3 to 8 seconds between them by default (Steven set the pace so the UI can be designed against it; test mode changes it per request), and reads no file. A display name containing `fail` fails at a random step (a harness hook).
 
 ## Stubs and gaps
 

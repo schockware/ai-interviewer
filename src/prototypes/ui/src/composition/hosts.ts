@@ -18,10 +18,16 @@ export interface HostParts {
  * because the API has no endpoint for it yet (the audio stream is an open item in
  * contracts/page-flow.md). Remove that line when the endpoint exists.
  */
-export function buildSetupHost(integration: Integration, clock: Clock, mockConfig: () => MockHostConfig): { host: SetupHost; parts: HostParts } {
+export function buildSetupHost(
+  integration: Integration,
+  clock: Clock,
+  mockConfig: () => MockHostConfig,
+  /** Test mode's server-side settings as headers, read on every request (composition/testMode.ts). None by default. */
+  testHeaders: () => Record<string, string> = () => ({}),
+): { host: SetupHost; parts: HostParts } {
   const mock = new MockSetupHost(clock, mockConfig)
   if (integration.mode === 'mock') return { host: mock, parts: { setup: 'mock', hardware: 'mock', uploadProgress: 'mock' } }
-  const http = new HttpSetupHost(integration.apiBaseUrl)
+  const http = new HttpSetupHost(integration.apiBaseUrl, undefined, undefined, testHeaders)
   const host: SetupHost = {
     loadPage: () => http.loadPage(),
     uploadResume: (r) => http.uploadResume(r),

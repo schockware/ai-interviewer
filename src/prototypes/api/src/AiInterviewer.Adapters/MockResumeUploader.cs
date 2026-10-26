@@ -4,25 +4,23 @@ using AiInterviewer.Business.Setup;
 
 namespace AiInterviewer.Adapters;
 
-/// <summary>How fast the mock uploader runs. Tests use <see cref="Instant"/>.</summary>
-public sealed record MockUploaderOptions(TimeSpan MinStepDelay, TimeSpan MaxStepDelay, int? Seed = null)
-{
-    /// <summary>Slow enough to watch on the Hardware page, quick enough not to be in the way. PROPOSAL.</summary>
-    public static readonly MockUploaderOptions Default = new(TimeSpan.FromMilliseconds(400), TimeSpan.FromMilliseconds(1200));
-
-    public static readonly MockUploaderOptions Instant = new(TimeSpan.Zero, TimeSpan.Zero);
-}
-
 /// <summary>
 /// Stand-in for resume processing. It invents three to six steps from a fixed pool, runs them in
 /// the background with random pauses, and reports a whole snapshot after every change through
 /// <see cref="IResumeUploadReporter"/>. No file is read. The first snapshot is reported before
-/// <see cref="BeginAsync"/> returns, so a client that asks right after the upload finds it known.
-/// Harness hook (PROPOSAL): a display name containing "fail" fails at a random step.
+/// BeginAsync returns, so a client that asks right after the upload finds it known.
+/// The injected options are the defaults; an upload may bring its own (test mode), which
+/// apply to that upload only. Harness hook (PROPOSAL): a display name containing "fail" fails
+/// at a random step.
 /// </summary>
-public sealed class RandomStepsResumeUploader(IResumeUploadReporter reporter, MockUploaderOptions options, TimeProvider clock) : IResumeUploader
+public sealed class RandomStepsResumeUploader(IResumeUploadReporter reporter, ResumeUploaderOptions defaults, TimeProvider clock) : IResumeUploader
 {
     public const string FailTrigger = "fail";
+
+    /// <summary>Three to eight seconds a step, so the UI design can be worked on while it runs (Steven, 2026-10-26).</summary>
+    public static readonly ResumeUploaderOptions DefaultOptions = new(TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(8));
+
+    public static readonly ResumeUploaderOptions InstantOptions = new(TimeSpan.Zero, TimeSpan.Zero);
 
     private static readonly string[] Pool =
     [
@@ -38,20 +36,24 @@ public sealed class RandomStepsResumeUploader(IResumeUploadReporter reporter, Mo
         "Indexing for the interviewer",
     ];
 
-    // A seeded Random is not thread-safe, so every draw goes through the gate.
-    private readonly Random random = options.Seed is { } seed ? new Random(seed) : new Random();
+    // Shared across uploads, so it is guarded; a seeded Random is not thread-safe.
+    private readonly Random shared = new();
     private readonly object gate = new();
 
-    public async Task BeginAsync(ResumeId id, DisplayName name, CancellationToken ct)
+    public Task BeginAsync(ResumeId id, DisplayName name, CancellationToken ct) => BeginAsync(id, name, defaults, ct);
+
+    public async Task BeginAsync(ResumeId id, DisplayName name, ResumeUploaderOptions options, CancellationToken ct)
     {
-        var steps = PickNames().Select(n => new ResumeUploadStep(n, UploadStepStatus.Pending)).ToArray();
-        var failAt = name.Value.Contains(FailTrigger, StringComparison.OrdinalIgnoreCase) ? Draw(r => r.Next(steps.Length)) : -1;
+        // A seeded run draws from its own Random, so the same seed gives the same steps and pauses.
+        var random = options.Seed is { } seed ? new Random(seed) : shared;
+        var steps = PickNames(random).Select(n => new ResumeUploadStep(n, UploadStepStatus.Pending)).ToArray();
+        var failAt = name.Value.Contains(FailTrigger, StringComparison.OrdinalIgnoreCase) ? Draw(random, r => r.Next(steps.Length)) : -1;
         await reporter.ReportAsync(Snapshot(id, name, ResumeUploadStatus.Running, steps), ct);
         // Fire and forget: the request's token must not cancel work the client expects to continue.
-        _ = RunAsync(id, name, steps, failAt);
+        _ = RunAsync(id, name, steps, failAt, options, random);
     }
 
-    private async Task RunAsync(ResumeId id, DisplayName name, ResumeUploadStep[] steps, int failAt)
+    private async Task RunAsync(ResumeId id, DisplayName name, ResumeUploadStep[] steps, int failAt, ResumeUploaderOptions options, Random random)
     {
         try
         {
@@ -59,7 +61,7 @@ public sealed class RandomStepsResumeUploader(IResumeUploadReporter reporter, Mo
             {
                 steps[i] = steps[i] with { Status = UploadStepStatus.Running };
                 await reporter.ReportAsync(Snapshot(id, name, ResumeUploadStatus.Running, steps), CancellationToken.None);
-                await Task.Delay(NextDelay(), clock);
+                await Task.Delay(NextDelay(options, random), clock);
 
                 if (i == failAt)
                 {
@@ -84,20 +86,20 @@ public sealed class RandomStepsResumeUploader(IResumeUploadReporter reporter, Mo
         new(id, name, status, steps.ToArray()); // a copy, so a listener holds a frozen list
 
     /// <summary>Three to six names from the pool, in pool order.</summary>
-    private string[] PickNames() => Draw(r =>
+    private string[] PickNames(Random random) => Draw(random, r =>
     {
         var count = r.Next(3, 7);
         return Enumerable.Range(0, Pool.Length).OrderBy(_ => r.Next()).Take(count).Order().Select(i => Pool[i]).ToArray();
     });
 
-    private TimeSpan NextDelay() => Draw(r =>
+    private TimeSpan NextDelay(ResumeUploaderOptions options, Random random) => Draw(random, r =>
     {
         var min = options.MinStepDelay.TotalMilliseconds;
         var max = options.MaxStepDelay.TotalMilliseconds;
         return TimeSpan.FromMilliseconds(max <= min ? min : min + r.NextDouble() * (max - min));
     });
 
-    private T Draw<T>(Func<Random, T> draw)
+    private T Draw<T>(Random random, Func<Random, T> draw)
     {
         lock (gate) return draw(random);
     }
