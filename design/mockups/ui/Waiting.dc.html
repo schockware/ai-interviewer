@@ -1,0 +1,240 @@
+<!doctype html>
+<!-- Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author. Added after iteration 1; see README.MD. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Waiting room</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F3F5F7}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+@keyframes sweep{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
+.sweep{animation:sweep 1.8s infinite ease-in-out}
+@media (prefers-reduced-motion: reduce){.sweep{animation:none;transform:none;width:100%}}
+</style>
+</helmet>
+<div style="min-height: 1400px; background: #F3F5F7; color: #16202A; font-family: 'IBM Plex Sans', system-ui, sans-serif; display: flex; flex-direction: column; box-sizing: border-box">
+<div style="flex: 1 1 auto; padding: 24px 16px 32px; box-sizing: border-box">
+<div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px">
+
+<header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
+<button type="button" autofocus="" aria-haspopup="dialog" style="min-height: 48px; padding: 0 16px 0 12px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 2px solid #1D4ED8; background: #FFFFFF; color: #1D4ED8; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; outline: 3px solid #93B4F5; outline-offset: 2px">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="7" r="1.3"></circle><path d="M7.5 10h9"></path><path d="M12 10v4"></path><path d="m9.5 18 2.5-4 2.5 4"></path></svg>
+Accessibility
+</button>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<h1 style="margin: 0; font-size: 22px; font-weight: 600">Waiting room</h1>
+<p style="margin: 0; font-size: 14px; color: #4A5562">Step 3 of 3 · Getting your interview ready</p>
+</div>
+</div>
+<a href="Hardware.dc.html" style="font-size: 15px; font-weight: 500">Leave the waiting room</a>
+</header>
+
+<section aria-label="Host status" style="{{hostStyle}}">
+<div aria-hidden="true" style="width: 48px; height: 48px; flex: none; border-radius: 50%; background: #FFFFFF; display: flex; align-items: center; justify-content: center; color: {{hostColor}}">
+<sc-if value="{{showWaiting}}" hint-placeholder-val="{{ true }}">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12"></path><path d="M6 22h12"></path><path d="M6 2v4l6 6-6 6v4"></path><path d="M18 2v4l-6 6 6 6v4"></path></svg>
+</sc-if>
+<sc-if value="{{showHostReady}}" hint-placeholder-val="{{ false }}">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"></path></svg>
+</sc-if>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<h2 style="margin: 0; font-size: 20px; font-weight: 600; color: {{hostColor}}">{{hostTitle}}</h2>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: #2B3540">{{hostBody}}</p>
+</div>
+</section>
+
+<sc-if value="{{showDiagnosis}}" hint-placeholder-val="{{ false }}">
+<section aria-label="What went wrong" style="background: #FFFFFF; border-radius: 16px; padding: 24px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 600">What the interviewer found</h2>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: #2B3540">[DIAGNOSIS FROM THE AI MODELS, WITH STEPS TO FIX]</p>
+<div style="display: flex; flex-wrap: wrap; gap: 12px">
+<button type="button" style="min-height: 44px; padding: 0 18px; border-radius: 10px; border: 0; background: #1D4ED8; color: #FFFFFF; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer">Try preparing again</button>
+<a href="Setup.dc.html" style="min-height: 44px; padding: 0 18px; display: inline-flex; align-items: center; border-radius: 10px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font-size: 15px; font-weight: 500; text-decoration: none">Change application setup</a>
+</div>
+</section>
+</sc-if>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+
+<main style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+
+<section aria-label="Current step" style="background: #FFFFFF; border-radius: 16px; padding: 20px 28px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 4px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #4A5562">Now</span>
+<p role="status" style="margin: 0; font-size: 20px; font-weight: 600; color: #16202A">{{nowText}}</p>
+</section>
+
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+<section aria-labelledby="{{g.id}}" style="background: #FFFFFF; border-radius: 16px; padding: 24px 28px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h2 id="{{g.id}}" style="margin: 0; font-size: 18px; font-weight: 600">{{g.title}}</h2>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #4A5562">{{g.note}}</p>
+</div>
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{g.steps}}" as="s" hint-placeholder-count="3">
+<li style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border-radius: 12px; background: {{s.tint}}">
+<span aria-hidden="true" style="width: 28px; height: 28px; flex: none; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: #FFFFFF; border: 2px solid {{s.color}}; color: {{s.color}}; font-size: 14px; font-weight: 700">{{s.mark}}</span>
+<span style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<span style="font-size: 16px; font-weight: 500; color: #16202A">{{s.label}}</span>
+<span style="font-size: 13px; line-height: 1.4; color: #2B3540"><b style="color: {{s.color}}">{{s.word}}</b>{{s.who}}</span>
+</span>
+</li>
+</sc-for>
+</ol>
+</section>
+</sc-for>
+
+</main>
+
+<aside aria-label="About the waiting room" style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+<section style="background: #FFFFFF; border-radius: 16px; padding: 24px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600">What is happening</h2>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #2B3540">Your interview is built for you from the role{{resumeClause}}. The AI writes the opening, the questions, the follow-ups, the scoring guide and the closing before you join. This usually takes [WAIT TIME].</p>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #2B3540">You do not need to do anything. Your hardware check is done.</p>
+</section>
+<section style="background: #EFE8FA; border-radius: 16px; padding: 24px; border: 1px solid #5B2A9E; display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #2A1450">When you join</h2>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #2A1450">The interview starts with the interviewer’s opening. The interviewer is not listening during the opening, so wait for the “your turn” cue.</p>
+</section>
+</aside>
+
+</div>
+</div>
+</div>
+
+<section aria-label="Interview preparation progress" style="position: sticky; bottom: 0; background: #FFFFFF; border-top: 1px solid #E1E5EA; padding: 16px; box-sizing: border-box">
+<div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 14px">
+<span id="prep-label" style="font-weight: 600; color: #16202A">{{barLabel}}</span>
+<span style="color: #4A5562">{{barNote}}</span>
+</div>
+<div role="progressbar" aria-labelledby="prep-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{barNow}}" aria-valuetext="{{barValueText}}" style="height: 12px; border-radius: 6px; background: #D5DAE0; overflow: hidden; position: relative">
+<sc-if value="{{barDeterminate}}" hint-placeholder-val="{{ true }}">
+<div style="width: {{barWidth}}; height: 100%; background: {{barColor}}; border-radius: 6px"></div>
+</sc-if>
+<sc-if value="{{barIndeterminate}}" hint-placeholder-val="{{ false }}">
+<div class="sweep" style="width: 40%; height: 100%; background: #9A4D00; border-radius: 6px"></div>
+</sc-if>
+</div>
+</div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"prep":{"editor":"enum","options":["preparing","retrying","diagnosing","ready"],"default":"preparing","section":"Preview"},"interviewType":{"editor":"enum","options":["hot","cold"],"default":"hot","section":"Preview"},"jobDescription":{"editor":"enum","options":["uploaded","role-only"],"default":"uploaded","section":"Preview"},"step":{"editor":"range","min":0,"max":11,"step":1,"default":5,"section":"Preview"},"$preview":{"width":1280,"height":1400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const prep = p.prep ?? 'preparing';
+    const hot = (p.interviewType ?? 'hot') === 'hot';
+    const uploaded = (p.jobDescription ?? 'uploaded') === 'uploaded';
+    const stepProp = p.step ?? 5;
+
+    const OK = '#0F6B5C', WARN = '#7A3E00', BAD = '#B42318', NEUTRAL = '#4B5563';
+    const OKT = '#DDF2EC', WARNT = '#FFF1DC', BADT = '#FCE4E1', NEUT = '#F3F5F7';
+
+    const G1 = 'Your materials';
+    const G2 = 'Interview scripts';
+    const G3 = 'Voice and connection';
+    const all = [
+      { g: G1, label: 'Uploading your resume', who: '', on: hot },
+      { g: G1, label: 'Reading your resume', who: 'Interviewer model', on: hot },
+      { g: G1, label: 'Uploading your job description', who: '', on: uploaded },
+      { g: G1, label: uploaded ? 'Reading the role and job description' : 'Looking up the role', who: 'Interviewer model', on: true },
+      { g: G2, label: 'Planning the questions', who: 'Interviewer model', on: true },
+      { g: G2, label: 'Writing the opening script', who: 'Interviewer model', on: true },
+      { g: G2, label: 'Preparing the follow-up questions', who: 'Follow-up model', on: true },
+      { g: G2, label: 'Preparing the scoring guide', who: 'Evaluator model', on: true },
+      { g: G2, label: 'Writing the closing script', who: 'Interviewer model', on: true },
+      { g: G3, label: 'Warming up the interviewer’s voice', who: 'Speaker model', on: true },
+      { g: G3, label: 'Connecting to the interview room', who: '', on: true }
+    ].filter((x) => x.on);
+
+    const total = all.length;
+    const step = prep === 'ready' ? total : Math.min(stepProp, total);
+    const statusOf = (i) => {
+      if (i < step) return 'done';
+      if (i === step) return prep === 'retrying' ? 'slow' : (prep === 'diagnosing' ? 'failed' : 'running');
+      return 'pending';
+    };
+    const look = {
+      done: { mark: '✓', color: OK, tint: OKT, word: 'Done' },
+      running: { mark: '…', color: WARN, tint: WARNT, word: 'In progress' },
+      slow: { mark: '!', color: WARN, tint: WARNT, word: 'Taking longer, retrying' },
+      failed: { mark: '✕', color: BAD, tint: BADT, word: 'Needs attention' },
+      pending: { mark: '○', color: NEUTRAL, tint: NEUT, word: 'Waiting' }
+    };
+
+    const notes = {};
+    notes[G1] = 'Your resume and role are uploaded and read so the interviewer can use them.';
+    notes[G2] = 'The AI writes these for your interview. You do not need to do anything.';
+    notes[G3] = 'The last steps before you join.';
+    const ids = {};
+    ids[G1] = 'grp-materials';
+    ids[G2] = 'grp-scripts';
+    ids[G3] = 'grp-connection';
+
+    const groups = [];
+    let nowText = 'Your interview is ready';
+    all.forEach((x, i) => {
+      const st = statusOf(i);
+      const l = look[st];
+      if (st === 'running' || st === 'slow' || st === 'failed') nowText = x.label;
+      let grp = groups.find((g) => g.title === x.g);
+      if (!grp) {
+        grp = { id: ids[x.g], title: x.g, note: notes[x.g], steps: [] };
+        groups.push(grp);
+      }
+      grp.steps.push({ label: x.label, who: x.who ? ' · ' + x.who : '', mark: l.mark, color: l.color, tint: l.tint, word: l.word });
+    });
+
+    const done = Math.min(step, total);
+    const pct = Math.round((100 * done) / total);
+
+    const host = {
+      preparing: { title: 'Waiting for host…', body: 'The interviewer is building your interview. You will join as soon as it is ready.', color: WARN, bg: '#FFF1DC', border: '#F0C98E', waiting: true },
+      retrying: { title: 'Waiting for host…', body: 'This is taking a little longer than usual. We are retrying quietly, and you do not need to do anything.', color: WARN, bg: '#FFF1DC', border: '#F0C98E', waiting: true },
+      diagnosing: { title: 'The host ran into a problem', body: 'We tried again and it did not work. The interviewer is checking what went wrong.', color: BAD, bg: '#FCE4E1', border: '#E8A29B', waiting: true },
+      ready: { title: 'The host is ready', body: 'Your interview is prepared. Joining now.', color: OK, bg: '#DDF2EC', border: '#9AD3C5', waiting: false }
+    }[prep];
+
+    const bar = {
+      preparing: { label: 'Preparing your interview', note: pct + '% · ' + nowText, color: '#1D4ED8', indet: false },
+      retrying: { label: 'Preparing your interview', note: 'Taking longer than usual. Retrying', color: '#9A4D00', indet: false },
+      diagnosing: { label: 'Preparing your interview', note: 'Checking what went wrong', color: '#9A4D00', indet: true },
+      ready: { label: 'Your interview is ready', note: 'Joining now', color: '#0F6B5C', indet: false }
+    }[prep];
+
+    return {
+      hostStyle: 'background: ' + host.bg + '; border: 1px solid ' + host.border + '; border-radius: 16px; padding: 20px 24px; display: flex; align-items: center; gap: 16px',
+      hostColor: host.color,
+      hostTitle: host.title,
+      hostBody: host.body,
+      showWaiting: host.waiting,
+      showHostReady: prep === 'ready',
+      showDiagnosis: prep === 'diagnosing',
+      nowText: prep === 'ready' ? 'Your interview is ready. Joining now.' : nowText,
+      groups: groups,
+      resumeClause: hot ? ' and your resume' : '',
+      barLabel: bar.label,
+      barNote: bar.note,
+      barNow: pct,
+      barValueText: bar.label,
+      barWidth: pct + '%',
+      barColor: bar.color,
+      barDeterminate: !bar.indet,
+      barIndeterminate: bar.indet
+    };
+  }
+}
+</script>
+</body>
+</html>

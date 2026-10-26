@@ -20,18 +20,19 @@ Design prototyping happens on a private Design canvas on claude.ai, "Interviewer
 
 ## Added after iteration 1
 
-Four boards were added to the canvas later the same day and copied here. Their states and Tweaks are described in each board.
+Five boards were added to the canvas after iteration 1 and copied here. Their states and Tweaks are described in each board.
 
 | File | Board | What it shows |
 |---|---|---|
 | `Transitions.dc.html` | Cue transitions (master) | Every state and edge of the cue state machine, the decisions made, and the WCAG 2.2 notes. This is the master the text contract (`contracts/cue-transitions.md`) will be converted from |
 | `Setup.dc.html` | Application setup | Interview type (Cold or Hot), resume and role focus, Application settings (AI models), and Prepare interview. Tweaks switch page state, interview type, resume and role states. Built from `contracts/page-flow.md` |
 | `Hardware.dc.html` | Hardware setup and verification | Waiting for host and the progress bar, audio (required) and video (optional) checks, Advanced training options, and Start interview. Tweaks switch preparation, audio, video, captions and preset |
+| `Waiting.dc.html` | Waiting room | The step between Hardware setup and the Interview. Mimics Waiting for host and shows each step of preparation: the resume and role being uploaded and read, then the AI writing the interview scripts (questions, opening, follow-ups, scoring guide, closing), then the voice and connection. Same banner and progress bar as the Hardware page. Tweaks switch preparation state, interview type, job description and the current step |
 | `SetupHot.dc.html` | Hot interview: resume panel states | The resume panel under Hot in each `ResumeValidation` state: `hot-incomplete=>cold` (no saved resumes, processing) and `hot` (processed, saved resume defaulted) |
 
 **These boards are newer than the rest of this folder.** On the canvas, `Main.dc.html` and `States.dc.html` have changed since iteration 1 (the End interview control and its confirmation, and the fifth state, Uninterruptible), and `Timeline.dc.html` and `Recovery.dc.html` were moved to make room. The copies here of those four are still iteration 1. Until they are synced, `Transitions.dc.html` refers to a fifth state that `States.dc.html` here does not show.
 
-Open items on these boards: how audio streams to the server for hardware verification, and the hold length before the Uninterruptible states (shown as `[HOLD]`).
+Open items on these boards: how audio streams to the server for hardware verification, the hold length before the Uninterruptible states (shown as `[HOLD]`), and the exact list of preparation steps in the waiting room, which is a proposal.
 
 ## Viewing
 

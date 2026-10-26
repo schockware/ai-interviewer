@@ -31,7 +31,7 @@ Accessibility
 </button>
 <div style="display: flex; flex-direction: column; gap: 2px">
 <h1 style="margin: 0; font-size: 22px; font-weight: 600">Check your setup</h1>
-<p style="margin: 0; font-size: 14px; color: #4A5562">Step 2 of 2 · Hardware setup and verification</p>
+<p style="margin: 0; font-size: 14px; color: #4A5562">Step 2 of 3 · Hardware setup and verification</p>
 </div>
 </div>
 <a href="Setup.dc.html" style="font-size: 15px; font-weight: 500">Back to application setup</a>
@@ -116,13 +116,14 @@ Accessibility
 </div>
 </section>
 
-<section aria-label="Start the interview" style="background: #FFFFFF; border-radius: 16px; padding: 28px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 16px">
+<section aria-label="Ready for the interview" style="background: #FFFFFF; border-radius: 16px; padding: 28px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 16px">
 <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
 <button type="button" aria-disabled="{{startDisabled}}" aria-describedby="start-reasons" style="{{startStyle}}">
-Start interview
+Ready for interview
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
 </button>
 </div>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #2B3540">{{startNote}}</p>
 <ul id="start-reasons" style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px">
 <sc-for list="{{checks}}" as="c" hint-placeholder-count="3">
 <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.5; color: #2B3540">
@@ -224,7 +225,7 @@ class Component extends DCLogic {
 
     const audioOk = audioKey === 'clear' || audioKey === 'intermittent' || audioKey === 'readable';
     const prepared = prep === 'ready';
-    const canStart = prepared && audioOk;
+    const canStart = audioOk;
 
     const host = {
       preparing: { title: 'Waiting for host…', body: 'The interviewer is building your interview. You can set up your hardware while you wait.', color: WARN, bg: '#FFF1DC', border: '#F0C98E', waiting: true },
@@ -241,7 +242,7 @@ class Component extends DCLogic {
     }[prep];
 
     const checks = [
-      { name: 'Interview prepared', state: prepared ? 'done' : (prep === 'diagnosing' ? 'needs attention' : 'still preparing'), mark: prepared ? '✓' : (prep === 'diagnosing' ? '!' : '…'), color: prepared ? OK : (prep === 'diagnosing' ? BAD : WARN), tint: prepared ? OKT : (prep === 'diagnosing' ? BADT : WARNT) },
+      { name: 'Interview prepared', state: prepared ? 'done' : (prep === 'diagnosing' ? 'needs attention, shown in the waiting room' : 'still preparing, you can wait for it in the waiting room'), mark: prepared ? '✓' : (prep === 'diagnosing' ? '!' : '…'), color: prepared ? OK : (prep === 'diagnosing' ? BAD : WARN), tint: prepared ? OKT : (prep === 'diagnosing' ? BADT : WARNT) },
       { name: 'Audio', state: audioOk ? 'verified, rated ' + a.chip.toLowerCase() : (audioKey === 'unreadable' || audioKey === 'errored' ? 'needs attention: ' + a.chip.toLowerCase() : 'not verified yet'), mark: audioOk ? '✓' : (audioKey === 'unreadable' || audioKey === 'errored' ? '✕' : '…'), color: audioOk ? OK : (audioKey === 'unreadable' || audioKey === 'errored' ? BAD : WARN), tint: audioOk ? OKT : (audioKey === 'unreadable' || audioKey === 'errored' ? BADT : WARNT) },
       { name: 'Video', state: 'optional, ' + v.chip.toLowerCase(), mark: '–', color: NEUTRAL, tint: NEUT }
     ];
@@ -263,6 +264,7 @@ class Component extends DCLogic {
       audioNoteStyle: note(a.color, a.tint),
       video: v,
       videoChipStyle: chip(v.color, v.tint),
+      startNote: prep === 'ready' ? 'Your interview is ready, so the waiting room lets you straight in.' : (prep === 'diagnosing' ? 'The host hit a problem. The waiting room shows what we found.' : 'Your interview is still being built. You will wait for it in the waiting room.'),
       startDisabled: !canStart,
       startStyle: canStart
         ? 'min-height: 56px; padding: 0 28px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 0; background: #1D4ED8; color: #FFFFFF; font: inherit; font-size: 17px; font-weight: 600; cursor: pointer'
