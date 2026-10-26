@@ -1,0 +1,325 @@
+<!doctype html>
+<!-- Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author. Added after iteration 1; see README.MD. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Waiting room</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F3F5F7}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+@keyframes sweep{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
+.sweep{animation:sweep 1.8s infinite ease-in-out}
+@media (prefers-reduced-motion: reduce){.sweep{animation:none;transform:none;width:100%}}
+</style>
+</helmet>
+<div style="min-height: 1400px; background: #F3F5F7; color: #16202A; font-family: 'IBM Plex Sans', system-ui, sans-serif; display: flex; flex-direction: column; box-sizing: border-box">
+<div style="flex: 1 1 auto; padding: 24px 16px 32px; box-sizing: border-box">
+<div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px">
+
+<header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
+<button type="button" autofocus="" aria-haspopup="dialog" style="min-height: 48px; padding: 0 16px 0 12px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 2px solid #1D4ED8; background: #FFFFFF; color: #1D4ED8; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; outline: 3px solid #93B4F5; outline-offset: 2px">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="7" r="1.3"></circle><path d="M7.5 10h9"></path><path d="M12 10v4"></path><path d="m9.5 18 2.5-4 2.5 4"></path></svg>
+Accessibility
+</button>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<h1 style="margin: 0; font-size: 22px; font-weight: 600">Waiting room</h1>
+<p style="margin: 0; font-size: 14px; color: #4A5562">Step 3 of 3 · Getting your interview ready</p>
+</div>
+</div>
+<a href="Hardware.dc.html" style="font-size: 15px; font-weight: 500">Leave the waiting room</a>
+</header>
+
+<dc-import name="StatusBanner" kind="{{bannerKind}}" body="{{hostBody}}" hint-size="100%,88px"></dc-import>
+
+<sc-if value="{{showDiagnosis}}" hint-placeholder-val="{{ false }}">
+<section aria-label="What went wrong" style="background: #FFFFFF; border-radius: 16px; padding: 24px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 600">What the interviewer found</h2>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: #2B3540">[DIAGNOSIS FROM THE AI MODELS, WITH STEPS TO FIX]</p>
+<div style="display: flex; flex-wrap: wrap; gap: 12px">
+<button type="button" style="min-height: 44px; padding: 0 18px; border-radius: 10px; border: 0; background: #1D4ED8; color: #FFFFFF; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer">Try preparing again</button>
+<a href="Setup.dc.html" style="min-height: 44px; padding: 0 18px; display: inline-flex; align-items: center; border-radius: 10px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font-size: 15px; font-weight: 500; text-decoration: none">Change application setup</a>
+</div>
+</section>
+</sc-if>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+
+<main style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+
+<sc-if value="{{showProgress}}" hint-placeholder-val="{{ true }}">
+<section aria-label="Current step" style="background: #FFFFFF; border-radius: 16px; padding: 20px 28px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 4px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #4A5562">Now</span>
+<p role="status" style="margin: 0; font-size: 20px; font-weight: 600; color: #16202A">{{nowText}}</p>
+</section>
+
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+<section aria-labelledby="{{g.id}}" style="background: #FFFFFF; border-radius: 16px; padding: 24px 28px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h2 id="{{g.id}}" style="margin: 0; font-size: 18px; font-weight: 600">{{g.title}}</h2>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #4A5562">{{g.note}}</p>
+</div>
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{g.steps}}" as="s" hint-placeholder-count="3">
+<li style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border-radius: 12px; background: {{s.tint}}">
+<span aria-hidden="true" style="width: 28px; height: 28px; flex: none; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: #FFFFFF; border: 2px solid {{s.color}}; color: {{s.color}}; font-size: 14px; font-weight: 700">{{s.mark}}</span>
+<span style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<span style="font-size: 16px; font-weight: 500; color: #16202A">{{s.label}}</span>
+<span style="font-size: 13px; line-height: 1.4; color: #2B3540"><b style="color: {{s.color}}">{{s.word}}</b>{{s.who}}</span>
+</span>
+</li>
+</sc-for>
+</ol>
+</section>
+</sc-for>
+</sc-if>
+
+<sc-if value="{{showReady}}" hint-placeholder-val="{{ false }}">
+<section aria-label="Countdown" style="background: #FFFFFF; border-radius: 16px; padding: 28px; border: 1px solid #E1E5EA; display: flex; flex-wrap: wrap; align-items: center; gap: 28px">
+<div aria-hidden="true" style="width: 132px; height: 132px; flex: none; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: {{cdTint}}; box-shadow: 0 0 0 4px {{cdColor}}; color: {{cdColor}}">
+<span style="font-size: 40px; line-height: 1; font-weight: 600; font-family: 'IBM Plex Mono', monospace">[N]</span>
+<span style="font-size: 13px; font-weight: 600">{{cdUnit}}</span>
+</div>
+<div style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 26px; line-height: 1.2; font-weight: 600; color: {{cdColor}}">{{cdTitle}}</h2>
+<p role="status" style="margin: 0; font-size: 17px; line-height: 1.5; color: #2B3540">{{cdText}}</p>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #4A5562">Need a moment? <a href="#training">Pause the countdown in Training options</a>.</p>
+</div>
+</section>
+<details style="background: #FFFFFF; border-radius: 16px; padding: 8px 28px; border: 1px solid #E1E5EA">
+<summary style="min-height: 44px; display: flex; align-items: center; cursor: pointer; font-size: 16px; font-weight: 600">Everything is ready · {{doneCount}} of {{totalCount}} steps done</summary>
+<div style="display: flex; flex-direction: column; gap: 18px; padding: 8px 0 20px">
+<sc-for list="{{groups}}" as="g2" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h3 style="margin: 0; font-size: 15px; font-weight: 600">{{g2.title}}</h3>
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px">
+<sc-for list="{{g2.steps}}" as="s2" hint-placeholder-count="3">
+<li style="display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.4; color: #2B3540">
+<span aria-hidden="true" style="width: 22px; height: 22px; flex: none; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: #DDF2EC; color: #0F6B5C; font-size: 12px; font-weight: 700">{{s2.mark}}</span>
+<span>{{s2.label}}<b style="color: #0F6B5C"> · {{s2.word}}</b></span>
+</li>
+</sc-for>
+</ol>
+</div>
+</sc-for>
+</div>
+</details>
+</sc-if>
+
+</main>
+
+<aside aria-label="About the waiting room" style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+<section style="background: #FFFFFF; border-radius: 16px; padding: 24px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600">What is happening</h2>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #2B3540">Your interview is built for you from the role{{resumeClause}}. The AI writes the opening, the questions, the follow-ups, the scoring guide and the closing before you join. This usually takes [WAIT TIME].</p>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #2B3540">You do not need to do anything. Your hardware check is done.</p>
+</section>
+<section style="background: #EFE8FA; border-radius: 16px; padding: 24px; border: 1px solid #5B2A9E; display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600; color: #2A1450">When you join</h2>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #2A1450">The interview starts with the interviewer’s opening. The interviewer is not listening during the opening, so wait for the “your turn” cue.</p>
+</section>
+<section aria-labelledby="pez-title" style="background: #FFFFFF; border-radius: 16px; padding: 24px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h2 id="pez-title" style="margin: 0; font-size: 15px; font-weight: 600">While you wait</h2>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #4A5562">Want something to read? Pick one. It is optional, and you get one piece at a time.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<button type="button" aria-pressed="{{tipsOn}}" onClick="{{pickTips}}" style="{{tipsStyle}}">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.7c.7.6 1 1.4 1 2.3h6c0-.9.3-1.7 1-2.3A7 7 0 0 0 12 2Z"></path></svg>
+Interview tips
+</button>
+<button type="button" aria-pressed="{{faqOn}}" onClick="{{pickFaq}}" style="{{faqStyle}}">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>
+Frequently asked questions
+</button>
+<button type="button" aria-pressed="{{roleOn}}" onClick="{{pickRole}}" style="{{roleStyle}}">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path></svg>
+Review your role
+</button>
+</div>
+<sc-if value="{{pezOpen}}" hint-placeholder-val="{{ false }}">
+<div aria-live="polite" style="padding: 16px; border-radius: 12px; background: #F3F5F7; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 10px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #4A5562">{{pez.heading}} · {{pez.counter}}</span>
+<p style="margin: 0; font-size: 16px; font-weight: 600; line-height: 1.4">{{pez.title}}</p>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #2B3540">{{pez.body}}</p>
+<div style="display: flex; flex-wrap: wrap; gap: 10px">
+<button type="button" onClick="{{nextPez}}" style="min-height: 44px; padding: 0 16px; border-radius: 10px; border: 0; background: #1D4ED8; color: #FFFFFF; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer">{{pez.next}}</button>
+<button type="button" onClick="{{closePez}}" style="min-height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font: inherit; font-size: 15px; font-weight: 500; cursor: pointer">Close</button>
+</div>
+</div>
+</sc-if>
+</section>
+<section id="training" aria-labelledby="train-title" style="background: #FFFFFF; border-radius: 16px; padding: 24px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 12px">
+<h2 id="train-title" style="margin: 0; font-size: 15px; font-weight: 600">Training options</h2>
+<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px">
+<span id="pause-label" style="font-size: 14px; font-weight: 500">Pause the countdown</span>
+<button type="button" role="switch" aria-checked="{{paused}}" aria-labelledby="pause-label" onClick="{{togglePause}}" style="{{switchStyle}}">
+<span style="{{knobStyle}}"></span>
+<span style="font-size: 13px; font-weight: 600; color: #16202A; padding: 0 8px; min-width: 24px">{{pauseWord}}</span>
+</button>
+</div>
+<p style="margin: 0; font-size: 13px; line-height: 1.5; color: #4A5562">For a test interview, or if you need a moment. When this is on, the interview waits for you. If it is on before your interview is ready, the countdown starts paused.</p>
+</section>
+</aside>
+
+</div>
+</div>
+</div>
+
+<dc-import name="PrepProgress" state="{{progressState}}" percent="{{progressPercent}}" note="{{barNote}}" hint-size="100%,76px"></dc-import>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"prep":{"editor":"enum","options":["preparing","retrying","diagnosing","ready"],"default":"preparing","section":"Preview"},"interviewType":{"editor":"enum","options":["hot","cold"],"default":"hot","section":"Preview"},"jobDescription":{"editor":"enum","options":["uploaded","role-only"],"default":"uploaded","section":"Preview"},"step":{"editor":"range","min":0,"max":12,"step":1,"default":5,"section":"Preview"},"countdown":{"editor":"enum","options":["running","paused"],"default":"running","section":"Preview"},"pez":{"editor":"enum","options":["closed","tips","faq","role"],"default":"closed","section":"Preview"},"$preview":{"width":1280,"height":1400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const prep = p.prep ?? 'preparing';
+    const hot = (p.interviewType ?? 'hot') === 'hot';
+    const uploaded = (p.jobDescription ?? 'uploaded') === 'uploaded';
+    const stepProp = p.step ?? 5;
+    const paused = this.state.paused ?? ((p.countdown ?? 'running') === 'paused');
+    const pezKind = this.state.pez ?? (p.pez ?? 'closed');
+
+    const OK = '#0F6B5C', WARN = '#7A3E00', BAD = '#B42318', NEUTRAL = '#4B5563';
+    const OKT = '#DDF2EC', WARNT = '#FFF1DC', BADT = '#FCE4E1', NEUT = '#F3F5F7';
+
+    const G1 = 'Your materials';
+    const G2 = 'Interview scripts';
+    const G3 = 'Voice and connection';
+    const all = [
+      { g: G1, label: 'Uploading your resume', who: '', on: hot },
+      { g: G1, label: 'Reading your resume', who: 'Interviewer model', on: hot },
+      { g: G1, label: 'Uploading your job description', who: '', on: uploaded },
+      { g: G1, label: uploaded ? 'Reading the role and job description' : 'Looking up the role', who: 'Interviewer model', on: true },
+      { g: G1, label: 'Preparing your role review', who: 'Interviewer model', on: true },
+      { g: G2, label: 'Planning the questions', who: 'Interviewer model', on: true },
+      { g: G2, label: 'Writing the opening script', who: 'Interviewer model', on: true },
+      { g: G2, label: 'Preparing the follow-up questions', who: 'Follow-up model', on: true },
+      { g: G2, label: 'Preparing the scoring guide', who: 'Evaluator model', on: true },
+      { g: G2, label: 'Writing the closing script', who: 'Interviewer model', on: true },
+      { g: G3, label: 'Warming up the interviewer’s voice', who: 'Speaker model', on: true },
+      { g: G3, label: 'Connecting to the interview room', who: '', on: true }
+    ].filter((x) => x.on);
+
+    const total = all.length;
+    const ready = prep === 'ready';
+    const step = ready ? total : Math.min(stepProp, total);
+    const statusOf = (i) => {
+      if (i < step) return 'done';
+      if (i === step) return prep === 'retrying' ? 'slow' : (prep === 'diagnosing' ? 'failed' : 'running');
+      return 'pending';
+    };
+    const look = {
+      done: { mark: '✓', color: OK, tint: OKT, word: 'Done' },
+      running: { mark: '…', color: WARN, tint: WARNT, word: 'In progress' },
+      slow: { mark: '!', color: WARN, tint: WARNT, word: 'Taking longer, retrying' },
+      failed: { mark: '✕', color: BAD, tint: BADT, word: 'Needs attention' },
+      pending: { mark: '○', color: NEUTRAL, tint: NEUT, word: 'Waiting' }
+    };
+
+    const notes = {};
+    notes[G1] = 'Your resume and role are uploaded and read so the interviewer can use them.';
+    notes[G2] = 'The AI writes these for your interview. You do not need to do anything.';
+    notes[G3] = 'The last steps before you join.';
+    const ids = {};
+    ids[G1] = 'grp-materials';
+    ids[G2] = 'grp-scripts';
+    ids[G3] = 'grp-connection';
+
+    const groups = [];
+    let nowText = 'Your interview is ready';
+    all.forEach((x, i) => {
+      const st = statusOf(i);
+      const l = look[st];
+      if (st === 'running' || st === 'slow' || st === 'failed') nowText = x.label;
+      let grp = groups.find((g) => g.title === x.g);
+      if (!grp) {
+        grp = { id: ids[x.g], title: x.g, note: notes[x.g], steps: [] };
+        groups.push(grp);
+      }
+      grp.steps.push({ label: x.label, who: x.who ? ' · ' + x.who : '', mark: l.mark, color: l.color, tint: l.tint, word: l.word });
+    });
+
+    const done = Math.min(step, total);
+    const pct = Math.round((100 * done) / total);
+
+    const host = {
+      preparing: { title: 'Waiting for host…', body: 'The interviewer is building your interview. You will join as soon as it is ready.', color: WARN, bg: '#FFF1DC', border: '#F0C98E', waiting: true },
+      retrying: { title: 'Waiting for host…', body: 'This is taking a little longer than usual. We are retrying quietly, and you do not need to do anything.', color: WARN, bg: '#FFF1DC', border: '#F0C98E', waiting: true },
+      diagnosing: { title: 'The host ran into a problem', body: 'We tried again and it did not work. The interviewer is checking what went wrong.', color: BAD, bg: '#FCE4E1', border: '#E8A29B', waiting: true },
+      ready: { title: 'The host is ready', body: paused ? 'Your interview is prepared. The countdown is paused, so it waits for you.' : 'Your interview is prepared. It starts after a short countdown.', color: OK, bg: '#DDF2EC', border: '#9AD3C5', waiting: false }
+    }[prep];
+
+    const bar = {
+      preparing: { label: 'Preparing your interview', note: pct + '% · ' + nowText, color: '#1D4ED8', indet: false },
+      retrying: { label: 'Preparing your interview', note: 'Taking longer than usual. Retrying', color: '#9A4D00', indet: false },
+      diagnosing: { label: 'Preparing your interview', note: 'Checking what went wrong', color: '#9A4D00', indet: true },
+      ready: { label: 'Your interview is ready', note: paused ? 'Countdown paused' : 'Starting in [N] s', color: '#0F6B5C', indet: false }
+    }[prep];
+
+    const pezData = {
+      tips: { heading: 'Interview tip', counter: 'Tip [N] of [TOTAL]', title: '[INTERVIEW TIP]', body: '', next: 'Next tip' },
+      faq: { heading: 'Question', counter: '[N] of [TOTAL]', title: '[FAQ QUESTION]', body: '[FAQ ANSWER]', next: 'Next question' },
+      role: { heading: 'Role review', counter: 'Point [N] of [TOTAL]', title: '[ROLE TITLE]', body: '[ROLE REVIEW POINT]', next: 'Next point' }
+    };
+    const tile = (on) => 'min-height: 52px; padding: 0 16px; display: flex; align-items: center; gap: 12px; border-radius: 12px; font: inherit; font-size: 15px; font-weight: 600; text-align: left; cursor: pointer; ' + (on ? 'border: 2px solid #1D4ED8; background: #EEF3FD; color: #1D3A9E' : 'border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A');
+
+    return {
+      bannerKind: { preparing: 'waiting', retrying: 'retrying', diagnosing: 'problem', ready: 'ready' }[prep],
+      progressState: prep,
+      progressPercent: pct,
+      hostStyle: 'background: ' + host.bg + '; border: 1px solid ' + host.border + '; border-radius: 16px; padding: 20px 24px; display: flex; align-items: center; gap: 16px',
+      hostColor: host.color,
+      hostTitle: host.title,
+      hostBody: host.body,
+      showWaiting: host.waiting,
+      showHostReady: ready,
+      showDiagnosis: prep === 'diagnosing',
+      showProgress: !ready,
+      showReady: ready,
+      nowText: nowText,
+      groups: groups,
+      doneCount: done,
+      totalCount: total,
+      cdColor: paused ? '#4B5563' : '#0F6B5C',
+      cdTint: paused ? '#E8EAED' : '#DDF2EC',
+      cdUnit: paused ? 'paused' : 'seconds',
+      cdTitle: paused ? 'Countdown paused' : 'Your interview starts in [N] seconds',
+      cdText: paused ? 'Take your time. The interview starts when you turn the pause off in Training options.' : 'Get comfortable. The interviewer opens the interview and is not listening while they do.',
+      resumeClause: hot ? ' and your resume' : '',
+      barLabel: bar.label,
+      barNote: bar.note,
+      barNow: pct,
+      barValueText: bar.label,
+      barWidth: pct + '%',
+      barColor: bar.color,
+      barDeterminate: !bar.indet,
+      barIndeterminate: bar.indet,
+      pezOpen: pezKind !== 'closed',
+      pez: pezData[pezKind] || pezData.tips,
+      tipsOn: pezKind === 'tips', faqOn: pezKind === 'faq', roleOn: pezKind === 'role',
+      tipsStyle: tile(pezKind === 'tips'), faqStyle: tile(pezKind === 'faq'), roleStyle: tile(pezKind === 'role'),
+      pickTips: () => this.setState({ pez: pezKind === 'tips' ? 'closed' : 'tips' }),
+      pickFaq: () => this.setState({ pez: pezKind === 'faq' ? 'closed' : 'faq' }),
+      pickRole: () => this.setState({ pez: pezKind === 'role' ? 'closed' : 'role' }),
+      closePez: () => this.setState({ pez: 'closed' }),
+      nextPez: () => {},
+      paused: paused,
+      pauseWord: paused ? 'On' : 'Off',
+      togglePause: () => this.setState({ paused: !paused }),
+      switchStyle: 'min-width: 72px; min-height: 44px; padding: 0 4px; display: inline-flex; align-items: center; gap: 4px; border-radius: 22px; border: 2px solid ' + (paused ? '#1D4ED8' : '#8A93A0') + '; background: ' + (paused ? '#E3EBFC' : '#FFFFFF') + '; cursor: pointer; flex-direction: ' + (paused ? 'row-reverse' : 'row'),
+      knobStyle: 'width: 28px; height: 28px; border-radius: 50%; background: ' + (paused ? '#1D4ED8' : '#8A93A0')
+    };
+  }
+}
+</script>
+</body>
+</html>

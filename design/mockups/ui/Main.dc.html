@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Authored by Claude Opus 5.5 (Anthropic), with Steven Chock as co-author. Iteration 1; see README.MD. -->
+<!-- Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author. Added after iteration 1; see README.MD. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -20,7 +20,7 @@ a{color:#1D4ED8}a:hover{color:#1E3A8A}
 @media (prefers-reduced-motion: reduce){.cuedot{animation:none;opacity:1}}
 </style>
 </helmet>
-<div style="min-height: 900px; background: #F3F5F7; color: #16202A; font-family: 'IBM Plex Sans', system-ui, sans-serif; padding: 24px 16px; box-sizing: border-box">
+<div style="position: relative; min-height: 900px; background: #F3F5F7; color: #16202A; font-family: 'IBM Plex Sans', system-ui, sans-serif; padding: 24px 16px; box-sizing: border-box">
 <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px">
 
 <header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px">
@@ -42,9 +42,12 @@ Simulated: {{presetLabel}}
 </span>
 </sc-if>
 <span style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px; background: #E6EAEE; color: #2B3540; font-size: 14px; font-family: 'IBM Plex Mono', monospace">cues: {{cueMode}}</span>
-<button type="button" style="min-height: 44px; padding: 0 18px; border-radius: 10px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font: inherit; font-size: 15px; cursor: pointer">End session</button>
 </div>
 </header>
+
+<sc-if value="{{bannerOn}}" hint-placeholder-val="{{ false }}">
+<dc-import name="StatusBanner" kind="{{bannerKind}}" what="{{bannerWhat}}" hint-size="100%,88px"></dc-import>
+</sc-if>
 
 <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
 
@@ -65,6 +68,9 @@ Simulated: {{presetLabel}}
 <span class="cuedot cuedot3" style="width: 14px; height: 14px; border-radius: 50%; background: currentColor"></span>
 </div>
 </sc-if>
+<sc-if value="{{isUninterruptible}}" hint-placeholder-val="{{ false }}">
+<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8.5a6.5 6.5 0 1 1 13 0c0 6-6 6-6 10a3.5 3.5 0 1 1-7 0"></path><path d="M15 8.5a2.5 2.5 0 0 0-5 0v1a2 2 0 1 1 0 4"></path><path d="M3 3l18 18"></path></svg>
+</sc-if>
 <sc-if value="{{isIdle}}" hint-placeholder-val="{{ false }}">
 <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M9 5v14"></path><path d="M15 5v14"></path></svg>
 </sc-if>
@@ -73,6 +79,13 @@ Simulated: {{presetLabel}}
 <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: #4A5562">Status</span>
 <h2 style="margin: 0; font-size: 36px; line-height: 1.15; font-weight: 600; color: {{st.color}}">{{st.label}}</h2>
 <p style="margin: 0; font-size: 17px; line-height: 1.5; color: #2B3540">{{st.sub}}</p>
+<sc-if value="{{isUninterruptible}}" hint-placeholder-val="{{ false }}">
+<div style="margin-top: 6px; max-width: 520px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: #2B3540"><span id="hold-label">Interview starts shortly</span><span>about [HOLD] s</span></div>
+<div role="progressbar" aria-labelledby="hold-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" aria-valuetext="Interview starts shortly" style="height: 10px; border-radius: 6px; background: #E3DAF2; overflow: hidden"><div style="width: 40%; height: 100%; background: #5B2A9E"></div></div>
+<p style="margin: 0; font-size: 13px; line-height: 1.5; color: #4A5562">A short wait so a screen reader or braille display can finish reading this first. The bar is not announced as it moves.</p>
+</div>
+</sc-if>
 <p style="margin: 6px 0 0; display: flex; align-items: center; gap: 8px; font-size: 14px; color: #4A5562">
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5Z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path></svg>
 Sound: {{st.audio}}
@@ -163,6 +176,14 @@ Captions: off
 </div>
 </section>
 
+<section aria-label="End the interview" style="margin-top: 20px; display: flex; flex-direction: column; gap: 8px">
+<button type="button" aria-haspopup="dialog" onClick="{{openEnd}}" style="min-height: 48px; padding: 0 18px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; border-radius: 12px; border: 1px solid #B42318; background: #FFFFFF; color: #B42318; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><path d="m16 17 5-5-5-5"></path><path d="M21 12H9"></path></svg>
+End interview
+</button>
+<p style="margin: 0; font-size: 13px; line-height: 1.5; color: #4A5562">Ends the session right away. You will be asked to confirm.</p>
+</section>
+
 <section style="background: #FFFFFF; border-radius: 16px; padding: 24px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 14px">
 <h3 style="margin: 0; font-size: 15px; font-weight: 600">Call conditions</h3>
 <div style="display: flex; flex-direction: column; gap: 8px">
@@ -185,9 +206,21 @@ Captions: off
 
 </div>
 </div>
+<sc-if value="{{endOpen}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background: rgba(22, 32, 42, 0.6); display: flex; justify-content: center; align-items: flex-start; padding: 160px 16px 0; box-sizing: border-box">
+<div role="alertdialog" aria-modal="true" aria-labelledby="end-title" aria-describedby="end-desc" style="width: 100%; max-width: 460px; box-sizing: border-box; background: #FFFFFF; border-radius: 16px; padding: 28px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 12px 40px rgba(22, 32, 42, 0.35)">
+<h2 id="end-title" style="margin: 0; font-size: 22px; font-weight: 600">End the interview now?</h2>
+<p id="end-desc" style="margin: 0; font-size: 16px; line-height: 1.5; color: #2B3540">The session closes right away, without the interviewer’s closing. You cannot undo this.</p>
+<div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px">
+<button type="button" autofocus="" onClick="{{closeEnd}}" style="min-height: 48px; padding: 0 20px; border-radius: 12px; border: 0; background: #1D4ED8; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer">Keep going</button>
+<button type="button" onClick="{{closeEnd}}" style="min-height: 48px; padding: 0 20px; border-radius: 12px; border: 0; background: #B42318; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer">End interview</button>
+</div>
+</div>
+</div>
+</sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"state":{"editor":"enum","options":["listening","thinking","talking","idle"],"default":"listening","section":"Preview"},"cueMode":{"editor":"enum","options":["perceived","true_state","debug"],"default":"perceived","section":"Preview"},"preset":{"editor":"enum","options":["clean","decent_call","laggy_clipped","bad_connection"],"default":"laggy_clipped","section":"Preview"},"captions":{"editor":"boolean","default":false,"section":"Preview"},"$preview":{"width":1280,"height":900}}'>
+<script type="text/x-dc" data-dc-script data-props='{"state":{"editor":"enum","options":["listening","thinking","talking","uninterruptible","idle"],"default":"listening","section":"Preview"},"cueMode":{"editor":"enum","options":["perceived","true_state","debug"],"default":"perceived","section":"Preview"},"preset":{"editor":"enum","options":["clean","decent_call","laggy_clipped","bad_connection"],"default":"laggy_clipped","section":"Preview"},"captions":{"editor":"boolean","default":false,"section":"Preview"},"confirmEnd":{"editor":"boolean","default":false,"section":"Preview"},"banner":{"editor":"enum","options":["hidden","uploading","waiting","retrying","problem"],"default":"hidden","section":"Preview"},"$preview":{"width":1280,"height":900}}'>
 class Component extends DCLogic {
   renderVals() {
     const s = this.props.state ?? 'listening';
@@ -197,6 +230,7 @@ class Component extends DCLogic {
       listening: { label: 'Your turn', sub: 'The interviewer is listening. Take your time.', audio: 'chime, then soft office room tone', sr: 'Your turn', color: '#1D4ED8', tint: '#E3EBFC' },
       thinking: { label: 'Interviewer is thinking', sub: 'Taking notes on your answer.', audio: 'pen scribbling', sr: 'Interviewer is thinking', color: '#9A4D00', tint: '#FCEBD9' },
       talking: { label: 'Interviewer is speaking', sub: 'Listen for the question. A chime tells you when it is your turn.', audio: 'the interviewer’s voice', sr: 'Interviewer is speaking', color: '#0F6B5C', tint: '#DDF2EC' },
+      uninterruptible: { label: 'Not listening', sub: 'The interviewer is not listening during this portion of the interview.', audio: 'the interviewer’s voice, after a short wait', sr: 'The interviewer is not listening during this portion of the interview.', color: '#5B2A9E', tint: '#EFE8FA' },
       idle: { label: 'Paused', sub: 'Nothing is recording. Resume when you are ready.', audio: 'silence', sr: 'Paused', color: '#4B5563', tint: '#E8EAED' }
     };
     const presets = { clean: 'Clean', decent_call: 'Decent call', laggy_clipped: 'Laggy / clipped', bad_connection: 'Bad connection' };
@@ -205,6 +239,7 @@ class Component extends DCLogic {
       listening: 'So in my last role we were two weeks from launch when…',
       thinking: 'So in my last role we were two weeks from launch when the client changed the scope. I paused the sprint and pulled the team together.',
       talking: '—',
+      uninterruptible: '—',
       idle: '—'
     };
     return {
@@ -212,7 +247,14 @@ class Component extends DCLogic {
       isListening: s === 'listening',
       isThinking: s === 'thinking',
       isTalking: s === 'talking',
+      bannerOn: (this.props.banner ?? 'hidden') !== 'hidden',
+      bannerKind: this.props.banner ?? 'hidden',
+      bannerWhat: 'both',
+      isUninterruptible: s === 'uninterruptible',
       isIdle: s === 'idle',
+      endOpen: this.state.endOpen ?? (this.props.confirmEnd ?? false),
+      openEnd: () => this.setState({ endOpen: true }),
+      closeEnd: () => this.setState({ endOpen: false }),
       cueMode: cueMode,
       cueModeLabel: modes[cueMode] || modes.perceived,
       presetLabel: presets[preset] || 'Clean',

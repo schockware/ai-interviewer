@@ -1,0 +1,73 @@
+<!doctype html>
+<!-- Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author. Added after iteration 1; see README.MD. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Status banner</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #16202A">
+<section role="status" aria-label="Status" style="{{style}}">
+<sc-if value="{{show}}" hint-placeholder-val="{{ true }}">
+<div aria-hidden="true" style="width: 48px; height: 48px; flex: none; border-radius: 50%; background: #FFFFFF; display: flex; align-items: center; justify-content: center; color: {{color}}">
+<sc-if value="{{isWait}}" hint-placeholder-val="{{ true }}">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12"></path><path d="M6 22h12"></path><path d="M6 2v4l6 6-6 6v4"></path><path d="M18 2v4l-6 6 6 6v4"></path></svg>
+</sc-if>
+<sc-if value="{{isProblem}}" hint-placeholder-val="{{ false }}">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg>
+</sc-if>
+<sc-if value="{{isReady}}" hint-placeholder-val="{{ false }}">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"></path></svg>
+</sc-if>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<h2 style="margin: 0; font-size: 20px; font-weight: 600; color: {{color}}">{{title}}</h2>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: #2B3540">{{text}}</p>
+</div>
+</sc-if>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"kind":{"editor":"enum","options":["uploading","waiting","retrying","problem","ready","hidden"],"default":"uploading","section":"Banner"},"what":{"editor":"enum","options":["resume","role","both"],"default":"both","section":"Banner"},"body":{"editor":"text","default":"","section":"Banner"},"$preview":{"width":1200,"height":88}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const kind = p.kind ?? 'uploading';
+    const what = p.what ?? 'both';
+    const WARN = '#7A3E00', BAD = '#B42318', OK = '#0F6B5C';
+    const subject = { resume: 'your resume', role: 'your role', both: 'your resume and role' }[what] || 'your resume and role';
+    const table = {
+      uploading: { title: 'Uploading ' + subject + '…', text: 'This can take a moment. You can keep going while it finishes.', color: WARN, bg: '#FFF1DC', border: '#F0C98E', wait: true },
+      waiting: { title: 'Waiting for host…', text: 'The interviewer is building your interview. You can keep going while you wait.', color: WARN, bg: '#FFF1DC', border: '#F0C98E', wait: true },
+      retrying: { title: 'Waiting for host…', text: 'This is taking a little longer than usual. We are retrying quietly, and you can keep going.', color: WARN, bg: '#FFF1DC', border: '#F0C98E', wait: true },
+      problem: { title: 'The host ran into a problem', text: 'We tried again and it did not work. The interviewer is checking what went wrong.', color: BAD, bg: '#FCE4E1', border: '#E8A29B', problem: true },
+      ready: { title: 'The host is ready', text: 'Your interview is prepared.', color: OK, bg: '#DDF2EC', border: '#9AD3C5', ready: true }
+    };
+    const t = table[kind];
+    const show = !!t;
+    const style = show
+      ? 'background: ' + t.bg + '; border: 1px solid ' + t.border + '; border-radius: 16px; padding: 20px 24px; display: flex; align-items: center; gap: 16px'
+      : 'display: block';
+    return {
+      show: show,
+      style: style,
+      color: show ? t.color : OK,
+      title: show ? t.title : '',
+      text: show ? ((p.body ?? '') !== '' ? p.body : t.text) : '',
+      isWait: show && !!t.wait,
+      isProblem: show && !!t.problem,
+      isReady: show && !!t.ready
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -20,18 +20,22 @@ Design prototyping happens on a private Design canvas on claude.ai, "Interviewer
 
 ## Added after iteration 1
 
-Four boards were added to the canvas later the same day and copied here. Their states and Tweaks are described in each board.
+Boards were added to the canvas after iteration 1 and copied here. Their states and Tweaks are described in each board.
 
 | File | Board | What it shows |
 |---|---|---|
 | `Transitions.dc.html` | Cue transitions (master) | Every state and edge of the cue state machine, the decisions made, and the WCAG 2.2 notes. This is the master the text contract (`contracts/cue-transitions.md`) will be converted from |
 | `Setup.dc.html` | Application setup | Interview type (Cold or Hot), resume and role focus, Application settings (AI models), and Prepare interview. Tweaks switch page state, interview type, resume and role states. Built from `contracts/page-flow.md` |
 | `Hardware.dc.html` | Hardware setup and verification | Waiting for host and the progress bar, audio (required) and video (optional) checks, Advanced training options, and Start interview. Tweaks switch preparation, audio, video, captions and preset |
+| `Waiting.dc.html` | Waiting room | The step between Hardware setup and the Interview. Mimics Waiting for host and shows each step of preparation: the resume and role being uploaded and read, then the AI writing the interview scripts (questions, opening, follow-ups, scoring guide, closing), then the voice and connection. Same banner and progress bar as the Hardware page. When ready, the steps collapse and a countdown starts the interview, which can be paused from Training options. A "While you wait" panel (the Pez dispenser) offers interview tips, FAQ or a role review, one piece at a time. Tweaks switch preparation state, interview type, job description, the current step, the countdown and the dispenser |
+| `SharedStatus.dc.html` | Shared: status banner and progress | Where the status banner slot and the preparation progress bar sit, which page shows what, every state of both, and the rules. The banner has a slot on every page; the bar is on every setup page |
+| `StatusBanner.dc.html` | Status banner (component) | The shared banner: uploading (resume, role or both), waiting, retrying, problem, ready. Imported by Setup, Hardware, Waiting and Interview |
+| `PrepProgress.dc.html` | Preparation progress (component) | The shared "Preparing your interview" bar: preparing, retrying, diagnosing, ready. Imported by Setup, Hardware and Waiting |
 | `SetupHot.dc.html` | Hot interview: resume panel states | The resume panel under Hot in each `ResumeValidation` state: `hot-incomplete=>cold` (no saved resumes, processing) and `hot` (processed, saved resume defaulted) |
 
-**These boards are newer than the rest of this folder.** On the canvas, `Main.dc.html` and `States.dc.html` have changed since iteration 1 (the End interview control and its confirmation, and the fifth state, Uninterruptible), and `Timeline.dc.html` and `Recovery.dc.html` were moved to make room. The copies here of those four are still iteration 1. Until they are synced, `Transitions.dc.html` refers to a fifth state that `States.dc.html` here does not show.
+**These boards are newer than the rest of this folder.** `Main.dc.html` has been synced with the canvas (End interview and its confirmation, the Uninterruptible state, and the status banner slot). On the canvas, `States.dc.html` has changed since iteration 1 (the fifth state, Uninterruptible), and `Timeline.dc.html` and `Recovery.dc.html` were moved to make room. The copies here of those three are still iteration 1. Until they are synced, `Transitions.dc.html` refers to a fifth state that `States.dc.html` here does not show.
 
-Open items on these boards: how audio streams to the server for hardware verification, and the hold length before the Uninterruptible states (shown as `[HOLD]`).
+Open items on these boards: how audio streams to the server for hardware verification, the hold length before the Uninterruptible states (shown as `[HOLD]`), the length of the waiting-room countdown (`[N]`), and the exact list of preparation steps in the waiting room, which is a proposal.
 
 ## Viewing
 

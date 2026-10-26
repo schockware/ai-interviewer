@@ -1,5 +1,35 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-26 15:16:46 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Said the work is ready for a pull request.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: merged origin/main (nothing new), pushed, and opened a pull request against main covering the waiting room, the shared status banner and progress components, the spec updates and the repo mockup copies. design/mockups/ui/States.dc.html, Timeline.dc.html and Recovery.dc.html are still iteration 1.
+Tokens: ~2,000 (estimated)
+---
+## 2026-10-26 15:15:29 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked to pull the latest main, then to add a banner to Application Setup and Hardware Setup saying a resume and/or role is uploading (without details, which belong to the waiting room), to reuse the Waiting for host banner, to show that the banner could exist on all pages, and to put the Preparing your interview progress on all setups.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: merged origin/main (resolved the PROMPT_HISTORY log conflict by keeping both sides, newest first). Design canvas version 27: new shared components StatusBanner (uploading with resume, role or both; waiting; retrying; problem; ready) and PrepProgress (preparing, retrying, diagnosing, ready), imported by Setup, Hardware and Waiting; the banner slot also added to the Interview screen (Tweak, hidden by default); new SharedStatus overview board showing the slot placement, which page shows what, every state and the rules. Setup gained Tweaks to preview a banner and the bar when coming back during preparation; Hardware gained an uploading Tweak. Copied the three new boards and the changed Setup, Hardware, Waiting and Main into design/mockups/ui/ (Main is now synced; States, Timeline and Recovery still iteration 1) and updated its canvas.json and README. specs/page-flow.md: new shared status banner and progress section and notes in sections 1 and 2. Not rendered; the sticky behaviour of the imported progress bar is untested.
+Tokens: ~40,000 (derived: counter 15,000,000 -> ~14,960,000)
+---
+## 2026-10-26 15:00:41 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked to update everything in the specs for the renamed button, and gave three waiting-room changes: when ready, gently collapse the display and count down to the interview; let the user pause the countdown in the testing panel as an anxiety accommodation; and add under the When you join panel a "Pez dispenser" offering interview tips, a battery of FAQ or a role review as a proactive wait pacifier.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: Design canvas version 26: Waiting room now collapses to a summary with a countdown when ready, a Training options panel with a pause switch (starts paused if on beforehand), a While you wait panel (tips, FAQ, role review, one at a time), and a role review step; Transitions note now says Ready for interview. Specs: rewrote specs/page-flow.md (Ready for interview, new Waiting room section, Interview section updated with Not listening, recovery, pause, End interview), added a comment to contracts/page-flow.md that the StartInterview wire name is unchanged (renaming it would break the API prototype), and added a row to SPEC.md 4.6. Copied Waiting and Transitions into design/mockups/ui/ and updated its README. Countdown length is a placeholder. Not rendered.
+Tokens: ~29,000 (derived: counter 15,000,000 -> ~14,969,000)
+---
+## 2026-10-26 14:53:13 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Sent mid-turn: on the Hardware page the Start Interview button should be renamed Ready for Interview.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: renamed the button and the section label on Hardware.dc.html (canvas and repo copy). specs/page-flow.md, contracts/page-flow.md (StartInterview) and the Transitions board still say Start Interview.
+Tokens: ~1,000 (estimated)
+---
+## 2026-10-26 14:53:11 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Decided there should be a waiting room between Hardware setup and the Interview, mimicking Waiting for host, showing the resume and role being uploaded and processed with the same bar and banner as the earlier pages, and including the steps of the AI generating any scripts it needs.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: PR 5 had been merged, so restarted the branch from the latest main. Design canvas version 25: new Waiting.dc.html board (host banner, Now line, steps grouped as materials, AI-written scripts, and voice and connection, sticky progress bar, quiet-failure states, a note about the opening); Hardware and Setup now say Step 2 and Step 1 of 3, and Start on the Hardware page no longer waits for the interview to be prepared because the waiting room covers that; SetupHot moved below Setup. Copied Waiting, Hardware and Setup into design/mockups/ui/ and updated its canvas.json and README. The step list and which model writes each script are proposals. Not rendered. Transitions board, specs/page-flow.md and the contracts not changed.
+Tokens: ~25,000 (derived: counter 15,000,000 -> ~14,975,000)
+---
 ## 2026-10-26 09:05:35 | Claude Fable 5.1 (claude-fable-5-1)
 Summary prompt: Called the pre-flight check a good first step, asked to commit so they can push, and said new designs for the interstitial and the upload statuses are being developed in parallel and will come back later.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry

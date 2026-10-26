@@ -19,7 +19,8 @@ a{color:#1D4ED8}a:hover{color:#1E3A8A}
 @media (prefers-reduced-motion: reduce){.skel{animation:none;opacity:.8}}
 </style>
 </helmet>
-<div style="min-height: 1100px; background: #F3F5F7; color: #16202A; font-family: 'IBM Plex Sans', system-ui, sans-serif; padding: 24px 16px 48px; box-sizing: border-box">
+<div style="min-height: 1100px; background: #F3F5F7; color: #16202A; font-family: 'IBM Plex Sans', system-ui, sans-serif; display: flex; flex-direction: column; box-sizing: border-box">
+<div style="flex: 1 1 auto; padding: 24px 16px 48px; box-sizing: border-box">
 <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px">
 
 <header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px">
@@ -30,7 +31,7 @@ Accessibility
 </button>
 <div style="display: flex; flex-direction: column; gap: 2px">
 <h1 style="margin: 0; font-size: 22px; font-weight: 600">Set up your interview</h1>
-<p style="margin: 0; font-size: 14px; color: #4A5562">Step 1 of 2 · Application setup</p>
+<p style="margin: 0; font-size: 14px; color: #4A5562">Step 1 of 3 · Application setup</p>
 </div>
 </div>
 <button type="button" aria-expanded="{{settingsOpen}}" aria-controls="app-settings" onClick="{{toggleSettings}}" style="min-height: 48px; padding: 0 16px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font: inherit; font-size: 15px; font-weight: 500; cursor: pointer">
@@ -38,6 +39,10 @@ Accessibility
 Application settings
 </button>
 </header>
+
+<sc-if value="{{bannerOn}}" hint-placeholder-val="{{ false }}">
+<dc-import name="StatusBanner" kind="{{bannerKind}}" what="{{bannerWhat}}" hint-size="100%,88px"></dc-import>
+</sc-if>
 
 <p style="margin: 0; padding: 12px 16px; border-radius: 10px; background: #E6EAEE; font-size: 14px; line-height: 1.5; color: #2B3540">[STANDARD AI DISCLAIMER]</p>
 
@@ -228,8 +233,12 @@ Prepare interview
 
 </div>
 </div>
+<sc-if value="{{progressOn}}" hint-placeholder-val="{{ false }}">
+<dc-import name="PrepProgress" state="{{progressState}}" percent="{{progressPercent}}" hint-size="100%,76px"></dc-import>
+</sc-if>
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"page":{"editor":"enum","options":["ready","loading","error"],"default":"ready","section":"Preview"},"interviewType":{"editor":"enum","options":["cold","hot"],"default":"cold","section":"Preview"},"resumes":{"editor":"enum","options":["some","none"],"default":"some","section":"Preview"},"resumeStatus":{"editor":"enum","options":["none","processing","ready"],"default":"none","section":"Preview"},"roleStatus":{"editor":"enum","options":["unanswered","loading","ready","required"],"default":"unanswered","section":"Preview"},"settingsOpen":{"editor":"boolean","default":false,"section":"Preview"},"$preview":{"width":1280,"height":1100}}'>
+<script type="text/x-dc" data-dc-script data-props='{"page":{"editor":"enum","options":["ready","loading","error"],"default":"ready","section":"Preview"},"interviewType":{"editor":"enum","options":["cold","hot"],"default":"cold","section":"Preview"},"resumes":{"editor":"enum","options":["some","none"],"default":"some","section":"Preview"},"resumeStatus":{"editor":"enum","options":["none","processing","ready"],"default":"none","section":"Preview"},"roleStatus":{"editor":"enum","options":["unanswered","loading","ready","required"],"default":"unanswered","section":"Preview"},"settingsOpen":{"editor":"boolean","default":false,"section":"Preview"},"preparing":{"editor":"enum","options":["none","preparing","retrying","diagnosing","ready"],"default":"none","section":"Preview"},"$preview":{"width":1280,"height":1100}}'>
 class Component extends DCLogic {
   renderVals() {
     const p = this.props;
@@ -244,6 +253,17 @@ class Component extends DCLogic {
     const needResume = hot && (resumeStatus === 'processing' || !selectedResume);
     const roleOk = roleStatus === 'ready';
     const canPrepare = roleOk && !needResume;
+    const prepare = p.preparing ?? 'none';
+    const upResume = hot && resumeStatus === 'processing';
+    const upRole = roleStatus === 'loading';
+    const uploading = upResume || upRole;
+    let bannerKind = 'hidden';
+    if (prepare === 'diagnosing') bannerKind = 'problem';
+    else if (uploading) bannerKind = 'uploading';
+    else if (prepare === 'preparing') bannerKind = 'waiting';
+    else if (prepare === 'retrying') bannerKind = 'retrying';
+    else if (prepare === 'ready') bannerKind = 'ready';
+    const progressPct = { none: 0, preparing: 45, retrying: 62, diagnosing: 0, ready: 100 }[prepare];
     const reasons = [];
     if (hot && resumeStatus === 'none' && !selectedResume) reasons.push({ text: 'Pick or load a resume, or switch to a cold interview.' });
     if (hot && resumeStatus === 'processing') reasons.push({ text: 'Wait for your resume to finish processing.' });
@@ -263,6 +283,12 @@ class Component extends DCLogic {
     const roleOptions = { unanswered: 'Choose a role…', loading: 'Choose a role…', ready: '[ROLE TITLE]', required: '' };
     const jdHints = { unanswered: '(optional)', loading: '(optional)', ready: '(optional)', required: '(required, because no roles are saved yet)' };
     return {
+      bannerOn: page === 'ready' && bannerKind !== 'hidden',
+      bannerKind: bannerKind,
+      bannerWhat: (upResume && upRole) ? 'both' : (upResume ? 'resume' : 'role'),
+      progressOn: page === 'ready' && prepare !== 'none',
+      progressState: prepare === 'none' ? 'hidden' : prepare,
+      progressPercent: progressPct,
       isLoading: page === 'loading',
       isError: page === 'error',
       isReady: page === 'ready',
