@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-26 15:00:41 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked to update everything in the specs for the renamed button, and gave three waiting-room changes: when ready, gently collapse the display and count down to the interview; let the user pause the countdown in the testing panel as an anxiety accommodation; and add under the When you join panel a "Pez dispenser" offering interview tips, a battery of FAQ or a role review as a proactive wait pacifier.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: Design canvas version 26: Waiting room now collapses to a summary with a countdown when ready, a Training options panel with a pause switch (starts paused if on beforehand), a While you wait panel (tips, FAQ, role review, one at a time), and a role review step; Transitions note now says Ready for interview. Specs: rewrote specs/page-flow.md (Ready for interview, new Waiting room section, Interview section updated with Not listening, recovery, pause, End interview), added a comment to contracts/page-flow.md that the StartInterview wire name is unchanged (renaming it would break the API prototype), and added a row to SPEC.md 4.6. Copied Waiting and Transitions into design/mockups/ui/ and updated its README. Countdown length is a placeholder. Not rendered.
+Tokens: ~29,000 (derived: counter 15,000,000 -> ~14,969,000)
+---
 ## 2026-10-26 14:53:13 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Sent mid-turn: on the Hardware page the Start Interview button should be renamed Ready for Interview.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
