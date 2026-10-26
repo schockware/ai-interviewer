@@ -16,7 +16,8 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         // The browser calls /api/..., so it needs no CORS setup. The prefix is stripped on the way through.
-        '/api': { target: apiTarget, changeOrigin: true, rewrite: (path) => path.replace(/^\/api/, '') },
+        // ws: the InterviewHub (SignalR) upgrades /api/hubs/... to a WebSocket through the same proxy.
+        '/api': { target: apiTarget, changeOrigin: true, ws: true, rewrite: (path) => path.replace(/^\/api/, '') },
       },
     },
     test: {

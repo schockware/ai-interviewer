@@ -49,3 +49,25 @@ test.describe('setup pages against the real API', () => {
     await expect(page.getByRole('button', { name: 'Try again' })).toBeVisible()
   })
 })
+
+test.describe('resume processing against the real API', () => {
+  test('a loaded resume reports its steps over the hub until the Hardware page shows it processed', async ({ page }) => {
+    await page.goto('/')
+    await expect(page.getByRole('heading', { name: 'Interview type' })).toBeVisible()
+    await page.getByRole('radio', { name: /Hot interview/ }).check()
+    await page.getByTestId('resume-file').setInputFiles({ name: 'cv.txt', mimeType: 'text/plain', buffer: Buffer.from('Ten years of building things.') })
+    await expect(page.getByText('cv is loaded and selected.')).toBeVisible({ timeout: 5000 })
+
+    await page.getByRole('button', { name: 'Paste text' }).click()
+    await page.getByLabel('Name for this role').fill(`Real role ${Date.now()}`)
+    await page.getByLabel('Job description', { exact: true }).fill('Build and test the interviewer.')
+    await page.getByRole('button', { name: 'Add job description' }).click()
+    await page.getByRole('button', { name: /Prepare interview/ }).click()
+    await expect(page.getByRole('heading', { level: 1, name: 'Check your setup' })).toBeVisible()
+
+    const card = page.getByTestId('resume-uploads')
+    await expect(card).toContainText('Resume processing')
+    await expect(card.getByText('Processed')).toBeVisible({ timeout: 15_000 })
+    await expect(card.getByRole('list', { name: 'Steps for cv' })).toContainText('done')
+  })
+})

@@ -1,31 +1,18 @@
 // Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author. Prototype zone: unverified.
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using AiInterviewer.Adapters;
 using AiInterviewer.Api;
 using AiInterviewer.Api.Hubs;
+using AiInterviewer.Api.Wire;
 using AiInterviewer.Business;
 using AiInterviewer.Business.Interview;
 using AiInterviewer.Business.Setup;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.ConfigureHttpJsonOptions(options =>
-{
-    var json = options.SerializerOptions;
-    json.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-    json.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
-    // Enums travel as the contract's lowercase, hyphenated strings ("clipped-ending"), never as numbers.
-    json.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.KebabCaseLower, allowIntegerValues: false));
-    // Explicit declarations only: a missing or null required field is a 400, not a silent default.
-    json.RespectNullableAnnotations = true;
-    json.RespectRequiredConstructorParameters = true;
-    json.AllowOutOfOrderMetadataProperties = true;
-    json.UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow;
-});
-
+// The HTTP endpoints and the SignalR hubs speak the same JSON (Wire/WireJson.cs).
+builder.Services.ConfigureHttpJsonOptions(options => WireJson.Configure(options.SerializerOptions));
 builder.Services.AddOpenApi();
-builder.Services.AddSignalR();
+builder.Services.AddSignalR().AddJsonProtocol(options => WireJson.Configure(options.PayloadSerializerOptions));
 
 // Which browser origins may call this API directly. Development names the UI prototype's dev
 // server (appsettings.Development.json); the UI's own /api proxy needs none of this. Not a secret:
@@ -40,6 +27,11 @@ builder.Services.AddStorage(builder.Configuration, builder.Environment);
 builder.Services.AddSingleton<IDocumentReader, PlainTextDocumentReader>();
 builder.Services.AddSingleton<IInterviewPreparer, InstantInterviewPreparer>();
 builder.Services.AddSingleton<IPreparationDiagnoser, CannedPreparationDiagnoser>();
+// Resume processing is a mock that invents steps; its progress goes out over the InterviewHub.
+builder.Services.AddSingleton(MockUploaderOptions.Default);
+builder.Services.AddSingleton<IResumeUploader, RandomStepsResumeUploader>();
+builder.Services.AddSingleton<ResumeUploadBroadcaster>();
+builder.Services.AddSingleton<IResumeUploadReporter>(services => services.GetRequiredService<ResumeUploadBroadcaster>());
 builder.Services.AddSingleton<ApplicationSetupService>();
 builder.Services.AddSingleton<InterviewService>();
 
@@ -58,6 +50,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapPageFlow();
+app.MapHub<InterviewHub>(InterviewHub.Route);
 
 app.Run();
 

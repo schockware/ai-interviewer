@@ -64,14 +64,17 @@ Under `dotnet run` the file lands at `src/AiInterviewer.Api/data/ai-interviewer.
 
 ### Real-time (SignalR)
 
-SignalR carries the WebSocket channel. Only a smoke-test hub exists so far, mapped in Development only:
+SignalR carries the WebSocket channel. Hubs speak the same JSON as the endpoints (`Wire/WireJson.cs`: camelCase, enums as the contract's strings).
 
 | Hub | Method | Behavior |
 |---|---|---|
-| `/hubs/test` | `Echo(string message)` | Calls the caller's client method `echo` with `message` |
-| `/hubs/test` | `Probe(string method, string message)` | Calls the caller's client method named `method` with `message`. A blank `method` throws `HubException` |
+| `/hubs/interview` | `WatchResumeUpload(string resumeId)` | Joins the caller to that resume's processing reports and returns the latest `ResumeUploadProgress` snapshot. Every later snapshot arrives on the client method `resumeUploadProgress`. A blank id, or a resume this server never processed, throws `HubException` |
+| `/hubs/test` (Development only) | `Echo(string message)` | Calls the caller's client method `echo` with `message` |
+| `/hubs/test` (Development only) | `Probe(string method, string message)` | Calls the caller's client method named `method` with `message`. A blank `method` throws `HubException` |
 
-Both answer the calling connection only. Session management is not designed yet, so no real hub, `ServerCue` or `ClientCue` delivery exists.
+`ResumeUploadProgress` (PROPOSAL; the contract has no shape for it): `{ resumeId, displayName, status: "running" | "done" | "failed", steps: [{ name, status: "pending" | "running" | "done" | "failed" }] }`. Each report is a whole snapshot, so a late watcher needs only the latest one. `POST /resumes` still answers synchronously with the id; processing starts as it answers, and the first snapshot exists before the response leaves, so a watch right after the upload always finds it. The latest snapshot per resume is kept in memory only (`Hubs/ResumeUploadBroadcaster.cs`).
+
+Session management is not designed yet: a client names what it wants to watch, and there is no per-session identity. `ServerCue` and `ClientCue` delivery do not exist.
 
 Any malformed body (missing or null field, unknown property, unknown discriminator, numeric enum, blank id) is a 400 with `{ "message": ... }`. Paths follow the OpenAPI draft; **the status codes are that draft's proposals.**
 
@@ -85,10 +88,12 @@ Any malformed body (missing or null field, unknown property, unknown discriminat
 - **Preparing the same `sessionId` again replaces the session** (treated as a retry).
 - **The error-checks response** reuses `Error` as a diagnosis message, as the OpenAPI draft does.
 - **Roles** are only those the user adds. The "industry-standard titles" list from the spec is not built.
+- **Mock resume processing.** `RandomStepsResumeUploader` invents three to six steps from a fixed pool, pauses 400 to 1200 ms between them, and reads no file. A display name containing `fail` fails at a random step (a harness hook).
 
 ## Stubs and gaps
 
 - `PlainTextDocumentReader` reads `.txt` and `.md` only. PDF and Word are refused with a message, not guessed at.
+- `RandomStepsResumeUploader` stands in for resume processing (see Proposals). A reporter failure ends its run silently; a real pipeline would record its outcome.
 - `InstantInterviewPreparer` marks every session `Ok` immediately, so the `Error` path and `InterviewPrepared` delivery are only reachable in tests. How `InterviewPrepared` reaches the client (push or poll) is undecided.
 - `ServerCue`, `ClientCue`, `VerifyHardware`, `HardwareVerified` and the audio stream need the WebSocket channel, which is not built. The audio frame format is an open item in decision 0003.
 - Storage is a single SQLite file with no migrations (see Storage above). No Python worker, gRPC contract or LLM runtime is connected.

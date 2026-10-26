@@ -81,3 +81,21 @@ test.describe('setup, hardware and interview as one flow', () => {
     await expect(page.getByRole('button', { name: /Start interview/ })).toBeVisible()
   })
 })
+
+test.describe('resume processing on the Hardware page', () => {
+  test('a loaded resume keeps reporting its steps after moving on to hardware setup, and the card has no axe violations', async ({ page }) => {
+    await readySetup(page)
+    await page.getByRole('radio', { name: /Hot interview/ }).check()
+    await page.getByTestId('resume-file').setInputFiles({ name: 'cv.pdf', mimeType: 'application/pdf', buffer: Buffer.from('x') })
+    await expect(page.getByText('cv is loaded and selected.')).toBeVisible({ timeout: 4000 })
+    await page.getByRole('combobox', { name: 'Role title' }).selectOption({ label: 'Software Engineer' })
+    await page.getByRole('button', { name: /Prepare interview/ }).click()
+    await expect(page.getByRole('heading', { level: 1, name: 'Check your setup' })).toBeVisible()
+
+    const card = page.getByTestId('resume-uploads')
+    await expect(card).toContainText('Resume processing')
+    await expect(card.getByRole('heading', { level: 3, name: 'cv' })).toBeVisible()
+    await expect(card.getByText('Processed')).toBeVisible({ timeout: 10_000 })
+    await axe(page)
+  })
+})

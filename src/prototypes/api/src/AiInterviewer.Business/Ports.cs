@@ -54,3 +54,19 @@ public interface IPreparationDiagnoser
 {
     Task<string> DiagnoseAsync(InterviewSession session, CancellationToken ct);
 }
+
+/// <summary>
+/// Processes a stored resume after its upload (reading, sectioning, indexing). Returns once
+/// processing has begun and its first progress is reported; the rest reaches the client through
+/// <see cref="IResumeUploadReporter"/>.
+/// </summary>
+public interface IResumeUploader
+{
+    Task BeginAsync(ResumeId id, DisplayName name, CancellationToken ct);
+}
+
+/// <summary>How resume processing progress reaches the client. The transport is the adapter's business.</summary>
+public interface IResumeUploadReporter
+{
+    Task ReportAsync(ResumeUploadProgress progress, CancellationToken ct);
+}

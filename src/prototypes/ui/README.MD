@@ -46,7 +46,9 @@ Everything runs on mocks by default. Real integrations are opt-in, per [decision
 | Run the UI against the API prototype | Start the API (`dotnet run --project ../api/src/AiInterviewer.Api --launch-profile http`), then `npm run dev:real`, which loads `.env.dev`. Or add `?integration=real` to the address |
 | Point at another API | Copy `.env.dev` to `.env.dev.local` (gitignored) and change `VITE_API_PROXY_TARGET`, or set `VITE_API_URL` to call an API directly (see `.env.example`) |
 
-The page always says what is real and what is mock. Today, in real mode, **setup is real and hardware checks are still mock** (the API has no verify endpoint). The interview cues are always scripted. The Prototype harness cards for the mock server only show in mock mode.
+The page always says what is real and what is mock. Today, in real mode, **setup and resume processing reports are real and hardware checks are still mock** (the API has no verify endpoint). The interview cues are always scripted. The Prototype harness cards for the mock server only show in mock mode.
+
+**Resume processing.** After a resume is loaded, the server keeps processing it (reading, sectioning, indexing; today a mock that invents three to six steps) and reports each step. The UI follows that through the `SetupHost.watchResumeUpload` port: the mock host scripts the steps, and the real host connects to the API's SignalR `InterviewHub` at `/api/hubs/interview` (the dev proxy carries the WebSocket). The reports live in a `ResumeUploadProvider` context above the pages, so they survive moving on, and the Hardware page shows them in a "Resume processing" card that is not in the mockup. The shapes are a proposal; the contract has none.
 
 **Env files hold public values only.** `VITE_` variables are bundled into the page. Only `.env.example` and `.env.dev` are committed, and a test fails if another `.env*` file or a secret-sounding name appears. `.env.dev` holds the connection to the API prototype on this machine: the mode, the proxy target and the URL the browser calls. There are no secrets today; see the decision for where the first one will go.
 
@@ -58,7 +60,7 @@ The page always says what is real and what is mock. Today, in real mode, **setup
 |---|---|
 | `npm test` | Runs the Vitest tests once (core, adapters and component tests, in jsdom) |
 | `npm run test:watch` | Reruns Vitest tests when files change |
-| `npm run test:e2e` | Runs the Playwright tests in Chromium and Firefox, with an axe scan at WCAG 2.2 AA. Starts the dev server itself, or reuses one already on port 5173 |
+| `npm run test:e2e` | Runs the Playwright tests in Chromium and Firefox, with an axe scan at WCAG 2.2 AA. Starts the dev server itself, or reuses one already on port 5173. Set `E2E_PORT` (for example `E2E_PORT=5174 npm run test:e2e`) to run beside a dev server you are using, since a reused server keeps its own mode |
 | `npm run test:integration` | Runs the real-API tests (`*.integration.spec.ts`). Needs the API running; skips loudly if it is not. `INTEGRATION_REQUIRED=1` makes the skip a failure |
 | `npm run test:e2e:real` | Runs the real-integration browser tests (`*.real.spec.ts`). Starts the UI in real mode and the API prototype itself |
 | `npm run typecheck` | Type-checks with `tsc -b` |
@@ -85,7 +87,7 @@ Both suffixes are picked up by `npm test`. A rule of thumb for choosing: if a re
 | `src/core/` | Pure TypeScript: ports, the event contract (`contract/`), and the cue reducer, strategies and engine (`cues/`). Imports nothing from the other folders |
 | `src/adapters/` | Implementations of the ports: clocks, the mock event stream and calibrated mock interviewer and mock setup host (`mock/`), the real API client (`http/`), placeholder cue sounds. `setupHostContract.ts` is the behavior suite every setup host must pass |
 | `src/composition/` | The one place that picks which adapter backs which port (mode, host wiring). May import everything; nothing imports it except `ui/App` |
-| `src/ui/` | React components. They render what they are given and decide nothing |
+| `src/ui/` | React components. They render what they are given and decide nothing. `ResumeUploadProvider.tsx` and `resumeUploads.ts` are the one piece of state above the pages: the resume uploads context with the processing reports |
 | `e2e/` | Playwright browser journeys (sibling of `src/`) |
 | `bdd/` | Behavior scenarios (sibling of `src/`). Not created yet |
 | `audit/` | WCAG audit logs, one per page |

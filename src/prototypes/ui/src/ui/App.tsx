@@ -9,6 +9,7 @@ import { AccessibilityDialog } from './AccessibilityDialog.tsx'
 import { HardwarePage } from './HardwarePage.tsx'
 import { IntegrationBar } from './IntegrationBar.tsx'
 import InterviewPage from './InterviewPage.tsx'
+import { ResumeUploadProvider } from './ResumeUploadProvider.tsx'
 import { SetupPage } from './SetupPage.tsx'
 
 type Page = 'setup' | 'hardware' | 'interview'
@@ -58,7 +59,7 @@ function Flow({ integration }: { integration: Integration }) {
   const openA11y = () => setA11yOpen(true)
 
   return (
-    <>
+    <ResumeUploadProvider host={host}>
       <IntegrationBar parts={parts} />
       {page === 'setup' && (
         <SetupPage
@@ -91,6 +92,6 @@ function Flow({ integration }: { integration: Integration }) {
       )}
       {page === 'interview' && <InterviewPage captions={captions} onCaptions={setCaptions} onOpenAccessibility={openA11y} />}
       <AccessibilityDialog open={a11yOpen} onClose={() => setA11yOpen(false)} captions={captions} onCaptions={setCaptions} />
-    </>
+    </ResumeUploadProvider>
   )
 }

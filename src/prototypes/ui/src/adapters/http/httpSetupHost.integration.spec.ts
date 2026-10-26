@@ -35,8 +35,9 @@ if (!reachable) {
       host,
       run: (pending) => pending,
       until: async (done) => {
-        for (let waited = 0; waited < 5000 && !done(); waited += 100) await new Promise((r) => setTimeout(r, 100))
-        if (!done()) throw new Error('The API did not finish within 5 seconds')
+        // The mock uploader on the API pauses up to 1.2 s between up to six steps.
+        for (let waited = 0; waited < 15_000 && !done(); waited += 100) await new Promise((r) => setTimeout(r, 100))
+        if (!done()) throw new Error('The API did not finish within 15 seconds')
       },
     }
   })

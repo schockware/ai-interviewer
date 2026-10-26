@@ -18,6 +18,7 @@ public sealed class ApplicationSetupService(
     IDocumentReader reader,
     ISessionStore sessions,
     IInterviewPreparer preparer,
+    IResumeUploader uploader,
     TimeProvider clock)
 {
     public async Task<ApplicationSetupPage> LoadPageAsync(CancellationToken ct)
@@ -42,6 +43,8 @@ public sealed class ApplicationSetupService(
                 return Outcome.Failure<ResumeProcessed>(failed.Message);
             case Succeeded<string> read:
                 var id = await resumes.AddAsync(name, read.Value, clock.GetUtcNow(), ct);
+                // Stored first, so the id the client gets back is one the uploader is already reporting on.
+                await uploader.BeginAsync(id, name, ct);
                 return Outcome.Success(new ResumeProcessed(id, name));
             default:
                 throw new InvalidOperationException();

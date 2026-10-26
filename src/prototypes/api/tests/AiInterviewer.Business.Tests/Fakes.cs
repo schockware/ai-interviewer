@@ -78,6 +78,17 @@ internal sealed class FakePreparer : IInterviewPreparer
     }
 }
 
+internal sealed class FakeUploader : IResumeUploader
+{
+    public List<(ResumeId Id, DisplayName Name)> Begun { get; } = [];
+
+    public Task BeginAsync(ResumeId id, DisplayName name, CancellationToken ct)
+    {
+        Begun.Add((id, name));
+        return Task.CompletedTask;
+    }
+}
+
 internal sealed class FakeDiagnoser : IPreparationDiagnoser
 {
     public Task<string> DiagnoseAsync(InterviewSession session, CancellationToken ct) => Task.FromResult("diagnosis");

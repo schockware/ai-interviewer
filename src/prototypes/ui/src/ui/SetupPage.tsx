@@ -16,6 +16,7 @@ import { changedSlots, choiceFromKey, choiceKey, SLOT_VIEWS } from '../core/setu
 import { ArrowIcon, CheckIcon, ErrorIcon, HourglassIcon, PasteIcon, SettingsIcon, UploadIcon } from './icons.tsx'
 import { ModalDialog } from './ModalDialog.tsx'
 import { PageHeader } from './PageHeader.tsx'
+import { useResumeUploads } from './resumeUploads.ts'
 
 const nameOf = (fileName: string): string => fileName.replace(/\.[^.]+$/, '')
 
@@ -120,6 +121,7 @@ function SetupForm({
   const [advanced, setAdvanced] = useState(false)
   const resumeInput = useRef<HTMLInputElement>(null)
   const jdInput = useRef<HTMLInputElement>(null)
+  const uploads = useResumeUploads()
 
   const reasons = blockers(s)
   const disabled = reasons.length > 0
@@ -131,6 +133,7 @@ function SetupForm({
     try {
       const processed = await host.uploadResume({ displayName: nameOf(file.name), fileName: file.name, payload: new Uint8Array(await file.arrayBuffer()) })
       dispatch({ type: 'resumeProcessed', processed })
+      uploads.track(processed.resumeId, processed.displayName) // the server keeps processing; the Hardware page shows it
     } catch (e) {
       dispatch({ type: 'resumeFailed' })
       fail(e)
@@ -469,6 +472,7 @@ function Harness({ config, onConfig }: { config: MockHostConfig; onConfig: (conf
       {pick('saved', 'Saved resumes and roles', ['some', 'none'])}
       {pick('load', 'Loading this page', ['works', 'fails'])}
       {pick('preparation', 'Preparing the interview', ['succeeds', 'retries-then-succeeds', 'fails'])}
+      {pick('upload', 'Processing a loaded resume', ['succeeds', 'fails'])}
     </section>
   )
 }

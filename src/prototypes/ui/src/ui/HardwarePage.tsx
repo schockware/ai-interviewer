@@ -16,6 +16,7 @@ import {
 } from '../core/setup/hardware.ts'
 import { ArrowIcon, CheckIcon, ErrorIcon, HourglassIcon } from './icons.tsx'
 import { PageHeader } from './PageHeader.tsx'
+import { ResumeUploadCard } from './ResumeUploadCard.tsx'
 
 const MARK: Record<Tone, string> = { ok: '✓', warn: '!', bad: '✕', neutral: '–' }
 const PRESETS: ReadonlyArray<[string, string]> = [
@@ -130,6 +131,7 @@ export function HardwarePage({
 
       <div className="layout">
         <main className="layout-main">
+          <ResumeUploadCard />
           <section aria-labelledby="audio-title" className="card">
             <div className="row row-between">
               <h2 id="audio-title">

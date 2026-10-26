@@ -1,4 +1,4 @@
-// Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author.
+// Authored by Claude Sonnet 5.5 and Claude Fable 5.1 (Anthropic), with Steven Chock as co-author.
 import { HttpSetupHost } from '../adapters/http/httpSetupHost.ts'
 import { MockSetupHost, type MockHostConfig } from '../adapters/mock/mockSetupHost.ts'
 import type { Clock, SetupHost } from '../core/ports.ts'
@@ -8,6 +8,8 @@ import type { Integration, IntegrationMode } from './integration.ts'
 export interface HostParts {
   setup: IntegrationMode
   hardware: IntegrationMode
+  /** Resume processing reports, over the InterviewHub in real mode. */
+  uploadProgress: IntegrationMode
 }
 
 /**
@@ -18,7 +20,7 @@ export interface HostParts {
  */
 export function buildSetupHost(integration: Integration, clock: Clock, mockConfig: () => MockHostConfig): { host: SetupHost; parts: HostParts } {
   const mock = new MockSetupHost(clock, mockConfig)
-  if (integration.mode === 'mock') return { host: mock, parts: { setup: 'mock', hardware: 'mock' } }
+  if (integration.mode === 'mock') return { host: mock, parts: { setup: 'mock', hardware: 'mock', uploadProgress: 'mock' } }
   const http = new HttpSetupHost(integration.apiBaseUrl)
   const host: SetupHost = {
     loadPage: () => http.loadPage(),
@@ -28,6 +30,7 @@ export function buildSetupHost(integration: Integration, clock: Clock, mockConfi
     prepareInterview: (r, onProgress) => http.prepareInterview(r, onProgress),
     startInterview: (r) => http.startInterview(r),
     verifyHardware: (kind) => mock.verifyHardware(kind),
+    watchResumeUpload: (id, onProgress, onError) => http.watchResumeUpload(id, onProgress, onError),
   }
-  return { host, parts: { setup: 'real', hardware: 'mock' } }
+  return { host, parts: { setup: 'real', hardware: 'mock', uploadProgress: 'real' } }
 }
