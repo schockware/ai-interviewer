@@ -23,8 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 
-# Local overrides and anything secret-shaped never get committed (decision 0004). Only .env.example and .env.real are tracked.
+# Local overrides and anything secret-shaped never get committed (decision 0004). Only .env.example and .env.dev are tracked.
 .env
 .env.*
 !.env.example
-!.env.real
+!.env.dev

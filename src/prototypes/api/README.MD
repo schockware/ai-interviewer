@@ -26,6 +26,18 @@ dotnet run --project src/AiInterviewer.Api      # http://localhost:5036, OpenAPI
 dotnet test AiInterviewer.slnx
 ```
 
+### Connecting the UI prototype
+
+The connection information is public and lives in committed files on both sides; there are no secrets yet (decision 0004).
+
+| Side | File | Holds |
+|---|---|---|
+| API | `src/AiInterviewer.Api/Properties/launchSettings.json` | The address this API listens on, `http://localhost:5036` (profile `http`) |
+| API | `src/AiInterviewer.Api/appsettings.Development.json` | `Cors:AllowedOrigins`, the browser origins that may call this API directly. Development names the UI dev server, `http://localhost:5173`. Outside Development the list is empty and no cross-origin call is allowed |
+| UI | `../ui/.env.dev` | The mode, the proxy target (this API's address) and the URL the browser calls |
+
+Start this API, then `npm run dev:real` in `../ui`. The UI's dev server proxies `/api` here, so CORS is not needed on that path; the CORS policy is for calling this API directly from the page.
+
 ## Endpoints
 
 | Route | Contract | Success | Failure |

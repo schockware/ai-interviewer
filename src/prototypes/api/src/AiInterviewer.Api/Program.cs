@@ -27,6 +27,13 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 builder.Services.AddOpenApi();
 builder.Services.AddSignalR();
 
+// Which browser origins may call this API directly. Development names the UI prototype's dev
+// server (appsettings.Development.json); the UI's own /api proxy needs none of this. Not a secret:
+// origins are public addresses. An empty list allows no cross-origin caller at all.
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
+    policy.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod().AllowCredentials()));
+
 // Composition root: the only place that knows which adapter implements which port.
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddSingleton<IResumeStore, InMemoryResumeStore>();
@@ -39,6 +46,8 @@ builder.Services.AddSingleton<ApplicationSetupService>();
 builder.Services.AddSingleton<InterviewService>();
 
 var app = builder.Build();
+
+app.UseCors();
 
 if (app.Environment.IsDevelopment())
 {

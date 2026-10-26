@@ -13,10 +13,10 @@ const SECRETISH = /KEY|SECRET|TOKEN|PASSWORD|PASSWD|CREDENTIAL|PRIVATE/i
 
 describe('committed .env files', () => {
   it('are exactly the two documented ones (committed or committable), so a stray .env cannot slip in', () => {
-    expect(tracked.sort()).toEqual(['.env.example', '.env.real'])
+    expect(tracked.sort()).toEqual(['.env.dev', '.env.example'])
   })
 
-  for (const file of ['.env.example', '.env.real']) {
+  for (const file of ['.env.dev', '.env.example']) {
     const assignments = readFileSync(join(here, file), 'utf8')
       .split('\n')
       .filter((l) => /^[A-Z_][A-Z0-9_]*=/.test(l))

@@ -122,6 +122,6 @@ Steven's call:
 ## P-016 Env files are public config; secrets never touch them
 Status: proposed
 Rule: `.env` files hold a mode and addresses only, every name `VITE_`-prefixed and not secret-sounding, enforced by a test. Credentials live in the server process, injected from a secret manager or the OS keychain.
-Seen in: `.env.example`, `.env.real`, `composition/envFiles.spec.ts`, decision 0004.
+Seen in: `.env.example`, `.env.dev`, `composition/envFiles.spec.ts`, decision 0004. The API's equivalent is `appsettings.Development.json` (`Cors:AllowedOrigins`).
 Steven's call:
 

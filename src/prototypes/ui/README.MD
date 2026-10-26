@@ -43,12 +43,14 @@ Everything runs on mocks by default. Real integrations are opt-in, per [decision
 | To | Do |
 |---|---|
 | Run the UI on mocks (default) | `npm run dev` |
-| Run the UI against the API prototype | Start the API (`dotnet run --project ../api/src/AiInterviewer.Api --launch-profile http`), then `npm run dev:real`. Or add `?integration=real` to the address |
-| Point at another API | Set `VITE_API_URL`, or `API_PROXY_TARGET` for the dev proxy (see `.env.example`) |
+| Run the UI against the API prototype | Start the API (`dotnet run --project ../api/src/AiInterviewer.Api --launch-profile http`), then `npm run dev:real`, which loads `.env.dev`. Or add `?integration=real` to the address |
+| Point at another API | Copy `.env.dev` to `.env.dev.local` (gitignored) and change `VITE_API_PROXY_TARGET`, or set `VITE_API_URL` to call an API directly (see `.env.example`) |
 
 The page always says what is real and what is mock. Today, in real mode, **setup is real and hardware checks are still mock** (the API has no verify endpoint). The interview cues are always scripted. The Prototype harness cards for the mock server only show in mock mode.
 
-**Env files hold public values only.** `VITE_` variables are bundled into the page. Only `.env.example` and `.env.real` are committed, and a test fails if another `.env*` file or a secret-sounding name appears. There are no secrets today; see the decision for where the first one will go.
+**Env files hold public values only.** `VITE_` variables are bundled into the page. Only `.env.example` and `.env.dev` are committed, and a test fails if another `.env*` file or a secret-sounding name appears. `.env.dev` holds the connection to the API prototype on this machine: the mode, the proxy target and the URL the browser calls. There are no secrets today; see the decision for where the first one will go.
+
+**How the two prototypes see each other.** The browser calls `/api/...`, the Vite dev server forwards it to the API at `VITE_API_PROXY_TARGET` (default `http://localhost:5036`), and the API answers from the same port it names in its `launchSettings.json`. The proxy means no CORS is involved. The API also allows the origin `http://localhost:5173` (its `appsettings.Development.json`), so setting `VITE_API_URL=http://localhost:5036` to call it directly works too.
 
 ## Tests
 

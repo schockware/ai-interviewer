@@ -13,7 +13,7 @@ Prototypes **rise** from mockups to real integrations. Prod **falls** from real 
 | Question | Proposal |
 |---|---|
 | What is the default? | **Mock**, for `npm run dev` and `npm test`. Nothing real runs unless asked for |
-| How is real asked for? | A mode, `mock` or `real`: `VITE_INTEGRATION` in an env file, or `?integration=real` in the address bar. `npm run dev:real` loads `.env.real` |
+| How is real asked for? | A mode, `mock` or `real`: `VITE_INTEGRATION` in an env file, or `?integration=real` in the address bar. `npm run dev:real` loads `.env.dev`, the committed dev-environment connection to the API prototype |
 | Where does the choice live in code? | One composition root, `src/composition/`. It is the only place that knows which adapter backs which port. Core and UI see ports only |
 | Granularity | Per port, not one global switch, so a real part can sit beside a mock part. Today: real **setup**, mock **hardware** (the API has no verify endpoint yet). The page says so, always |
 | A bad mode value | An error on screen. Never a silent fall back to mock |
@@ -43,7 +43,7 @@ Prototypes **rise** from mockups to real integrations. Prod **falls** from real 
 ### What this project does
 
 1. **Today there are no secrets.** The models are local and the API prototype needs none. The mode switch is built; a secret manager is not, on purpose.
-2. **Committed env files hold public values only.** The prototype's `.gitignore` ignores every `.env*` except `.env.example` and `.env.real`. A test (`src/composition/envFiles.spec.ts`) fails if another `.env*` file appears, or if a committed one sets a name that is not `VITE_`-prefixed or that sounds secret (`KEY`, `SECRET`, `TOKEN`, `PASSWORD`, and so on). It is best effort: it cannot catch a secret with an innocent name.
+2. **Committed env files hold public values only.** The prototype's `.gitignore` ignores every `.env*` except `.env.example` and `.env.dev`. A test (`src/composition/envFiles.spec.ts`) fails if another `.env*` file appears, or if a committed one sets a name that is not `VITE_`-prefixed or that sounds secret (`KEY`, `SECRET`, `TOKEN`, `PASSWORD`, and so on). It is best effort: it cannot catch a secret with an innocent name.
 3. **When the first secret exists** (a cloud provider for the `{cloud}` model slots): it belongs to the **server** process. It reaches that process from a secret manager or the OS keychain, injected for the command (`op run -- dotnet run …`), not stored in a project file. For a user's own key, entered in Advanced settings, the server stores it in the OS keychain. The browser sends it once and never reads it back.
 4. **Real-integration tests get secrets the same way**, injected for the command. A test that needs a secret it does not have **skips loudly**, like the unreachable API.
 5. **Claude does not read or print secret files or stores**, and never writes a secret into a file. (`CLAUDE.md`.)
@@ -72,7 +72,7 @@ Steven also wants testing treated as a **first-class part of the system's design
 - A developer can run the whole UI with no server and no setup, and the tests prove behavior without a network.
 - Switching to real is one flag, and the page states what is real. Mixed modes are possible and visible.
 - Every new port needs a contract suite. That is real work, and it is the cost of trusting the mock.
-- The dev server proxies `/api` to the API (`API_PROXY_TARGET`, default `http://localhost:5036`), so the browser needs no CORS setup. **That proxy is a development convenience.** How the UI reaches the API in a real deployment is not decided here.
+- The dev server proxies `/api` to the API (`VITE_API_PROXY_TARGET` in `.env.dev`, default `http://localhost:5036`), so the browser needs no CORS setup. **That proxy is a development convenience.** The API also allows the UI dev server's origin in Development (`Cors:AllowedOrigins` in `appsettings.Development.json`, 2026-10-20), so the page can call it directly; outside Development that list is empty. How the UI reaches the API in a real deployment is not decided here.
 
 ## Open
 
