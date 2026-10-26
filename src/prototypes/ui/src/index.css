@@ -851,3 +851,39 @@ input[type='text'] {
   color: #7a3e00;
   font-weight: 600;
 }
+
+/* Test mode (?mode=test): a right-side drawer for testers and QA, over the page. Not in the mockups. */
+.drawer-toggle {
+  position: fixed;
+  top: 8px;
+  right: 16px;
+  z-index: 30;
+}
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(360px, 100vw);
+  overflow-y: auto;
+  background: var(--card);
+  border-left: 1px solid var(--line-strong);
+  box-shadow: -8px 0 24px rgba(22, 32, 42, 0.12);
+  padding: 64px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 20;
+}
+.drawer[hidden] {
+  display: none;
+}
+.drawer section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.drawer code {
+  font-size: 12px;
+  word-break: break-all;
+}

@@ -12,7 +12,9 @@ import type {
   JobDescriptionUpload,
   PrepProgress,
   PrepareInterview,
+  ResumeId,
   ResumeProcessed,
+  ResumeUploadProgress,
   StartInterview,
   UploadResume,
 } from './contract/pageFlow.ts'
@@ -67,4 +69,10 @@ export interface SetupHost {
   startInterview(request: StartInterview): Promise<CueSettings>
   /** Open question in the contract: how the stream reaches the server. Settles with the quality the server estimates, or rejects. */
   verifyHardware(kind: HardwareKind): Promise<Exclude<HardwareQuality, 'pending' | 'skipped'>>
+  /**
+   * Follows the processing of a resume this host just processed (PROPOSAL: the InterviewHub's
+   * WatchResumeUpload). The first snapshot arrives as soon as the server answers; `onError` fires
+   * instead when it cannot. Returns a function that stops watching.
+   */
+  watchResumeUpload(resumeId: ResumeId, onProgress: (progress: ResumeUploadProgress) => void, onError: (message: string) => void): () => void
 }

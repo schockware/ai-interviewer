@@ -1,4 +1,5 @@
-// Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author.
+// Authored by Claude Sonnet 5.5 and Claude Fable 5.1 (Anthropic), with Steven Chock as co-author.
+import { HubConnectionBuilder } from '@microsoft/signalr'
 import type { SetupHost } from '../../core/ports.ts'
 import type {
   ApplicationSetupPage,
@@ -8,37 +9,67 @@ import type {
   JobDescriptionUpload,
   PrepareInterview,
   PrepProgress,
+  ResumeId,
   ResumeProcessed,
+  ResumeUploadProgress,
   StartInterview,
   UploadResume,
 } from '../../core/contract/pageFlow.ts'
 
+/** The slice of a SignalR connection this adapter uses, so a test can stand in for the hub. */
+export interface HubLink {
+  on(method: string, handler: (payload: unknown) => void): void
+  start(): Promise<void>
+  invoke<T>(method: string, ...args: unknown[]): Promise<T>
+  stop(): Promise<void>
+}
+export type HubConnect = (url: string) => HubLink
+
+const signalRConnect: HubConnect = (url) => new HubConnectionBuilder().withUrl(url).build()
+
+/** The InterviewHub, as the API prototype maps it (src/prototypes/api README, Real-time). */
+export const INTERVIEW_HUB_PATH = '/hubs/interview'
+const RESUME_UPLOAD_PROGRESS = 'resumeUploadProgress'
+
 /**
  * The real server: the API prototype's page-flow endpoints (src/prototypes/api README). It
  * implements every SetupHost method except `verifyHardware`, which the API does not have yet.
- * Bytes travel as base64, as the OpenAPI draft's `format: byte` says.
+ * Bytes travel as base64, as the OpenAPI draft's `format: byte` says. Resume processing progress
+ * comes over the InterviewHub (SignalR), through the same base URL.
  *
- * Takes `fetch` as a parameter so a test can stand in for the network. No credentials: the
- * browser holds no secrets, and the API's own configuration is the server's business (decision 0004).
+ * Takes `fetch` and the hub connector as parameters so a test can stand in for the network, and
+ * `headers`, read on every request, for the test drawer's server-side settings (composition/testMode.ts).
+ * No credentials: the browser holds no secrets, and the API's own configuration is the
+ * server's business (decision 0004).
  */
 export class HttpSetupHost implements Omit<SetupHost, 'verifyHardware'> {
   private readonly baseUrl: string
   private readonly fetchFn: typeof fetch
+  private readonly connect: HubConnect
+  private readonly headers: () => Record<string, string>
 
-  constructor(baseUrl: string, fetchFn: typeof fetch = (...args) => fetch(...args)) {
+  constructor(
+    baseUrl: string,
+    fetchFn: typeof fetch = (...args) => fetch(...args),
+    connect: HubConnect = signalRConnect,
+    headers: () => Record<string, string> = () => ({}),
+  ) {
     this.baseUrl = baseUrl.replace(/\/+$/, '')
     this.fetchFn = fetchFn
+    this.connect = connect
+    this.headers = headers
   }
 
   private async send(path: string, body?: unknown): Promise<Response> {
+    const extra = this.headers()
     let response: Response
     try {
       response =
         body === undefined
-          ? await this.fetchFn(`${this.baseUrl}${path}`)
+          ? await this.fetchFn(`${this.baseUrl}${path}`, Object.keys(extra).length ? { headers: extra } : undefined)
           : await this.fetchFn(`${this.baseUrl}${path}`, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { ...extra, 'Content-Type': 'application/json' },
               body: JSON.stringify(body),
             })
     } catch {
@@ -94,6 +125,32 @@ export class HttpSetupHost implements Omit<SetupHost, 'verifyHardware'> {
 
   startInterview(request: StartInterview): Promise<CueSettings> {
     return this.post('/interviews/start', request)
+  }
+
+  /**
+   * One hub connection per watched resume: the hub's WatchResumeUpload joins the caller to that
+   * resume and answers with what is known now, so nothing is lost between the upload finishing
+   * and the watch starting. Every later snapshot arrives on the client method. Pushes for any
+   * other resume on the same connection are ignored.
+   */
+  watchResumeUpload(resumeId: ResumeId, onProgress: (progress: ResumeUploadProgress) => void, onError: (message: string) => void): () => void {
+    const hub = this.connect(`${this.baseUrl}${INTERVIEW_HUB_PATH}`)
+    let live = true
+    hub.on(RESUME_UPLOAD_PROGRESS, (payload) => {
+      const progress = payload as ResumeUploadProgress
+      if (live && progress.resumeId === resumeId) onProgress(progress)
+    })
+    hub
+      .start()
+      .then(() => hub.invoke<ResumeUploadProgress>('WatchResumeUpload', resumeId))
+      .then(
+        (snapshot) => live && onProgress(snapshot),
+        (e: unknown) => live && onError(e instanceof Error && e.message ? e.message : `Could not reach the API at ${this.baseUrl} for upload progress.`),
+      )
+    return () => {
+      live = false
+      void hub.stop().catch(() => undefined)
+    }
   }
 }
 

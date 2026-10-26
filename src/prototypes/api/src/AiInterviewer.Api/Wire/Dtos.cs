@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using AiInterviewer.Business.Hardware;
 using AiInterviewer.Business.Interview;
+using AiInterviewer.Business.Setup;
 
 namespace AiInterviewer.Api.Wire;
 
@@ -103,3 +104,14 @@ public sealed record LatenciesDto(int Network, double PacketLossVariancePerSecon
 public sealed record EmulationDto(CadencesDto Cadences, LatenciesDto Latencies);
 
 public sealed record CueSettingsDto(EmulationDto Emulation);
+
+// ---- Resume upload progress, pushed on the InterviewHub (PROPOSAL: the contract has no shape for it) ----
+
+public sealed record ResumeUploadStepDto(string Name, UploadStepStatus Status);
+
+public sealed record ResumeUploadProgressDto(string ResumeId, string DisplayName, ResumeUploadStatus Status, IReadOnlyList<ResumeUploadStepDto> Steps);
+
+// ---- Test mode (Testing/TestMode.cs): the X-Mock-Uploader-Options header, JSON ----
+
+/// <summary>How long the mock resume uploader pauses between steps, for one request. A seed makes the steps repeatable.</summary>
+public sealed record MockUploaderOptionsDto(int MinStepDelayMs, int MaxStepDelayMs, int? Seed = null);

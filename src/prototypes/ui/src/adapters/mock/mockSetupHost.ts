@@ -1,4 +1,4 @@
-// Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author.
+// Authored by Claude Sonnet 5.5 and Claude Fable 5.1 (Anthropic), with Steven Chock as co-author.
 import type { Clock, SetupHost } from '../../core/ports.ts'
 import type {
   ApplicationSetupPage,
@@ -8,6 +8,9 @@ import type {
   HardwareQuality,
   JobDescriptionProcessed,
   PrepProgress,
+  ResumeId,
+  ResumeUploadProgress,
+  ResumeUploadStep,
   Saved,
 } from '../../core/contract/pageFlow.ts'
 import { defaultAi } from '../../core/setup/slots.ts'
@@ -19,6 +22,8 @@ export interface MockHostConfig {
   preparation: 'succeeds' | 'retries-then-succeeds' | 'fails'
   audio: Exclude<HardwareQuality, 'pending' | 'skipped'> | 'errored'
   video: Exclude<HardwareQuality, 'pending' | 'skipped'> | 'errored'
+  /** What processing a loaded resume does after the upload answers (the steps are random either way). */
+  upload: 'succeeds' | 'fails'
 }
 
 export const defaultMockConfig: MockHostConfig = {
@@ -27,10 +32,22 @@ export const defaultMockConfig: MockHostConfig = {
   preparation: 'succeeds',
   audio: 'clear',
   video: 'clear',
+  upload: 'succeeds',
 }
 
 /** Delays in the clock's milliseconds. Long enough to see each state; short enough not to wait. */
-export const MOCK_DELAYS = { load: 700, upload: 1500, preparing: 5000, retrying: 3000, verify: 2000 } as const
+export const MOCK_DELAYS = { load: 700, upload: 1500, preparing: 5000, retrying: 3000, verify: 2000, uploadStep: 900 } as const
+
+/** The same pool the API prototype's mock uploader draws from, so the two look alike. */
+const UPLOAD_STEPS = [
+  'Receiving the file',
+  'Scanning for text',
+  'Finding sections',
+  'Extracting work history',
+  'Extracting skills',
+  'Summarizing experience',
+  'Indexing for the interviewer',
+] as const
 
 const SAVED_RESUMES: Saved = [
   ['res-2', 'Resume, 2026 (PDF)'],
@@ -137,5 +154,50 @@ export class MockSetupHost implements SetupHost {
       if (result === 'errored') throw new Error('Could not reach the device.')
       return result
     })
+  }
+
+  /**
+   * Three to five random steps from the pool, one after another. Only a resume uploaded this
+   * session can be watched, as on the real server. With `upload: 'fails'` the last step fails.
+   */
+  watchResumeUpload(resumeId: ResumeId, onProgress: (progress: ResumeUploadProgress) => void, onError: (message: string) => void): () => void {
+    const cancels: Array<() => void> = []
+    const stop = () => cancels.forEach((cancel) => cancel())
+    const known = this.addedResumes.find(([id]) => id === resumeId)
+    if (!known) {
+      cancels.push(this.clock.schedule(0, () => onError(`No resume upload is known for "${resumeId}".`)))
+      return stop
+    }
+    const displayName = known[1]
+    const count = 3 + Math.floor(Math.random() * 3)
+    const chosen = [...UPLOAD_STEPS].sort(() => Math.random() - 0.5).slice(0, count)
+    const steps: ResumeUploadStep[] = UPLOAD_STEPS.filter((name) => chosen.includes(name)).map((name) => ({ name, status: 'pending' }))
+    const failing = this.config().upload === 'fails'
+    const snapshot = (status: ResumeUploadProgress['status']): ResumeUploadProgress => ({ resumeId, displayName, status, steps: steps.map((s) => ({ ...s })) })
+
+    cancels.push(this.clock.schedule(0, () => onProgress(snapshot('running'))))
+    let at = 0
+    steps.forEach((step, i) => {
+      const last = i === steps.length - 1
+      cancels.push(
+        this.clock.schedule(at, () => {
+          step.status = 'running'
+          onProgress(snapshot('running'))
+        }),
+      )
+      at += MOCK_DELAYS.uploadStep
+      cancels.push(
+        this.clock.schedule(at, () => {
+          if (last && failing) {
+            step.status = 'failed'
+            onProgress(snapshot('failed'))
+          } else {
+            step.status = 'done'
+            onProgress(snapshot(last ? 'done' : 'running'))
+          }
+        }),
+      )
+    })
+    return stop
   }
 }

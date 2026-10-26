@@ -1,15 +1,19 @@
-// Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author.
+// Authored by Claude Sonnet 5.5 and Claude Fable 5.1 (Anthropic), with Steven Chock as co-author.
 import { useEffect, useRef, useState } from 'react'
 import { defaultMockConfig, type MockHostConfig } from '../adapters/mock/index.ts'
 import { SystemClock } from '../adapters/systemClock.ts'
 import type { PrepareInterview } from '../core/contract/pageFlow.ts'
 import { buildSetupHost } from '../composition/hosts.ts'
 import { readIntegration, type Integration } from '../composition/integration.ts'
+import { readTestMode, testHeaders, type TestSettings } from '../composition/testMode.ts'
 import { AccessibilityDialog } from './AccessibilityDialog.tsx'
 import { HardwarePage } from './HardwarePage.tsx'
 import { IntegrationBar } from './IntegrationBar.tsx'
 import InterviewPage from './InterviewPage.tsx'
+import { ResumeUploadProvider } from './ResumeUploadProvider.tsx'
 import { SetupPage } from './SetupPage.tsx'
+import { TestDrawer } from './TestDrawer.tsx'
+import { loadTestSettings, saveTestSettings } from './testSettingsStorage.ts'
 
 type Page = 'setup' | 'hardware' | 'interview'
 
@@ -21,7 +25,8 @@ const pageFromUrl = (): Page => {
 /**
  * The page flow (contracts/page-flow.md): Application setup, then Hardware setup, then the
  * interview. `?page=interview` opens the interview directly, for development and the e2e tests.
- * No router: three pages in a row need only a value.
+ * `?mode=test` opens the test drawer (composition/testMode.ts). No router: three pages in a row
+ * need only a value.
  */
 export default function App() {
   // A bad mode is shown, never guessed past (decision 0004).
@@ -53,12 +58,21 @@ function Flow({ integration }: { integration: Integration }) {
   useEffect(() => {
     configRef.current = config
   }, [config])
-  const [{ host, parts }] = useState(() => buildSetupHost(integration, new SystemClock(), () => configRef.current))
+
+  // Test mode: null when off. When on, the drawer's settings ride on every request as headers, read the same lazy way.
+  const [testSettings, setTestSettings] = useState<TestSettings | null>(() => (readTestMode(window.location.search) ? loadTestSettings() : null))
+  const testRef = useRef(testSettings)
+  useEffect(() => {
+    testRef.current = testSettings
+    if (testSettings) saveTestSettings(testSettings)
+  }, [testSettings])
+
+  const [{ host, parts }] = useState(() => buildSetupHost(integration, new SystemClock(), () => configRef.current, () => testHeaders(testRef.current)))
 
   const openA11y = () => setA11yOpen(true)
 
   return (
-    <>
+    <ResumeUploadProvider host={host}>
       <IntegrationBar parts={parts} />
       {page === 'setup' && (
         <SetupPage
@@ -91,6 +105,7 @@ function Flow({ integration }: { integration: Integration }) {
       )}
       {page === 'interview' && <InterviewPage captions={captions} onCaptions={setCaptions} onOpenAccessibility={openA11y} />}
       <AccessibilityDialog open={a11yOpen} onClose={() => setA11yOpen(false)} captions={captions} onCaptions={setCaptions} />
-    </>
+      {testSettings && <TestDrawer settings={testSettings} onChange={setTestSettings} real={parts.setup === 'real'} />}
+    </ResumeUploadProvider>
   )
 }

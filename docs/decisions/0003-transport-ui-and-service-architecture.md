@@ -57,7 +57,7 @@ Rules for the C# structure:
 ## Open items
 
 1. Audio frame format and size over the WebSocket, and how backpressure is handled.
-2. What the data layer stores and where. Nothing about storage technology is decided.
+2. What the data layer stores and where. Steven decided 2026-10-26: SQLite for local development, with the persistence ports kept agnostic of the engine; MSSQL, MySQL, PostgreSQL, MongoDB and CosmosDB adapters are a task (`TASKS.MD`). What is stored, and where in a deployment, is still open.
 3. Whether an AI agent would help coordination, to be evaluated once the plain coordinator exists.
 4. How C# supervises Python workers: start-up, health checks, restart and shutdown.
 5. The gRPC contract files, and where they live so all three languages generate from the same source.

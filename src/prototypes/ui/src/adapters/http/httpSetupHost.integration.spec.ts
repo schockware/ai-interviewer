@@ -4,6 +4,7 @@
 // No secrets are involved: the API prototype needs none. INTEGRATION_API_URL is a plain address.
 import { describe, expect, it } from 'vitest'
 import { buildSetupHost } from '../../composition/hosts.ts'
+import { INSTANT_UPLOADER, testHeaders } from '../../composition/testMode.ts'
 import { defaultMockConfig } from '../mock/mockSetupHost.ts'
 import { SystemClock } from '../systemClock.ts'
 import { describeSetupHostContract } from '../setupHostContract.ts'
@@ -30,13 +31,15 @@ if (!reachable) {
 } else {
   describeSetupHostContract('real API', () => {
     // Through the composition root, so the real mode's wiring is tested too (hardware stays mock there).
-    const { host } = buildSetupHost({ mode: 'real', apiBaseUrl: baseUrl }, new SystemClock(), () => defaultMockConfig)
+    // Test mode asks the API for an instant mock uploader, so this run is quick; the API must have TestMode:Enabled (it is in Development).
+    const { host } = buildSetupHost({ mode: 'real', apiBaseUrl: baseUrl }, new SystemClock(), () => defaultMockConfig, () => testHeaders({ mockUploader: INSTANT_UPLOADER }))
     return {
       host,
       run: (pending) => pending,
       until: async (done) => {
-        for (let waited = 0; waited < 5000 && !done(); waited += 100) await new Promise((r) => setTimeout(r, 100))
-        if (!done()) throw new Error('The API did not finish within 5 seconds')
+        // Generous: the uploader is asked to be instant, but a server with test mode off refuses that and the failure should be its message, not a timeout.
+        for (let waited = 0; waited < 20_000 && !done(); waited += 100) await new Promise((r) => setTimeout(r, 100))
+        if (!done()) throw new Error('The API did not finish within 20 seconds')
       },
     }
   })

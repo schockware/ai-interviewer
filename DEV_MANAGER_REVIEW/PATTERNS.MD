@@ -110,7 +110,7 @@ Steven's call:
 ## P-014 One contract suite per port, run against the mock and the real adapter
 Status: proposed
 Rule: Behavior every implementation must share is written once (`adapters/setupHostContract.ts`) and registered for each adapter. The real run lives in `*.integration.spec.ts` and skips loudly.
-Seen in: `adapters/setupHostContract.ts`, `mock/mockSetupHost.contract.spec.ts`, `http/httpSetupHost.integration.spec.ts`.
+Seen in: `adapters/setupHostContract.ts`, `mock/mockSetupHost.contract.spec.ts`, `http/httpSetupHost.integration.spec.ts`. On the API side, `tests/AiInterviewer.Adapters.Tests/StoreContract.cs` runs one suite against the in-memory and SQLite stores.
 Why: it caught the mock forgetting uploads, and a UI message keyed off the mock's id format.
 Steven's call:
 
@@ -119,9 +119,15 @@ Status: proposed
 Rule: `*.integration.spec.ts` (vitest) and `*.real.spec.ts` (Playwright) run only through `test:integration` and `test:e2e:real`, never in the default run. An unreachable dependency skips loudly, or fails under `INTEGRATION_REQUIRED=1`.
 Steven's call:
 
+## P-017 Test settings are per request, behind a server flag
+Status: proposed
+Rule: A tester's server-side setting travels as an `X-Mock-*` request header and is passed explicitly, as a method argument, to the port that uses it for that request. The injected options stay the defaults; nothing is scoped or swapped per request (Steven, 2026-10-26). The server honors test headers only while its own `TestMode:Enabled` is on, and refuses them with a 400 and the reason otherwise. The UI sends them only in `?mode=test`, from the test drawer.
+Seen in: `src/prototypes/api/src/AiInterviewer.Api/Testing/`, `IResumeUploader.BeginAsync(id, name, options, ct)`, `Endpoints.cs` (/resumes), `src/prototypes/ui/src/composition/testMode.ts`, `ui/TestDrawer.tsx`. Decision 0004, Test mode.
+Steven's call:
+
 ## P-016 Env files are public config; secrets never touch them
 Status: proposed
 Rule: `.env` files hold a mode and addresses only, every name `VITE_`-prefixed and not secret-sounding, enforced by a test. Credentials live in the server process, injected from a secret manager or the OS keychain.
-Seen in: `.env.example`, `.env.real`, `composition/envFiles.spec.ts`, decision 0004.
+Seen in: `.env.example`, `.env.dev`, `composition/envFiles.spec.ts`, decision 0004. The API's equivalent is `appsettings.Development.json` (`Cors:AllowedOrigins`).
 Steven's call:
 

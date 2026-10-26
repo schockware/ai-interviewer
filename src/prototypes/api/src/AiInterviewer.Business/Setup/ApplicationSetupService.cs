@@ -18,6 +18,7 @@ public sealed class ApplicationSetupService(
     IDocumentReader reader,
     ISessionStore sessions,
     IInterviewPreparer preparer,
+    IResumeUploader uploader,
     TimeProvider clock)
 {
     public async Task<ApplicationSetupPage> LoadPageAsync(CancellationToken ct)
@@ -34,7 +35,15 @@ public sealed class ApplicationSetupService(
         }
     }
 
-    public async Task<Outcome<ResumeProcessed>> UploadResumeAsync(DisplayName name, UploadedFile file, CancellationToken ct)
+    /// <summary>Stores the resume and starts processing it with the uploader's default options.</summary>
+    public Task<Outcome<ResumeProcessed>> UploadResumeAsync(DisplayName name, UploadedFile file, CancellationToken ct) =>
+        UploadResumeAsync(name, file, (id, ct2) => uploader.BeginAsync(id, name, ct2), ct);
+
+    /// <summary>The same, with explicit uploader options for this upload only (test mode).</summary>
+    public Task<Outcome<ResumeProcessed>> UploadResumeAsync(DisplayName name, UploadedFile file, ResumeUploaderOptions options, CancellationToken ct) =>
+        UploadResumeAsync(name, file, (id, ct2) => uploader.BeginAsync(id, name, options, ct2), ct);
+
+    private async Task<Outcome<ResumeProcessed>> UploadResumeAsync(DisplayName name, UploadedFile file, Func<ResumeId, CancellationToken, Task> begin, CancellationToken ct)
     {
         switch (await reader.ReadAsync(file, ct))
         {
@@ -42,6 +51,8 @@ public sealed class ApplicationSetupService(
                 return Outcome.Failure<ResumeProcessed>(failed.Message);
             case Succeeded<string> read:
                 var id = await resumes.AddAsync(name, read.Value, clock.GetUtcNow(), ct);
+                // Stored first, so the id the client gets back is one the uploader is already reporting on.
+                await begin(id, ct);
                 return Outcome.Success(new ResumeProcessed(id, name));
             default:
                 throw new InvalidOperationException();

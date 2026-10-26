@@ -139,8 +139,37 @@ public class ApplicationSetupServiceTests
     private readonly FakeRoleStore roles = new();
     private readonly FakeSessionStore sessions = new();
     private readonly FakePreparer preparer = new();
+    private readonly FakeUploader uploader = new();
 
-    private ApplicationSetupService Service() => new(resumes, roles, new FakeReader(), sessions, preparer, TimeProvider.System);
+    private ApplicationSetupService Service() => new(resumes, roles, new FakeReader(), sessions, preparer, uploader, TimeProvider.System);
+
+    [Fact]
+    public async Task A_stored_resume_is_handed_to_the_uploader_under_its_new_id()
+    {
+        var result = await Service().UploadResumeAsync(Make.Name("CV"), new UploadedFile("cv.txt", new byte[] { 1 }), default);
+
+        var ok = Assert.IsType<Succeeded<ResumeProcessed>>(result);
+        Assert.Equal((ok.Value.ResumeId, Make.Name("CV"), (ResumeUploaderOptions?)null), Assert.Single(uploader.Begun));
+    }
+
+    [Fact]
+    public async Task Explicit_uploader_options_reach_the_uploader_for_that_upload()
+    {
+        var options = new ResumeUploaderOptions(TimeSpan.Zero, TimeSpan.Zero, Seed: 7);
+
+        var result = await Service().UploadResumeAsync(Make.Name("CV"), new UploadedFile("cv.txt", new byte[] { 1 }), options, default);
+
+        var ok = Assert.IsType<Succeeded<ResumeProcessed>>(result);
+        Assert.Equal((ok.Value.ResumeId, Make.Name("CV"), options), Assert.Single(uploader.Begun));
+    }
+
+    [Fact]
+    public async Task A_resume_that_cannot_be_read_never_reaches_the_uploader()
+    {
+        await Service().UploadResumeAsync(Make.Name("CV"), new UploadedFile("cv.bad", new byte[] { 1 }), default);
+
+        Assert.Empty(uploader.Begun);
+    }
 
     private async Task<RoleId> AddRole() => await roles.AddAsync(Make.Name("SWE"), "jd", DateTimeOffset.UtcNow, default);
 

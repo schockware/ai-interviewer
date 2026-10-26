@@ -97,3 +97,21 @@ export interface CueSettings {
     latencies: { network: number; packetLossVariancePerSecond: number; audioRamp: 'clipped-beginning' | 'clipped-ending' | 'both' }
   }
 }
+
+/**
+ * PROPOSAL (API prototype): the processing of an uploaded resume, reported step by step over the
+ * InterviewHub after POST /resumes has answered. Every report is a whole snapshot, so a late
+ * listener needs only the latest one. The contract has no shape for this yet.
+ */
+export type UploadStepStatus = 'pending' | 'running' | 'done' | 'failed'
+export interface ResumeUploadStep {
+  name: string
+  status: UploadStepStatus
+}
+export type ResumeUploadStatus = 'running' | 'done' | 'failed'
+export interface ResumeUploadProgress {
+  resumeId: ResumeId
+  displayName: DisplayName
+  status: ResumeUploadStatus
+  steps: ResumeUploadStep[]
+}
