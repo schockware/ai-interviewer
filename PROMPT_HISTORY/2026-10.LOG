@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-26 15:16:46 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Said the work is ready for a pull request.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: merged origin/main (nothing new), pushed, and opened a pull request against main covering the waiting room, the shared status banner and progress components, the spec updates and the repo mockup copies. design/mockups/ui/States.dc.html, Timeline.dc.html and Recovery.dc.html are still iteration 1.
+Tokens: ~2,000 (estimated)
+---
 ## 2026-10-26 15:15:29 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Asked to pull the latest main, then to add a banner to Application Setup and Hardware Setup saying a resume and/or role is uploading (without details, which belong to the waiting room), to reuse the Waiting for host banner, to show that the banner could exist on all pages, and to put the Preparing your interview progress on all setups.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
