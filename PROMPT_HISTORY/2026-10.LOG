@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-27 16:47:17 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Explained why Prepare interview exists (the resume and role uploads are needed before the script can be prepared), then decided that uploads must never stop anything on the setup pages and only lead to the waiting room, that the role starts unanswered (no guessing from interview type or resume, and a new role from an upload is selected automatically when there are no roles), that the questions default to the AI writing them, and that the default or already-loaded questions are called out next to the Setup questions button.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: Design canvas version 31: split Application setup into two pages. Application setup (step 1 of 4: settings, interview type, resume, a Role set up button, never blocked by an upload) and a new Role set up page (step 2 of 4: Role focus starting unanswered, job description, Setup questions button with a default or loaded call-out, questions panel defaulting to the AI, and Prepare interview, blocked only by an unanswered role, the questions check, or an upload chosen with no file). Hardware is now step 3 and the waiting room step 4. The questions-states board is renamed RoleQuestions and updated to the new defaults; SetupHot uses Role set up. Canvas layout rearranged (no overlaps). Checked the page scripts with node --check and a logic run over 14 state combinations; nothing rendered. I did not force the Interview type choice, since no unanswered value is wanted for it; Cold stays the default. specs/page-flow.md rewritten for the split and the upload rules. Synced the changed boards into design/mockups/ui/ (README and canvas.json updated, SetupRole removed). contracts/page-flow.md not changed.
+Tokens: ~46,600 (derived: counter 15,000,000 -> ~14,953,400)
+---
 ## 2026-10-27 16:26:35 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Said the Role focus panel on the Application setup page looks out of date, and asked whether Role set up should be a separate page, forcing an Interview type selection and replacing the Prepare interview button on the first page with Role set up.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
