@@ -9,13 +9,14 @@
     "Timeline.dc.html": {"h": 640, "title": "Handoff timing: true vs perceived", "w": 1280, "x": 1360, "y": 1443},
     "Recovery.dc.html": {"h": 640, "title": "Edge moments", "w": 1280, "x": 2720, "y": 1443},
     "Transitions.dc.html": {"h": 2760, "title": "Cue transitions (master)", "w": 1940, "x": 0, "y": 2366},
-    "Setup.dc.html": {"expand": "fill", "h": 1300, "title": "Application setup", "w": 1280, "x": 0, "y": 5409},
+    "Setup.dc.html": {"expand": "fill", "h": 1700, "title": "Application setup", "w": 1280, "x": 0, "y": 5409},
     "Hardware.dc.html": {"expand": "fill", "h": 1200, "title": "Hardware setup and verification", "w": 1280, "x": 1360, "y": 5409},
     "SharedStatus.dc.html": {"h": 1900, "title": "Shared: status banner and progress", "w": 1280, "x": 1760, "y": 6929},
     "StatusBanner.dc.html": {"h": 88, "title": "Status banner (component)", "w": 1200, "x": 3120, "y": 6929},
     "PrepProgress.dc.html": {"h": 76, "title": "Preparation progress (component)", "w": 1200, "x": 3120, "y": 7137},
     "Waiting.dc.html": {"expand": "fill", "h": 1400, "title": "Waiting room", "w": 1280, "x": 2720, "y": 5409},
-    "SetupHot.dc.html": {"h": 1040, "title": "Hot interview: resume panel states", "w": 1680, "x": 0, "y": 6829}
+    "SetupHot.dc.html": {"h": 1040, "title": "Hot interview: resume panel states", "w": 1680, "x": 0, "y": 7229},
+    "SetupRole.dc.html": {"h": 1900, "title": "Role focus: where the questions come from", "w": 1680, "x": 0, "y": 8389}
   },
   "createdOnFiles": {"at": "2026-10-06T13:13:29Z", "v": 1},
   "designSystems": [],
@@ -26,7 +27,7 @@
     "transitionstitle": {"kind": "title1", "maxW": 1940, "text": "Cue transitions: the master diagram", "w": 240, "x": 0, "y": 2123},
     "setuptitle": {"kind": "title1", "maxW": 4000, "text": "Setup pages: application setup, hardware, waiting room", "w": 240, "x": 0, "y": 5166}
   },
-  "order": ["Main.dc.html", "ScreenReader.dc.html", "Accessibility.dc.html", "States.dc.html", "Timeline.dc.html", "Recovery.dc.html", "Transitions.dc.html", "Setup.dc.html", "Hardware.dc.html", "Waiting.dc.html", "SetupHot.dc.html", "SharedStatus.dc.html", "StatusBanner.dc.html", "PrepProgress.dc.html"],
+  "order": ["Main.dc.html", "ScreenReader.dc.html", "Accessibility.dc.html", "States.dc.html", "Timeline.dc.html", "Recovery.dc.html", "Transitions.dc.html", "Setup.dc.html", "Hardware.dc.html", "Waiting.dc.html", "SetupHot.dc.html", "SetupRole.dc.html", "SharedStatus.dc.html", "StatusBanner.dc.html", "PrepProgress.dc.html"],
   "pages": [],
   "title": "Interviewer Cue Design"
 }

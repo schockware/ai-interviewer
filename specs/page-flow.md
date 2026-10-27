@@ -41,6 +41,13 @@ Two shared components, so every page looks and behaves the same.
   - *Required*
   - The user can select industry-standard titles.
   - The user may upload a job description.
+  - **Interview questions** for the chosen role. There are three starting cases:
+    - **New role:** the user uploads the role description, then is asked whether the LLM should generate the questions or the user will upload questions.
+    - **Existing role with missing questions:** the user is asked the same: generate with the LLM, or upload questions.
+    - **Existing role with existing questions:** the user is asked whether to purge the existing questions. Keeping them is the default, so nothing is deleted by accident.
+      - If the user chooses to purge, a warning says how many questions go and that it cannot be undone, and the user is then asked the same question: generate or upload.
+      - The purge happens when Prepare Interview is pressed. *Whether it also needs a confirmation step is open.*
+    - Uploaded questions are processed first. Prepare Interview stays disabled until the choice is made and any upload has finished.
 - **Prepare Interview button**
   - The AI needs time to build out an interview based on the Role and Resume (if provided).
   - *Disabled while anything is missing or still processing, with a list that says what is missing.*
@@ -67,7 +74,8 @@ Two shared components, so every page looks and behaves the same.
 
 - Shows each step of the preparation, so the user can see their resume and role being uploaded and processed:
   - **Your materials:** uploading and reading the resume (hot interviews only), uploading and reading the job description (if any) or looking up the role, and preparing the role review.
-  - **Interview scripts, written by the AI:** planning the questions, writing the opening, preparing the follow-up questions, preparing the scoring guide, and writing the closing.
+  - **Interview scripts, written by the AI:** writing the questions (only if the AI is generating them), writing the opening, preparing the follow-up questions, preparing the scoring guide, and writing the closing.
+  - If the user uploaded questions, the steps are uploading and reading them under *Your materials* instead. If the role already has saved questions that were kept, the step is loading them.
   - **Voice and connection:** warming up the interviewer's voice and connecting to the interview room.
   - *The exact step list is a proposal. The server would need to send progress for each step.*
 - If preparation fails, nothing interrupts the user. The progress bar slows and the system retries quietly. If it still fails, the AI models diagnose the problem, and the user can try again or change the application setup.

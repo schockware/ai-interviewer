@@ -192,6 +192,69 @@ Processing the job description. This can take a moment.
 </sc-if>
 </div>
 </div>
+<sc-if value="{{showQuestions}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 14px; padding-top: 16px; border-top: 1px solid #E1E5EA">
+<h3 style="margin: 0; font-size: 16px; font-weight: 600">Interview questions</h3>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #2B3540">{{qIntro}}</p>
+<sc-if value="{{hasExisting}}" hint-placeholder-val="{{ false }}">
+<div role="radiogroup" aria-label="Existing questions" style="display: flex; flex-direction: column; gap: 10px">
+<div style="{{keepStyle}}">
+<label style="display: flex; flex-direction: column; gap: 8px; cursor: pointer">
+<span style="display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600"><input type="radio" name="qexisting" value="keep" checked="{{isKeep}}" onChange="{{pickKeep}}" style="width: 22px; height: 22px; margin: 0; accent-color: #1D4ED8">Keep the existing questions</span>
+<span style="font-size: 13px; line-height: 1.5; color: #2B3540">The interviewer uses the [N] questions already saved for [ROLE TITLE].</span>
+</label>
+</div>
+<div style="{{purgeStyle}}">
+<label style="display: flex; flex-direction: column; gap: 8px; cursor: pointer">
+<span style="display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600"><input type="radio" name="qexisting" value="purge" checked="{{isPurge}}" onChange="{{pickPurge}}" style="width: 22px; height: 22px; margin: 0; accent-color: #1D4ED8">Purge them and start over</span>
+<span style="font-size: 13px; line-height: 1.5; color: #2B3540">Delete the saved questions, then choose where the new ones come from.</span>
+</label>
+</div>
+</div>
+<sc-if value="{{isPurge}}" hint-placeholder-val="{{ false }}">
+<p style="margin: 0; padding: 12px 14px; border-radius: 10px; background: #FCE4E1; border: 1px solid #E8A29B; font-size: 14px; line-height: 1.5; color: #7A1C12">Purging deletes the [N] saved questions for [ROLE TITLE]. This cannot be undone. They are removed when you press Prepare interview.</p>
+</sc-if>
+</sc-if>
+<sc-if value="{{showSource}}" hint-placeholder-val="{{ true }}">
+<p id="q-source-label" style="margin: 0; font-size: 14px; font-weight: 500">{{qSourcePrompt}}</p>
+<div role="radiogroup" aria-labelledby="q-source-label" style="display: flex; flex-direction: column; gap: 10px">
+<div style="{{genStyle}}">
+<label style="display: flex; flex-direction: column; gap: 8px; cursor: pointer">
+<span style="display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600"><input type="radio" name="qsrc" value="generate" checked="{{srcGen}}" onChange="{{pickGen}}" style="width: 22px; height: 22px; margin: 0; accent-color: #1D4ED8">Have the AI write them</span>
+<span style="font-size: 13px; line-height: 1.5; color: #2B3540">The AI writes questions for this role from its description while your interview is prepared.</span>
+</label>
+</div>
+<div style="{{upStyle}}">
+<label style="display: flex; flex-direction: column; gap: 8px; cursor: pointer">
+<span style="display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600"><input type="radio" name="qsrc" value="upload" checked="{{srcUp}}" onChange="{{pickUp}}" style="width: 22px; height: 22px; margin: 0; accent-color: #1D4ED8">Upload my own questions</span>
+<span style="font-size: 13px; line-height: 1.5; color: #2B3540">The interviewer uses the questions you load.</span>
+</label>
+<sc-if value="{{srcUp}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<button type="button" aria-disabled="{{qUploadBusy}}" style="{{qUploadStyle}}">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m17 8-5-5-5 5"></path><path d="M12 3v12"></path></svg>
+Upload file
+</button>
+<button type="button" aria-disabled="{{qUploadBusy}}" style="{{qUploadStyle}}">Paste text</button>
+<sc-if value="{{qProcessing}}" hint-placeholder-val="{{ false }}">
+<span role="status" style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: #7A3E00; padding: 8px 12px; border-radius: 8px; background: #FFF1DC">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h12"></path><path d="M6 22h12"></path><path d="M6 2v4l6 6-6 6v4"></path><path d="M18 2v4l-6 6 6 6v4"></path></svg>
+Processing [QUESTIONS FILE NAME]. This can take a moment.
+</span>
+</sc-if>
+<sc-if value="{{qReady}}" hint-placeholder-val="{{ false }}">
+<span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: #0F6B5C; padding: 8px 12px; border-radius: 8px; background: #DDF2EC">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
+[QUESTIONS FILE NAME] is loaded. [N] questions found.
+</span>
+</sc-if>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-if>
 </section>
 
 <section aria-label="Prepare the interview" style="background: #FFFFFF; border-radius: 16px; padding: 28px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 14px">
@@ -223,6 +286,7 @@ Prepare interview
 <div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-weight: 600">Interview type</dt><dd style="margin: 0; color: #2B3540">{{typeLabel}}</dd></div>
 <div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-weight: 600">Resume</dt><dd style="margin: 0; color: #2B3540">{{resumeSummary}}</dd></div>
 <div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-weight: 600">Role focus</dt><dd style="margin: 0; color: #2B3540">{{roleSummary}}</dd></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-weight: 600">Questions</dt><dd style="margin: 0; color: #2B3540">{{questionsSummary}}</dd></div>
 <div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-weight: 600">AI models</dt><dd style="margin: 0; color: #2B3540">All defaults</dd></div>
 </dl>
 </section>
@@ -238,7 +302,7 @@ Prepare interview
 </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"page":{"editor":"enum","options":["ready","loading","error"],"default":"ready","section":"Preview"},"interviewType":{"editor":"enum","options":["cold","hot"],"default":"cold","section":"Preview"},"resumes":{"editor":"enum","options":["some","none"],"default":"some","section":"Preview"},"resumeStatus":{"editor":"enum","options":["none","processing","ready"],"default":"none","section":"Preview"},"roleStatus":{"editor":"enum","options":["unanswered","loading","ready","required"],"default":"unanswered","section":"Preview"},"settingsOpen":{"editor":"boolean","default":false,"section":"Preview"},"preparing":{"editor":"enum","options":["none","preparing","retrying","diagnosing","ready"],"default":"none","section":"Preview"},"$preview":{"width":1280,"height":1100}}'>
+<script type="text/x-dc" data-dc-script data-props='{"page":{"editor":"enum","options":["ready","loading","error"],"default":"ready","section":"Preview"},"interviewType":{"editor":"enum","options":["cold","hot"],"default":"cold","section":"Preview"},"resumes":{"editor":"enum","options":["some","none"],"default":"some","section":"Preview"},"resumeStatus":{"editor":"enum","options":["none","processing","ready"],"default":"none","section":"Preview"},"roleStatus":{"editor":"enum","options":["unanswered","loading","ready","required"],"default":"unanswered","section":"Preview"},"settingsOpen":{"editor":"boolean","default":false,"section":"Preview"},"roleCase":{"editor":"enum","options":["existing-missing","new","existing-has"],"default":"existing-missing","section":"Preview"},"questionsSource":{"editor":"enum","options":["undecided","generate","upload"],"default":"undecided","section":"Preview"},"questionsUpload":{"editor":"enum","options":["idle","processing","ready"],"default":"idle","section":"Preview"},"existingQuestions":{"editor":"enum","options":["keep","purge"],"default":"keep","section":"Preview"},"preparing":{"editor":"enum","options":["none","preparing","retrying","diagnosing","ready"],"default":"none","section":"Preview"},"$preview":{"width":1280,"height":1100}}'>
 class Component extends DCLogic {
   renderVals() {
     const p = this.props;
@@ -252,10 +316,21 @@ class Component extends DCLogic {
     const selectedResume = hasRes || resumeStatus === 'ready';
     const needResume = hot && (resumeStatus === 'processing' || !selectedResume);
     const roleOk = roleStatus === 'ready';
-    const canPrepare = roleOk && !needResume;
+    const roleCase = p.roleCase ?? 'existing-missing';
+    const src = this.state.src ?? (p.questionsSource ?? 'undecided');
+    const upState = p.questionsUpload ?? 'idle';
+    const existing = this.state.existing ?? (p.existingQuestions ?? 'keep');
+    const hasExisting = roleCase === 'existing-has';
+    const purging = hasExisting && existing === 'purge';
+    const showQ = roleStatus === 'ready';
+    const showSource = !hasExisting || purging;
+    const keepOk = hasExisting && existing === 'keep';
+    const questionsOk = !showQ || keepOk || src === 'generate' || (src === 'upload' && upState === 'ready');
+    const qProcessing = showQ && showSource && src === 'upload' && upState === 'processing';
+    const canPrepare = roleOk && !needResume && questionsOk;
     const prepare = p.preparing ?? 'none';
     const upResume = hot && resumeStatus === 'processing';
-    const upRole = roleStatus === 'loading';
+    const upRole = roleStatus === 'loading' || qProcessing;
     const uploading = upResume || upRole;
     let bannerKind = 'hidden';
     if (prepare === 'diagnosing') bannerKind = 'problem';
@@ -270,6 +345,12 @@ class Component extends DCLogic {
     if (roleStatus === 'unanswered') reasons.push({ text: 'Choose a role focus.' });
     if (roleStatus === 'loading') reasons.push({ text: 'Wait for the job description to finish processing.' });
     if (roleStatus === 'required') reasons.push({ text: 'Add a job description. No roles are saved yet.' });
+    if (showQ && !questionsOk) {
+      if (src === 'undecided') reasons.push({ text: 'Choose where the interview questions come from.' });
+      else if (qProcessing) reasons.push({ text: 'Wait for your questions to finish processing.' });
+      else reasons.push({ text: 'Upload your questions, or let the AI write them.' });
+    }
+    const card = (sel) => 'padding: 14px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px; ' + (sel ? 'border: 2px solid #1D4ED8; background: #EEF3FD' : 'border: 1px solid #C5CCD3; background: #FFFFFF');
     const on = 'padding: 18px; border-radius: 12px; border: 2px solid #1D4ED8; background: #EEF3FD; display: flex; flex-direction: column; gap: 8px; cursor: pointer';
     const off = 'padding: 18px; border-radius: 12px; border: 1px solid #C5CCD3; background: #FFFFFF; display: flex; flex-direction: column; gap: 8px; cursor: pointer';
     const slotsBase = [
@@ -310,7 +391,30 @@ class Component extends DCLogic {
       roleOption: roleOptions[roleStatus] || 'Choose a role…',
       jdHint: jdHints[roleStatus] || '(optional)',
       roleLoading: roleStatus === 'loading',
-      roleReady: roleStatus === 'ready',
+      roleReady: roleStatus === 'ready' && roleCase === 'new',
+      showQuestions: showQ,
+      hasExisting: hasExisting,
+      showSource: showSource,
+      isKeep: existing === 'keep',
+      isPurge: purging,
+      srcGen: src === 'generate',
+      srcUp: src === 'upload',
+      qProcessing: qProcessing,
+      qReady: showQ && showSource && src === 'upload' && upState === 'ready',
+      qUploadBusy: upState === 'processing',
+      qUploadStyle: upState === 'processing'
+        ? 'min-height: 48px; padding: 0 18px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 1px solid #D5DAE0; background: #F3F5F7; color: #4A5562; font: inherit; font-size: 15px; font-weight: 500; cursor: not-allowed'
+        : 'min-height: 48px; padding: 0 18px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font: inherit; font-size: 15px; font-weight: 500; cursor: pointer',
+      keepStyle: card(existing === 'keep'),
+      purgeStyle: card(existing === 'purge'),
+      genStyle: card(src === 'generate'),
+      upStyle: card(src === 'upload'),
+      pickKeep: () => this.setState({ existing: 'keep' }),
+      pickPurge: () => this.setState({ existing: 'purge' }),
+      pickGen: () => this.setState({ src: 'generate' }),
+      pickUp: () => this.setState({ src: 'upload' }),
+      qIntro: hasExisting ? '[ROLE TITLE] already has [N] saved questions. Do you want to purge them?' : (roleCase === 'new' ? 'This is a new role, so it has no questions yet.' : '[ROLE TITLE] has no saved questions yet.'),
+      qSourcePrompt: purging ? 'Where should the new questions come from?' : 'Where should the questions come from?',
       prepareDisabled: !canPrepare,
       prepStyle: canPrepare
         ? 'min-height: 52px; padding: 0 24px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 0; background: #1D4ED8; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer'
@@ -318,6 +422,7 @@ class Component extends DCLogic {
       reasons: reasons,
       typeLabel: hot ? 'Hot interview' : 'Cold interview',
       resumeSummary: hot ? (resumeStatus === 'processing' ? 'Processing…' : (resumeStatus === 'ready' ? '[RESUME DISPLAY NAME]' : (hasRes ? '[LAST PICKED RESUME]' : 'Not chosen yet'))) : 'Not used',
+      questionsSummary: !showQ ? 'After you choose a role' : (keepOk ? '[N] saved questions' : (src === 'generate' ? 'The AI writes them' : (src === 'upload' ? (upState === 'ready' ? '[QUESTIONS FILE NAME]' : 'Waiting for your file') : 'Not chosen yet'))),
       roleSummary: roleStatus === 'ready' ? '[ROLE TITLE]' : 'Not chosen yet'
     };
   }
