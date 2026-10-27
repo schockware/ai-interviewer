@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using AiInterviewer.Business.Hardware;
 using AiInterviewer.Business.Interview;
+using AiInterviewer.Business.Media;
 using AiInterviewer.Business.Setup;
 
 namespace AiInterviewer.Api.Wire;
@@ -120,3 +121,23 @@ public sealed record MockUploaderOptionsDto(int MinStepDelayMs, int MaxStepDelay
 
 /// <summary>What the browser's recorder produces, so the file gets the right extension and a later reader knows what it holds.</summary>
 public sealed record MediaStreamHeaderDto(string MimeType);
+
+// ---- Transcript, pushed on the InterviewHub (PROPOSAL; contracts/ai/transcription.proto is the worker's side of it) ----
+
+public sealed record TranscriptSegmentDto(
+    string SessionId,
+    string QuestionId,
+    string Id,
+    double StartSeconds,
+    double EndSeconds,
+    string Text,
+    bool Final,
+    IReadOnlyList<string> Replaces,
+    TranscriptSource Source,
+    string Model,
+    string Device);
+
+public sealed record TranscriptFailureDto(string SessionId, string QuestionId, TranscriptSource Source, string Message);
+
+/// <summary>Everything said so far for a session, for a watcher that arrives late.</summary>
+public sealed record TranscriptSnapshotDto(IReadOnlyList<TranscriptSegmentDto> Segments, IReadOnlyList<TranscriptFailureDto> Failures);

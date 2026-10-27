@@ -140,6 +140,7 @@ function Pages({ host, media, parts, config, onConfig }: { host: SetupHost; medi
           onCaptions={setCaptions}
           onOpenAccessibility={openA11y}
           media={media}
+          host={host}
           sessionId={startRequest?.sessionId}
           devices={devices}
           onEnd={() => {

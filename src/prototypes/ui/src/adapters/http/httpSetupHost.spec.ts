@@ -187,3 +187,51 @@ describe('HttpSetupHost test-mode headers', () => {
     expect(calls[1].init?.headers).toEqual(current)
   })
 })
+
+describe('HttpSetupHost watching the transcript over the hub', () => {
+  type Handler = (payload: unknown) => void
+  const fakeHub = () => {
+    const handlers = new Map<string, Handler>()
+    const invoked: unknown[][] = []
+    let stopped = 0
+    const link = {
+      on: (method: string, handler: Handler) => void handlers.set(method, handler),
+      start: async () => undefined,
+      invoke: async <T,>(method: string, ...args: unknown[]): Promise<T> => {
+        invoked.push([method, ...args])
+        return { segments: [{ sessionId: args[0], questionId: 'q1', id: 'f1', startSeconds: 0, endSeconds: 1, text: 'so far', final: true, replaces: [], source: 'real-time', model: 'm', device: 'd' }], failures: [] } as T
+      },
+      stop: async () => {
+        stopped += 1
+      },
+    }
+    return { connect: () => link, invoked, push: (method: string, payload: unknown) => handlers.get(method)?.(payload), stopped: () => stopped }
+  }
+  const flush = () => new Promise((r) => setTimeout(r, 0))
+  const listener = () => {
+    const seen: string[] = []
+    return {
+      seen,
+      l: {
+        snapshot: (s: { segments: Array<{ text: string }> }) => seen.push(`snapshot:${s.segments.map((x) => x.text).join('|')}`),
+        segment: (s: { text: string }) => seen.push(`segment:${s.text}`),
+        failed: (f: { message: string }) => seen.push(`failed:${f.message}`),
+        error: (m: string) => seen.push(`error:${m}`),
+      },
+    }
+  }
+
+  it('asks the hub to watch, hands over the snapshot, then each piece and failure for that session only', async () => {
+    const hub = fakeHub()
+    const { seen, l } = listener()
+    const stop = new HttpSetupHost('/api', fetch, hub.connect).watchTranscript('s1', l)
+    await flush()
+    expect(hub.invoked).toEqual([['WatchTranscript', 's1']])
+    hub.push('transcriptSegment', { sessionId: 's1', questionId: 'q1', id: 'p2', text: 'and then', final: false, replaces: [], source: 'real-time' })
+    hub.push('transcriptSegment', { sessionId: 'other', questionId: 'q1', id: 'x', text: 'not mine', final: false, replaces: [], source: 'real-time' })
+    hub.push('transcriptFailed', { sessionId: 's1', questionId: 'q1', source: 'post-question', message: 'down' })
+    expect(seen).toEqual(['snapshot:so far', 'segment:and then', 'failed:down'])
+    stop()
+    expect(hub.stopped()).toBe(1)
+  })
+})

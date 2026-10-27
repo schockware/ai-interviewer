@@ -97,3 +97,17 @@ public interface IMediaSinkFactory
 
     IMediaSink Create();
 }
+
+/// <summary>Where transcript pieces and failures go: the page, a file. Several may be registered; each gets everything.</summary>
+public interface ITranscriptSink
+{
+    Task ReportAsync(TranscriptSegment segment, CancellationToken ct);
+
+    Task FailedAsync(TranscriptFailure failure, CancellationToken ct);
+}
+
+/// <summary>The large model over a question's finished audio file, which both processes can read. Throws when it cannot run.</summary>
+public interface IPostQuestionTranscriber
+{
+    IAsyncEnumerable<TranscriptSegment> TranscribeAsync(MediaTrackOpened track, string audioPath, CancellationToken ct);
+}

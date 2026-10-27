@@ -1,6 +1,6 @@
 // Authored by Claude Sonnet 5.5 and Claude Fable 5.1 (Anthropic), with Steven Chock as co-author.
 import { HubConnectionBuilder } from '@microsoft/signalr'
-import type { SetupHost } from '../../core/ports.ts'
+import type { SetupHost, TranscriptListener } from '../../core/ports.ts'
 import { PREP_STEP_TOTAL } from '../../core/setup/waitingRoom.ts'
 import type {
   ApplicationSetupPage,
@@ -13,7 +13,11 @@ import type {
   ResumeId,
   ResumeProcessed,
   ResumeUploadProgress,
+  SessionId,
   StartInterview,
+  TranscriptFailure,
+  TranscriptSegment,
+  TranscriptSnapshot,
   UploadResume,
 } from '../../core/contract/pageFlow.ts'
 
@@ -31,6 +35,8 @@ const signalRConnect: HubConnect = (url) => new HubConnectionBuilder().withUrl(u
 /** The InterviewHub, as the API prototype maps it (src/prototypes/api README, Real-time). */
 export const INTERVIEW_HUB_PATH = '/hubs/interview'
 const RESUME_UPLOAD_PROGRESS = 'resumeUploadProgress'
+const TRANSCRIPT_SEGMENT = 'transcriptSegment'
+const TRANSCRIPT_FAILED = 'transcriptFailed'
 
 /**
  * The real server: the API prototype's page-flow endpoints (src/prototypes/api README). It
@@ -147,6 +153,31 @@ export class HttpSetupHost implements Omit<SetupHost, 'verifyHardware'> {
       .then(
         (snapshot) => live && onProgress(snapshot),
         (e: unknown) => live && onError(e instanceof Error && e.message ? e.message : `Could not reach the API at ${this.baseUrl} for upload progress.`),
+      )
+    return () => {
+      live = false
+      void hub.stop().catch(() => undefined)
+    }
+  }
+
+  /** The hub's WatchTranscript answers with what was said so far; each later piece and failure arrives on its own method. */
+  watchTranscript(sessionId: SessionId, listener: TranscriptListener): () => void {
+    const hub = this.connect(`${this.baseUrl}${INTERVIEW_HUB_PATH}`)
+    let live = true
+    hub.on(TRANSCRIPT_SEGMENT, (payload) => {
+      const segment = payload as TranscriptSegment
+      if (live && segment.sessionId === sessionId) listener.segment(segment)
+    })
+    hub.on(TRANSCRIPT_FAILED, (payload) => {
+      const failure = payload as TranscriptFailure
+      if (live && failure.sessionId === sessionId) listener.failed(failure)
+    })
+    hub
+      .start()
+      .then(() => hub.invoke<TranscriptSnapshot>('WatchTranscript', sessionId))
+      .then(
+        (snapshot) => live && listener.snapshot(snapshot),
+        (e: unknown) => live && listener.error(e instanceof Error && e.message ? e.message : `Could not reach the API at ${this.baseUrl} for the transcript.`),
       )
     return () => {
       live = false

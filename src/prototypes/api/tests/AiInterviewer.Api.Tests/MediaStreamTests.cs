@@ -21,7 +21,7 @@ public class MediaStreamTests(ApiFactory factory) : IClassFixture<ApiFactory>
     private static async Task<WebSocket> Connect(WebApplicationFactory<Program> server, string session, string track)
     {
         var client = server.Server.CreateWebSocketClient();
-        return await client.ConnectAsync(new Uri($"ws://localhost/streams/{session}/{track}"), CancellationToken.None);
+        return await client.ConnectAsync(new Uri($"ws://localhost/streams/{session}/q1/{track}"), CancellationToken.None);
     }
 
     private static Task SendText(WebSocket socket, string text) =>
@@ -62,7 +62,7 @@ public class MediaStreamTests(ApiFactory factory) : IClassFixture<ApiFactory>
 
         Assert.Equal(WebSocketCloseStatus.NormalClosure, status);
         Assert.Equal("3 chunks stored", description);
-        var file = Assert.Single(Directory.GetFiles(Path.Combine(RootOf(server), "s-audio")));
+        var file = Assert.Single(Directory.GetFiles(Path.Combine(RootOf(server), "s-audio", "q1")));
         Assert.StartsWith("audio-", Path.GetFileName(file));
         Assert.EndsWith(".webm", file);
         Assert.Equal(new byte[] { 1, 2, 3, 4, 5, 6 }, await File.ReadAllBytesAsync(file));
@@ -80,7 +80,7 @@ public class MediaStreamTests(ApiFactory factory) : IClassFixture<ApiFactory>
 
         await CloseAndWait(socket);
 
-        var file = Assert.Single(Directory.GetFiles(Path.Combine(RootOf(server), "s-video")));
+        var file = Assert.Single(Directory.GetFiles(Path.Combine(RootOf(server), "s-video", "q1")));
         Assert.StartsWith("composite-", Path.GetFileName(file));
         Assert.Equal(4, new FileInfo(file).Length);
         Assert.Equal(new TranscriptionFeedTally(0, 0, false), server.Services.GetRequiredService<TranscriptionFeedLedger>().For(Session("s-video")));
@@ -98,7 +98,7 @@ public class MediaStreamTests(ApiFactory factory) : IClassFixture<ApiFactory>
 
         await CloseAndWait(socket);
 
-        var file = Assert.Single(Directory.GetFiles(Path.Combine(RootOf(server), "s-big")));
+        var file = Assert.Single(Directory.GetFiles(Path.Combine(RootOf(server), "s-big", "q1")));
         Assert.Equal(big, await File.ReadAllBytesAsync(file));
     }
 
@@ -124,7 +124,7 @@ public class MediaStreamTests(ApiFactory factory) : IClassFixture<ApiFactory>
         Assert.NotNull(error);
 
         using var http = server.CreateClient();
-        var response = await http.GetAsync("/streams/s1/hologram");
+        var response = await http.GetAsync("/streams/s1/q1/hologram");
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Contains("hologram", await response.Content.ReadAsStringAsync());
     }
@@ -134,7 +134,7 @@ public class MediaStreamTests(ApiFactory factory) : IClassFixture<ApiFactory>
     {
         using var server = factory.WithWebHostBuilder(_ => { });
         using var http = server.CreateClient();
-        var response = await http.GetAsync("/streams/s1/audio");
+        var response = await http.GetAsync("/streams/s1/q1/audio");
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Contains("WebSocket", await response.Content.ReadAsStringAsync());
     }

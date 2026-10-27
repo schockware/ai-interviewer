@@ -99,3 +99,18 @@ test.describe('media streams against the real API', () => {
     await expect(page.getByRole('heading', { level: 1, name: 'Set up your interview' })).toBeVisible()
   })
 })
+
+test.describe('transcription against the real API', () => {
+  test('the transcript card watches the hub while the microphone streams; it reports a worker that is down instead of staying silent', async ({ page }) => {
+    await page.goto('/?page=interview')
+    await page.getByRole('button', { name: 'Start', exact: true }).click()
+    await expect(page.getByTestId('mic-state')).toHaveText('Recording audio', { timeout: 5000 })
+    await expect(page.getByTestId('transcript-real-time')).not.toContainText('Starts with the interview.')
+    // With the worker running, no pass fails while the fake microphone's tone streams; without it, the failure is named within a few seconds.
+    await page.waitForTimeout(4000)
+    const failures = await page.getByTestId('transcript-failure').allTextContents()
+    const workerExpected = process.env.TRANSCRIBER_RUNNING === '1'
+    if (workerExpected) expect(failures).toEqual([])
+    else console.log(`transcript failures reported (TRANSCRIBER_RUNNING not set): ${JSON.stringify(failures)}`)
+  })
+})

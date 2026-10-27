@@ -28,6 +28,22 @@ public sealed record SessionId
     public override string ToString() => Value;
 }
 
+/// <summary>One question of an interview. Questions are not generated yet; the interview page uses a placeholder for its one question.</summary>
+public sealed record QuestionId
+{
+    public string Value { get; }
+    private QuestionId(string value) => Value = value;
+
+    public static Outcome<QuestionId> From(string raw) => NonBlank.Check(raw, nameof(QuestionId)) switch
+    {
+        Succeeded<string> ok => Outcome.Success(new QuestionId(ok.Value)),
+        Failed<string> bad => Outcome.Failure<QuestionId>(bad.Message),
+        _ => throw new InvalidOperationException(),
+    };
+
+    public override string ToString() => Value;
+}
+
 public sealed record ResumeId
 {
     public string Value { get; }

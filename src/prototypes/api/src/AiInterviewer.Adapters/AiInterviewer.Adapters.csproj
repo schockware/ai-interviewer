@@ -6,6 +6,15 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.12" />
+    <PackageReference Include="Google.Protobuf" Version="3.33.1" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.76.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.76.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The one source of truth for the transcription contract (decision 0003, open item 5). Both sides generate from it;
+         Both here so the test project can host a stand-in worker from the same types. -->
+    <Protobuf Include="..\..\..\..\..\contracts\ai\transcription.proto" GrpcServices="Both" Link="Protos\transcription.proto" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -55,12 +55,12 @@ describe('WebSocketUplink', () => {
   it('opens one socket per track, sends the header first, then the chunks in order, queuing until open', () => {
     const fake = fakeSocket()
     const uplink = new WebSocketUplink('/api', fake.factory, { protocol: 'http:', host: 'localhost:5173' })
-    const link = uplink.open('s 1', 'audio', 'audio/webm;codecs=opus', () => undefined)
+    const link = uplink.open('s 1', 'q1', 'audio', 'audio/webm;codecs=opus', () => undefined)
     link.send(chunk(1))
     expect(fake.sent).toEqual([])
     fake.open()
     link.send(chunk(2))
-    expect(fake.urls).toEqual(['ws://localhost:5173/api/streams/s%201/audio'])
+    expect(fake.urls).toEqual(['ws://localhost:5173/api/streams/s%201/q1/audio'])
     expect(fake.sent[0]).toBe('{"mimeType":"audio/webm;codecs=opus"}')
     expect(fake.sent.slice(1)).toHaveLength(2)
   })
@@ -68,11 +68,11 @@ describe('WebSocketUplink', () => {
   it('reports a failure once, drops later chunks, and a clean close resolves', async () => {
     const fake = fakeSocket()
     const errors: string[] = []
-    const link = new WebSocketUplink('/api', fake.factory, { protocol: 'http:', host: 'h' }).open('s1', 'composite', 'video/webm', (m) => errors.push(m))
+    const link = new WebSocketUplink('/api', fake.factory, { protocol: 'http:', host: 'h' }).open('s1', 'q1', 'composite', 'video/webm', (m) => errors.push(m))
     fake.fail()
     fake.fail()
     link.send(chunk(1))
-    expect(errors).toEqual(['Could not reach the media stream at ws://h/api/streams/s1/composite.'])
+    expect(errors).toEqual(['Could not reach the media stream at ws://h/api/streams/s1/q1/composite.'])
     expect(fake.sent).toEqual([])
 
     fake.open()
@@ -85,7 +85,7 @@ describe('WebSocketUplink', () => {
   it('tells the page when the server closes the stream early', () => {
     const fake = fakeSocket()
     const errors: string[] = []
-    new WebSocketUplink('/api', fake.factory, { protocol: 'http:', host: 'h' }).open('s1', 'audio', 'audio/webm', (m) => errors.push(m))
+    new WebSocketUplink('/api', fake.factory, { protocol: 'http:', host: 'h' }).open('s1', 'q1', 'audio', 'audio/webm', (m) => errors.push(m))
     fake.open()
     fake.closeFromServer(1008)
     expect(errors).toEqual(['The media stream closed early (code 1008).'])

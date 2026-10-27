@@ -39,6 +39,7 @@ export function buildSetupHost(
     startInterview: (r) => http.startInterview(r),
     verifyHardware: (kind) => mock.verifyHardware(kind),
     watchResumeUpload: (id, onProgress, onError) => http.watchResumeUpload(id, onProgress, onError),
+    watchTranscript: (id, listener) => http.watchTranscript(id, listener),
   }
   return { host, parts: { setup: 'real', hardware: 'mock', uploadProgress: 'real', media: 'real' } }
 }

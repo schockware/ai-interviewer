@@ -12,11 +12,15 @@ import type {
   JobDescriptionUpload,
   PrepareInterview,
   PrepReport,
+  QuestionId,
   ResumeId,
   ResumeProcessed,
   ResumeUploadProgress,
   SessionId,
   StartInterview,
+  TranscriptFailure,
+  TranscriptSegment,
+  TranscriptSnapshot,
   UploadResume,
 } from './contract/pageFlow.ts'
 
@@ -76,6 +80,19 @@ export interface SetupHost {
    * instead when it cannot. Returns a function that stops watching.
    */
   watchResumeUpload(resumeId: ResumeId, onProgress: (progress: ResumeUploadProgress) => void, onError: (message: string) => void): () => void
+  /**
+   * Follows a session's transcript, both passes (PROPOSAL: the InterviewHub's WatchTranscript).
+   * The snapshot of what was said so far comes first; then each piece and each failure as it
+   * happens; `error` when the host cannot be reached at all. Returns a function that stops watching.
+   */
+  watchTranscript(sessionId: SessionId, listener: TranscriptListener): () => void
+}
+
+export interface TranscriptListener {
+  snapshot(snapshot: TranscriptSnapshot): void
+  segment(segment: TranscriptSegment): void
+  failed(failure: TranscriptFailure): void
+  error(message: string): void
 }
 
 // ---- Media capture and the media streams (decision 0003; the shapes are the prototype's proposal, core/media/capture.ts) ----
@@ -88,9 +105,9 @@ export interface Uplink {
   close(): Promise<void>
 }
 
-/** The server end of the media streams: one plain WebSocket per track in real mode, a counter in mock mode. */
+/** The server end of the media streams: one plain WebSocket per track and question in real mode, a counter in mock mode. */
 export interface MediaUplink {
-  open(sessionId: SessionId, track: MediaTrackKind, mimeType: string, onError: (message: string) => void): Uplink
+  open(sessionId: SessionId, questionId: QuestionId, track: MediaTrackKind, mimeType: string, onError: (message: string) => void): Uplink
 }
 
 export interface MediaDeviceChoice {

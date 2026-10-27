@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { builtMockStream, mockScripts, ScriptedEventSource } from '../adapters/mock/index.ts'
 import type { MediaPorts } from '../composition/media.ts'
+import type { SetupHost } from '../core/ports.ts'
 import { SystemClock } from '../adapters/systemClock.ts'
 import { WebAudioCuePlayer } from '../adapters/webAudioCuePlayer.ts'
 import { CueEngine } from '../core/cues/index.ts'
@@ -14,8 +15,10 @@ import { PageHeader } from './PageHeader.tsx'
 import { MicrophoneRow } from './MicrophoneRow.tsx'
 import { SimulationBadge } from './SimulationBadge.tsx'
 import { StatusBanner } from './StatusBanner.tsx'
+import { TranscriptCard } from './TranscriptCard.tsx'
 import { useCapture } from './useCapture.ts'
 import { useCuePayload, useCueSounds } from './useCueEngine.ts'
+import { useTranscript } from './useTranscript.ts'
 import type { ChosenDevices } from './HardwarePage.tsx'
 
 const scriptNames = Object.keys(mockScripts)
@@ -37,6 +40,7 @@ export default function InterviewPage({
   onOpenAccessibility,
   onEnd,
   media = null,
+  host = null,
   sessionId,
   devices = { audioDeviceId: null, videoDeviceId: null },
 }: {
@@ -47,6 +51,8 @@ export default function InterviewPage({
   onEnd?: () => void
   /** The devices, recorder and uplink. Absent on a page rendered alone, when the microphone row says capture is not wired. */
   media?: MediaPorts | null
+  /** The host, for the transcript over the hub. Absent on a page rendered alone: then no transcript card. */
+  host?: SetupHost | null
   /** The session the streams belong to. A page opened directly makes one up. */
   sessionId?: string
   devices?: ChosenDevices
@@ -60,6 +66,8 @@ export default function InterviewPage({
   const [started, setStarted] = useState(false)
   const player = useMemo(() => new WebAudioCuePlayer(), [])
   const [engine, setEngine] = useState(() => makeEngine(scriptName, mode))
+  // The transcript is watched from Start until the page is left; what was said stays on screen.
+  const transcript = useTranscript(host, ownSessionId, started)
 
   useEffect(() => () => engine.stop(), [engine])
   useEffect(() => player.setMuted(muted), [muted, player])
@@ -100,6 +108,7 @@ export default function InterviewPage({
           <CuePanel payload={payload} />
           <CaptionsSection enabled={captions} onEnabledChange={onCaptions} />
           <MicrophoneRow capture={capture} />
+          {host && <TranscriptCard transcript={transcript} />}
         </main>
         <aside aria-label="Controls" className="layout-side">
           <ControlsCard />

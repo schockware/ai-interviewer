@@ -1,5 +1,5 @@
 // Authored by Claude Fable 5.1 (Anthropic), with Steven Chock as co-author.
-import type { SessionId } from '../../core/contract/pageFlow.ts'
+import type { QuestionId, SessionId } from '../../core/contract/pageFlow.ts'
 import type { MediaTrackKind, MediaUplink, Uplink } from '../../core/ports.ts'
 
 /** The slice of a WebSocket this adapter uses, so a test can stand in for the network. */
@@ -26,7 +26,7 @@ export function toWebSocketUrl(apiBaseUrl: string, location: { protocol: string;
 
 /**
  * The real media uplink (src/prototypes/api README, Media streams): a plain WebSocket per track at
- * /streams/{sessionId}/{track}. The first message is the JSON header; every chunk after it is
+ * /streams/{sessionId}/{questionId}/{track}. The first message is the JSON header; every chunk after it is
  * sent as it comes. Chunks that arrive before the socket opens wait in order; after a failure
  * they are dropped and the page is told once.
  */
@@ -40,8 +40,8 @@ export class WebSocketUplink implements MediaUplink {
     this.makeSocket = makeSocket
   }
 
-  open(sessionId: SessionId, track: MediaTrackKind, mimeType: string, onError: (message: string) => void): Uplink {
-    const url = `${this.baseUrl}${MEDIA_STREAM_PATH}/${encodeURIComponent(sessionId)}/${track}`
+  open(sessionId: SessionId, questionId: QuestionId, track: MediaTrackKind, mimeType: string, onError: (message: string) => void): Uplink {
+    const url = `${this.baseUrl}${MEDIA_STREAM_PATH}/${encodeURIComponent(sessionId)}/${encodeURIComponent(questionId)}/${track}`
     const socket = this.makeSocket(url)
     const queue: Blob[] = []
     let failed = false

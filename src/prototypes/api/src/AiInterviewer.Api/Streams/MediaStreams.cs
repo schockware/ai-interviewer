@@ -2,6 +2,7 @@
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
+using AiInterviewer.Adapters.Media;
 using AiInterviewer.Api.Wire;
 using AiInterviewer.Business;
 using AiInterviewer.Business.Media;
@@ -12,18 +13,20 @@ namespace AiInterviewer.Api.Streams;
 
 /// <summary>
 /// The media streams: a plain WebSocket per track (Steven, 2026-10-26: not SignalR), at
-/// <c>/streams/{sessionId}/{track}</c>. PROPOSAL for decision 0003's open item 1:
+/// <c>/streams/{sessionId}/{questionId}/{track}</c>, one stream and one file per question
+/// (Steven, 2026-10-27). PROPOSAL for decision 0003's open item 1:
 /// the first message is a JSON text header <c>{ "mimeType": "audio/webm;codecs=opus" }</c>; every
 /// later message is one binary chunk from the browser's recorder, in order; closing the socket
 /// completes the stream. Chunks go to the ingest, whose channels fan them out to the file store
 /// and the transcription feed, and whose backpressure holds this read loop when a sink lags.
+/// When the audio track closes, the post-question pass starts on its file in the background.
 /// Session management is not designed yet, so any non-blank session id is accepted.
 /// </summary>
 public static class MediaStreams
 {
     public const string RootKey = "Media:Root";
     public const string DefaultRoot = "data/media";
-    public const string Route = "/streams/{sessionId}/{track}";
+    public const string Route = "/streams/{sessionId}/{questionId}/{track}";
 
     /// <summary>A chunk larger than this is refused; the recorder sends a few kilobytes every 250 ms.</summary>
     private const int MaxChunkBytes = 8 * 1024 * 1024;
@@ -49,12 +52,27 @@ public static class MediaStreams
         }
     }
 
-    private static async Task HandleAsync(HttpContext http, string sessionId, string track, MediaIngestService ingest, IOptions<JsonOptions> json, ILogger<MediaIngestService> log)
+    private static async Task HandleAsync(
+        HttpContext http,
+        string sessionId,
+        string questionId,
+        string track,
+        MediaIngestService ingest,
+        PostQuestionService postQuestion,
+        IConfiguration configuration,
+        IHostEnvironment environment,
+        IOptions<JsonOptions> json,
+        ILogger<MediaIngestService> log)
     {
         // The route is checked first, so a plain request to a bad address learns what is wrong with it.
         if (SessionId.From(sessionId) is not Succeeded<SessionId> session)
         {
             await Refuse(http, "sessionId must not be empty.");
+            return;
+        }
+        if (QuestionId.From(questionId) is not Succeeded<QuestionId> question)
+        {
+            await Refuse(http, "questionId must not be empty.");
             return;
         }
         if (!TryParseTrack(track, out var mediaTrack))
@@ -78,7 +96,7 @@ public static class MediaStreams
             return;
         }
 
-        var stream = await ingest.BeginAsync(session.Value, mediaTrack, mimeType, http.RequestAborted);
+        var stream = await ingest.BeginAsync(session.Value, question.Value, mediaTrack, mimeType, http.RequestAborted);
         try
         {
             while (true)
@@ -96,6 +114,14 @@ public static class MediaStreams
             await stream.CompleteAsync(CancellationToken.None);
             if (socket.State == WebSocketState.CloseReceived)
                 await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, $"{stream.Chunks} chunks stored", CancellationToken.None);
+            if (mediaTrack == MediaTrack.Audio && stream.Chunks > 0)
+            {
+                // The question's audio is complete: the large model reads it now, in the background. Its result and
+                // its failure both reach the page through the transcript sinks; nothing here waits for it.
+                var path = FileMediaStore.PathFor(Root(configuration, environment), stream.Track);
+                _ = Task.Run(() => postQuestion.RunAsync(stream.Track, path, CancellationToken.None))
+                    .ContinueWith(t => log.LogError(t.Exception, "Post-question pass failed for {Session}/{Question}.", sessionId, questionId), TaskContinuationOptions.OnlyOnFaulted);
+            }
         }
         catch (Exception e) when (e is not OperationCanceledException)
         {

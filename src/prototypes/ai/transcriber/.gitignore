@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+# Generated from contracts/ai/transcription.proto by `python -m transcriber.gen`; never committed.
+transcriber/generated/

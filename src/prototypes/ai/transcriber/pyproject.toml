@@ -1,0 +1,19 @@
+# Authored by Claude Fable 5.1 (Anthropic), with Steven Chock as co-author. Prototype zone: unverified.
+[project]
+name = "ai-interviewer-transcriber"
+version = "0.0.0"
+description = "The transcription worker: real-time partials and finals over gRPC, and the post-question pass over a finished audio file."
+requires-python = ">=3.12"
+dependencies = [
+  "faster-whisper>=1.2",
+  "grpcio>=1.70",
+  "protobuf>=5",
+  "numpy>=2",
+]
+
+[project.optional-dependencies]
+dev = ["grpcio-tools>=1.70", "pytest>=8", "pytest-asyncio>=0.25"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

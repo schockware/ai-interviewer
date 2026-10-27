@@ -1072,3 +1072,17 @@ details.card summary {
   background: #000;
   object-fit: cover;
 }
+
+/* Transcript card: the two passes */
+.transcript-text {
+  line-height: 1.6;
+}
+.transcript-partial {
+  color: var(--muted);
+  font-style: italic;
+}
+@media (max-width: 720px) {
+  .transcript {
+    grid-template-columns: 1fr;
+  }
+}

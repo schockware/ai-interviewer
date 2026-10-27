@@ -2,6 +2,7 @@
 using AiInterviewer.Business;
 using AiInterviewer.Business.Hardware;
 using AiInterviewer.Business.Interview;
+using AiInterviewer.Business.Media;
 using AiInterviewer.Business.Setup;
 
 namespace AiInterviewer.Api.Wire;
@@ -116,6 +117,11 @@ public static class Mapping
             settings.Latencies.Network.Value,
             settings.Latencies.PacketLossVariancePerSecond,
             settings.Latencies.AudioRamp)));
+
+    public static TranscriptSegmentDto ToDto(this TranscriptSegment s) =>
+        new(s.Session.Value, s.Question.Value, s.Id, s.StartSeconds, s.EndSeconds, s.Text, s.Final, s.Replaces, s.Source, s.Model, s.Device);
+
+    public static TranscriptFailureDto ToDto(this TranscriptFailure f) => new(f.Session.Value, f.Question.Value, f.Source, f.Message);
 
     public static ResumeUploadProgressDto ToDto(this ResumeUploadProgress progress) => new(
         progress.ResumeId.Value,

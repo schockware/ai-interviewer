@@ -41,13 +41,12 @@ builder.Services.AddSingleton<ResumeUploadBroadcaster>();
 builder.Services.AddSingleton<IResumeUploadReporter>(services => services.GetRequiredService<ResumeUploadBroadcaster>());
 builder.Services.AddSingleton<ApplicationSetupService>();
 builder.Services.AddSingleton<InterviewService>();
-// Media streams: every track goes to a file; the audio track also to the transcription feed,
-// which is a counting stand-in until the Python service exists (TASKS.MD). The ingest fans out
-// over bounded channels (Business/Media/MediaIngestService.cs).
+// Media streams: every track goes to a file; the audio track also to the transcription feed.
+// The ingest fans out over bounded channels (Business/Media/MediaIngestService.cs). Who transcribes,
+// live and after the question, is Transcription.cs: the Python worker over gRPC, or a stand-in.
 builder.Services.AddSingleton<IMediaSinkFactory>(_ => new FileMediaStore(MediaStreams.Root(builder.Configuration, builder.Environment)));
-builder.Services.AddSingleton<TranscriptionFeedLedger>();
-builder.Services.AddSingleton<IMediaSinkFactory, CountingTranscriptionFeed>();
 builder.Services.AddSingleton<MediaIngestService>();
+builder.Services.AddTranscription(builder.Configuration, builder.Environment);
 
 var app = builder.Build();
 

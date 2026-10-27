@@ -2,12 +2,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { MediaPorts } from '../composition/media.ts'
 import { AUDIO_MIME_CANDIDATES, COMPOSITE_MIME_CANDIDATES, errorNameOf, permissionMessage, pickMimeType, type CaptureState } from '../core/media/capture.ts'
+import { PLACEHOLDER_QUESTION_ID } from '../core/media/transcript.ts'
 import type { LevelMeter, OpenedStream, Recording, Uplink } from '../core/ports.ts'
 
 export interface CaptureOptions {
   /** Absent when the page runs without media ports (a test, or a page on its own): capture then reports itself unwired. */
   media: MediaPorts | null
   sessionId: string
+  /** One stream, and one file, per question. The placeholder until questions exist. */
+  questionId?: string
   audioDeviceId: string | null
   /** null: no video. '' : the default camera. */
   videoDeviceId: string | null
@@ -40,7 +43,7 @@ interface Live {
  * server keeps a clean audio file for transcription beside the full recording. The recorder's
  * chunks go out as they come. Muting disables the microphone track; the stream keeps running.
  */
-export function useCapture({ media, sessionId, audioDeviceId, videoDeviceId }: CaptureOptions): Capture {
+export function useCapture({ media, sessionId, questionId = PLACEHOLDER_QUESTION_ID, audioDeviceId, videoDeviceId }: CaptureOptions): Capture {
   const [state, setState] = useState<CaptureState>({ type: 'idle' })
   const [level, setLevel] = useState(0)
   const [uplinkError, setUplinkError] = useState<string | null>(null)
@@ -107,14 +110,14 @@ export function useCapture({ media, sessionId, audioDeviceId, videoDeviceId }: C
 
     const uplinks: Uplink[] = []
     const recordings: Recording[] = []
-    const audioUplink = media.uplink.open(sessionId, 'audio', audioMime, setUplinkError)
+    const audioUplink = media.uplink.open(sessionId, questionId, 'audio', audioMime, setUplinkError)
     uplinks.push(audioUplink)
     recordings.push(media.recorder.record([audio], audioMime, (chunk) => {
       audioUplink.send(chunk)
       bump()
     }))
     if (video && compositeMime) {
-      const compositeUplink = media.uplink.open(sessionId, 'composite', compositeMime, setUplinkError)
+      const compositeUplink = media.uplink.open(sessionId, questionId, 'composite', compositeMime, setUplinkError)
       uplinks.push(compositeUplink)
       recordings.push(media.recorder.record([video, audio], compositeMime, (chunk) => compositeUplink.send(chunk)))
       if (preview.current) media.devices.preview(video, preview.current)
@@ -124,7 +127,7 @@ export function useCapture({ media, sessionId, audioDeviceId, videoDeviceId }: C
     const timer = setInterval(() => setLevel(meter.read()), 100)
     live.current = { audio, video, recordings, uplinks, meter, timer }
     setState({ type: 'live', video: video !== null, muted: false, chunksSent: 0 })
-  }, [media, sessionId, audioDeviceId, videoDeviceId, bump])
+  }, [media, sessionId, questionId, audioDeviceId, videoDeviceId, bump])
 
   const setMuted = useCallback((muted: boolean) => {
     live.current?.audio.setEnabled(!muted)

@@ -1,5 +1,5 @@
 // Authored by Claude Sonnet 5.5 and Claude Fable 5.1 (Anthropic), with Steven Chock as co-author.
-import type { Clock, SetupHost } from '../../core/ports.ts'
+import type { Clock, SetupHost, TranscriptListener } from '../../core/ports.ts'
 import type {
   ApplicationSetupPage,
   CueSettings,
@@ -12,6 +12,8 @@ import type {
   ResumeUploadProgress,
   ResumeUploadStep,
   Saved,
+  SessionId,
+  TranscriptSegment,
 } from '../../core/contract/pageFlow.ts'
 import { defaultAi } from '../../core/setup/slots.ts'
 import { PREP_STEP_TOTAL } from '../../core/setup/waitingRoom.ts'
@@ -25,6 +27,8 @@ export interface MockHostConfig {
   video: Exclude<HardwareQuality, 'pending' | 'skipped'> | 'errored'
   /** What processing a loaded resume does after the upload answers (the steps are random either way). */
   upload: 'succeeds' | 'fails'
+  /** Whether the scripted transcriber answers, or reports both passes as unavailable. */
+  transcription: 'works' | 'unavailable'
 }
 
 export const defaultMockConfig: MockHostConfig = {
@@ -34,6 +38,7 @@ export const defaultMockConfig: MockHostConfig = {
   audio: 'clear',
   video: 'clear',
   upload: 'succeeds',
+  transcription: 'works',
 }
 
 /** Where a retrying or failing preparation stalls, counted in steps done. */
@@ -41,6 +46,16 @@ export const MOCK_STALL_STEP = 4
 
 /** Delays in the clock's milliseconds. Long enough to see each state; short enough not to wait. */
 export const MOCK_DELAYS = { load: 700, upload: 1500, preparing: 5000, retrying: 3000, verify: 2000, uploadStep: 900 } as const
+
+/** A scripted answer, said the way the two passes say it: partials, then finals that replace them, then the large model's reading. */
+const TRANSCRIPT_SCRIPT: ReadonlyArray<[number, Omit<TranscriptSegment, 'sessionId' | 'questionId'>]> = [
+  [1500, { id: 'rt-1', startSeconds: 0, endSeconds: 1.4, text: 'I led the', final: false, replaces: [], source: 'real-time', model: 'realtime:mock', device: 'none' }],
+  [3000, { id: 'rt-2', startSeconds: 0, endSeconds: 2.8, text: 'I led the migration of the billing', final: false, replaces: ['rt-1'], source: 'real-time', model: 'realtime:mock', device: 'none' }],
+  [4500, { id: 'rt-3', startSeconds: 0, endSeconds: 4.1, text: 'I led the migration of the billing system to the cloud,', final: true, replaces: ['rt-2'], source: 'real-time', model: 'realtime:mock', device: 'none' }],
+  [6500, { id: 'rt-4', startSeconds: 4.1, endSeconds: 6.2, text: 'which cut our', final: false, replaces: [], source: 'real-time', model: 'realtime:mock', device: 'none' }],
+  [8000, { id: 'rt-5', startSeconds: 4.1, endSeconds: 7.6, text: 'which cut our monthly costs by a third.', final: true, replaces: ['rt-4'], source: 'real-time', model: 'realtime:mock', device: 'none' }],
+  [10000, { id: 'pq-1', startSeconds: 0, endSeconds: 7.6, text: 'I led the migration of the billing system to the cloud, which cut our monthly costs by a third.', final: true, replaces: [], source: 'post-question', model: 'post:mock', device: 'none' }],
+]
 
 /** The same pool the API prototype's mock uploader draws from, so the two look alike. */
 const UPLOAD_STEPS = [
@@ -159,6 +174,23 @@ export class MockSetupHost implements SetupHost {
       if (result === 'errored') throw new Error('Could not reach the device.')
       return result
     })
+  }
+
+  /** The scripted answer above, on the clock. With `transcription: 'unavailable'` both passes fail at once, as when the worker is down. */
+  watchTranscript(sessionId: SessionId, listener: TranscriptListener): () => void {
+    const cancels: Array<() => void> = []
+    cancels.push(this.clock.schedule(0, () => listener.snapshot({ segments: [], failures: [] })))
+    if (this.config().transcription === 'unavailable') {
+      cancels.push(
+        this.clock.schedule(500, () => {
+          listener.failed({ sessionId, questionId: 'q1', source: 'real-time', message: 'The transcriber is not running at the configured address (mock).' })
+          listener.failed({ sessionId, questionId: 'q1', source: 'post-question', message: 'The transcriber is not running at the configured address (mock).' })
+        }),
+      )
+    } else {
+      for (const [at, piece] of TRANSCRIPT_SCRIPT) cancels.push(this.clock.schedule(at, () => listener.segment({ ...piece, sessionId, questionId: 'q1' })))
+    }
+    return () => cancels.forEach((cancel) => cancel())
   }
 
   /**

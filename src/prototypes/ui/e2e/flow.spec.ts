@@ -217,3 +217,17 @@ test.describe('microphone and camera', () => {
     await axe(page)
   })
 })
+
+test.describe('transcript', () => {
+  test('after Start, the scripted transcript arrives as partials and finals, then the large model’s reading; the card has no axe violations', async ({ page }) => {
+    await page.goto('/?page=interview')
+    const live = page.getByTestId('transcript-real-time')
+    await expect(live).toContainText('Starts with the interview.')
+    await page.getByRole('button', { name: 'Start', exact: true }).click()
+    await expect(live).toContainText('I led the', { timeout: 5000 })
+    await expect(live).toContainText('system to the cloud,', { timeout: 8000 })
+    await expect(page.getByTestId('transcript-post-question')).toContainText('monthly costs by a third.', { timeout: 12_000 })
+    await expect(live).toContainText('realtime:mock on none')
+    await axe(page)
+  })
+})

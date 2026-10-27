@@ -1,0 +1,67 @@
+// Authored by Claude Fable 5.1 (Anthropic), with Steven Chock as co-author.
+// The transcription contract between the C# coordinator and the Python worker (decision 0003:
+// gRPC between application layers). One source of truth: C# generates a client from it
+// (Grpc.Tools, src/prototypes/api/src/AiInterviewer.Adapters) and Python a server
+// (grpc_tools, src/prototypes/ai/transcriber). Settles decision 0003's open item 5: proto files
+// live under contracts/ai/. PROPOSAL: shapes and names are the prototype's.
+syntax = "proto3";
+
+package aiinterviewer.transcription;
+
+option csharp_namespace = "AiInterviewer.Contracts.Transcription";
+
+// Real time: the browser's recorder chunks as they arrive, partial text while the user speaks,
+// final text as segments settle (specs/transcription: STT-STR-001, STT-STR-002).
+service RealTimeTranscriber {
+  rpc Transcribe(stream AudioChunk) returns (stream TranscriptSegment);
+  rpc Health(HealthRequest) returns (HealthReply);
+}
+
+// After the question: the larger model over the finished audio file (one file per question).
+service PostQuestionTranscriber {
+  rpc TranscribeFile(TranscribeFileRequest) returns (stream TranscriptSegment);
+  rpc Health(HealthRequest) returns (HealthReply);
+}
+
+// One piece of a track, as the browser's recorder produced it. The first chunk carries the
+// container header; the mime type says what the container is (audio/webm;codecs=opus).
+message AudioChunk {
+  string session_id = 1;
+  string question_id = 2;
+  string mime_type = 3;
+  int64 sequence = 4;
+  bytes data = 5;
+}
+
+// A piece of transcript. A partial covers audio still being spoken and may be replaced; a final
+// names, in `replaces`, the ids of the partials it supersedes (STT-STR-002).
+message TranscriptSegment {
+  string session_id = 1;
+  string question_id = 2;
+  string id = 3;
+  double start_seconds = 4;
+  double end_seconds = 5;
+  string text = 6;
+  bool final = 7;
+  repeated string replaces = 8;
+  // Which model and device produced it, for the accuracy comparison between the two passes.
+  string model = 9;
+  string device = 10;
+}
+
+message TranscribeFileRequest {
+  string session_id = 1;
+  string question_id = 2;
+  // A path both processes can read. Local-first: the worker runs beside the coordinator.
+  string path = 3;
+}
+
+message HealthRequest {}
+
+message HealthReply {
+  bool ready = 1;
+  string model = 2;
+  string device = 3;
+  string compute_type = 4;
+  string detail = 5;
+}

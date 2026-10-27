@@ -126,3 +126,34 @@ export interface ResumeUploadProgress {
   status: ResumeUploadStatus
   steps: ResumeUploadStep[]
 }
+
+/**
+ * PROPOSAL (API prototype, contracts/ai/transcription.proto on the worker's side): the transcript,
+ * pushed over the InterviewHub. Two passes of the same audio: the live one while the user speaks
+ * and the large model after the question. A final names, in `replaces`, the partials it supersedes.
+ */
+export type QuestionId = string
+export type TranscriptSource = 'real-time' | 'post-question'
+export interface TranscriptSegment {
+  sessionId: SessionId
+  questionId: QuestionId
+  id: string
+  startSeconds: number
+  endSeconds: number
+  text: string
+  final: boolean
+  replaces: string[]
+  source: TranscriptSource
+  model: string
+  device: string
+}
+export interface TranscriptFailure {
+  sessionId: SessionId
+  questionId: QuestionId
+  source: TranscriptSource
+  message: string
+}
+export interface TranscriptSnapshot {
+  segments: TranscriptSegment[]
+  failures: TranscriptFailure[]
+}

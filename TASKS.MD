@@ -56,7 +56,10 @@ Tags: **S** Steven decides. **C** Claude can do it unaided. **S/C** Claude propo
 
 The first slice is built: the browser streams audio, and optional video, over plain WebSockets; the API fans each chunk out over a channel to the file store and to a transcription consumer port. What remains:
 
-- [ ] **C** The real-time transcription consumer: forward the audio channel to the Python service (gRPC, decision 0003) and raise transcript segments. Replaces `CountingTranscriptionFeed`.
+- [x] 2026-10-27: The real-time transcription consumer forwards the audio channel to the Python worker over gRPC and raises transcript segments; the post-question pass reads the finished file with the large model (`src/prototypes/ai/transcriber`, `contracts/ai/transcription.proto`).
+- [ ] **C** C# starts and supervises the transcription worker (decision 0003, open item 4): today it is started by hand.
+- [ ] **S** Questions: one file and one stream per question is built, with a placeholder question id until the question generator exists.
+- [ ] **S** Containers (podman) for the Python workers: deferred by Steven on 2026-10-27. Explore when, or if, the app is to live in the cloud; locally the workers run as plain processes supervised by C#. The 2026-10-27 discussion settled the shape if it comes: one container per worker type, long-lived and warmed during preparation, no extra API layer in front of them.
 - [ ] **S/C** The first-pass summary AI, reading the real-time transcript as it arrives.
 - [ ] **S/C** The post-question summary AI, reading the isolated audio file after the question, and the accuracy comparison between the two passes (what is compared, how, and where the result goes).
 - [ ] **S** Later phase: the interviewing AI generates follow-up questions from the two summaries.

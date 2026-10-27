@@ -79,7 +79,7 @@ Under `dotnet run` the file lands at `src/AiInterviewer.Api/data/ai-interviewer.
 
 ### Media streams (plain WebSockets)
 
-Steven's call (2026-10-26): the browser's audio, and optional video, travel over a regular WebSocket, not SignalR. One stream per track at `/streams/{sessionId}/{track}`, `track` being `audio` or `composite`. PROPOSAL for decision 0003's open item 1:
+Steven's call (2026-10-26): the browser's audio, and optional video, travel over a regular WebSocket, not SignalR. One stream per track **per question** at `/streams/{sessionId}/{questionId}/{track}`, `track` being `audio` or `composite` (questions are not generated yet; the UI uses a placeholder id for its one question). PROPOSAL for decision 0003's open item 1:
 
 | Message | Meaning |
 |---|---|
@@ -87,9 +87,27 @@ Steven's call (2026-10-26): the browser's audio, and optional video, travel over
 | Then, binary | One recorder chunk each (the UI sends one every 250 ms), in order. A chunk may arrive in several frames; it is reassembled |
 | Close | Ends the stream. The server completes every sink and closes with `"{n} chunks stored"` |
 
-A missing or malformed header, or a text message after it, closes the socket with a policy violation. A plain HTTP request, a blank session id or an unknown track is a 400. Any non-blank session id is accepted, because session management is not designed yet.
+A missing or malformed header, or a text message after it, closes the socket with a policy violation. A plain HTTP request, a blank session or question id, or an unknown track is a 400. Any non-blank session id is accepted, because session management is not designed yet. When the audio track closes, the post-question pass starts on its file (below).
 
-Inside, `MediaIngestService` (Business) fans each chunk out over one **bounded channel per sink** (`System.Threading.Channels`, capacity 32 chunks), so a slow sink holds the socket's read loop instead of losing chunks. Two sinks exist: `FileMediaStore` writes every track to `{Media:Root}/{sessionId}/{track}-{startedUtc}.{ext}` (`data/media` by default, gitignored), appending and flushing chunk by chunk so the file is valid as far as it got; the audio file stands alone so the post-question transcription reads clean audio, and the composite keeps video with its audio. `CountingTranscriptionFeed` takes the audio track only and counts it: it stands in for the real-time transcription service (the Python worker) until that exists, and the real adapter will forward the same chunks over gRPC (`TASKS.MD`).
+Inside, `MediaIngestService` (Business) fans each chunk out over one **bounded channel per sink** (`System.Threading.Channels`, capacity 32 chunks), so a slow sink holds the socket's read loop instead of losing chunks. `FileMediaStore` writes every track to `{Media:Root}/{sessionId}/{questionId}/{track}-{startedUtc}.{ext}` (`data/media` by default, gitignored), appending and flushing chunk by chunk so the file is valid as far as it got; the audio file stands alone so the post-question transcription reads clean audio, and the composite keeps video with its audio. The audio track's other sink is the transcription feed (next section).
+
+### Transcription (the Python worker over gRPC)
+
+Two passes, both served by `src/prototypes/ai/transcriber` (one Python process, two gRPC services; the contract is `contracts/ai/transcription.proto`, settling decision 0003's open item 5):
+
+| Pass | Model (PROPOSAL, decision 0001) | How |
+|---|---|---|
+| Real time | whisper base, int8, CPU | `GrpcRealTimeTranscriptionFeed` is the audio track's sink: one bidirectional call per question, every chunk forwarded as it arrives, partial text back while the user speaks and final text as segments settle, each final naming the partials it replaces (STT-STR-002) |
+| Post question | faster-whisper large-v3-turbo, float16, GPU (falls back to the CPU) | When the audio track closes, `PostQuestionService` asks the worker to read the finished file, which both processes can see |
+
+Every piece and every failure goes to the transcript sinks: `TranscriptBroadcaster` pushes them to the page over the `InterviewHub` (`WatchTranscript(sessionId)` returns what was said so far, then `transcriptSegment` and `transcriptFailed` arrive), and `FileTranscriptStore` appends them as JSON lines to `{Media:Root}/{session}/{question}/transcript-{real-time|post-question}.jsonl`, which is what the accuracy comparison between the passes will read.
+
+| Setting | Values | Default |
+|---|---|---|
+| `Transcription:Provider` | `Grpc` talks to the worker. `Counting` keeps a stand-in that counts the audio and has no post-question pass (the tests, or a machine without the worker) | `Grpc` |
+| `Transcription:Address` | Where the worker listens | `http://localhost:50051` |
+
+A worker that is not running is reported to the page as a failure of that pass; the audio still reaches its file. Start the worker with `python -m transcriber.server` in `src/prototypes/ai/transcriber` (see its README).
 
 ### Real-time (SignalR)
 
@@ -125,7 +143,7 @@ Any malformed body (missing or null field, unknown property, unknown discriminat
 - `RandomStepsResumeUploader` stands in for resume processing (see Proposals). A reporter failure ends its run silently; a real pipeline would record its outcome.
 - `InstantInterviewPreparer` marks every session `Ok` immediately, so the `Error` path and `InterviewPrepared` delivery are only reachable in tests. How `InterviewPrepared` reaches the client (push or poll) is undecided.
 - `ServerCue`, `ClientCue`, `VerifyHardware`, `HardwareVerified` and the audio stream need the WebSocket channel, which is not built. The audio frame format is an open item in decision 0003.
-- Storage is a single SQLite file with no migrations (see Storage above). Media files land under `data/media` with no index. No Python worker, gRPC contract or LLM runtime is connected; the transcription feed counts chunks and transcribes nothing.
+- Storage is a single SQLite file with no migrations (see Storage above). Media files and transcripts land under `data/media` with no index. The transcription worker is the first Python process; C# does not start or supervise it yet (decision 0003, open item 4), and no LLM runtime is connected.
 - `ApplicationSetupPage` `loading` has no server path: the server answers `ready`, or `error` if a store is unreachable.
 
 ## Conventions here

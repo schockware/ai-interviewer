@@ -5,7 +5,7 @@ using AiInterviewer.Business.Media;
 namespace AiInterviewer.Adapters.Media;
 
 /// <summary>
-/// Writes every track to a file as it arrives: <c>{root}/{session}/{track}-{started}.{ext}</c>.
+/// Writes every track to a file as it arrives: <c>{root}/{session}/{question}/{track}-{started}.{ext}</c>.
 /// Chunks are appended and flushed one by one, so a crash keeps everything received so far. The
 /// recorder's container (WebM for Chromium and Firefox) is valid when its chunks are written in
 /// order, which is what the ingest guarantees. The audio file stands alone, apart from the
@@ -21,7 +21,7 @@ public sealed class FileMediaStore(string root) : IMediaSinkFactory
 
     /// <summary>Where a track lands, so a test and the README can say so.</summary>
     public static string PathFor(string root, MediaTrackOpened track) =>
-        Path.Combine(root, track.Session.Value, $"{track.Track.ToString().ToLowerInvariant()}-{track.StartedAt:yyyyMMdd'T'HHmmss'Z'}{Extension(track.MimeType)}");
+        Path.Combine(root, track.Session.Value, track.Question.Value, $"{track.Track.ToString().ToLowerInvariant()}-{track.StartedAt:yyyyMMdd'T'HHmmss'Z'}{Extension(track.MimeType)}");
 
     private static string Extension(string mimeType)
     {

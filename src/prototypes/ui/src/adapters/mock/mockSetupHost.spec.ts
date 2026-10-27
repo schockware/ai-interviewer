@@ -60,3 +60,40 @@ describe('MockSetupHost', () => {
     await expect(p).rejects.toThrow()
   })
 })
+
+describe('MockSetupHost transcript', () => {
+  it('says its scripted answer as partials, finals that replace them, then the large model’s reading', () => {
+    const { clock, host } = run({})
+    const seen: string[] = []
+    host.watchTranscript('s1', {
+      snapshot: (s) => seen.push(`snapshot:${s.segments.length}`),
+      segment: (s) => seen.push(`${s.source}:${s.final ? 'final' : 'partial'}:${s.replaces.join(',') || '-'}`),
+      failed: (f) => seen.push(`failed:${f.source}`),
+      error: (m) => seen.push(`error:${m}`),
+    })
+    clock.advance(60_000)
+    expect(seen).toEqual([
+      'snapshot:0',
+      'real-time:partial:-',
+      'real-time:partial:rt-1',
+      'real-time:final:rt-2',
+      'real-time:partial:-',
+      'real-time:final:rt-4',
+      'post-question:final:-',
+    ])
+  })
+
+  it('reports both passes unavailable when the harness says so, and says nothing once stopped', () => {
+    const { clock, host } = run({ transcription: 'unavailable' })
+    const failed: string[] = []
+    host.watchTranscript('s1', { snapshot: () => undefined, segment: () => undefined, failed: (f) => failed.push(f.source), error: () => undefined })
+    clock.advance(60_000)
+    expect(failed).toEqual(['real-time', 'post-question'])
+
+    const stopped: string[] = []
+    const stop = run({}).host.watchTranscript('s1', { snapshot: () => undefined, segment: (s) => stopped.push(s.id), failed: () => undefined, error: () => undefined })
+    stop()
+    clock.advance(60_000)
+    expect(stopped).toEqual([])
+  })
+})

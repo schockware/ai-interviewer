@@ -86,7 +86,7 @@ describe('capture through the microphone row', () => {
     expect(recordings).toHaveLength(1)
     expect(recordings[0]).toMatchObject({ mime: 'audio/webm;codecs=opus', tracks: ['mic'] })
     expect(uplink.tallies).toHaveLength(1)
-    expect(uplink.tallies[0]).toMatchObject({ sessionId: 's1', track: 'audio', mimeType: 'audio/webm;codecs=opus' })
+    expect(uplink.tallies[0]).toMatchObject({ sessionId: 's1', questionId: 'q1', track: 'audio', mimeType: 'audio/webm;codecs=opus' })
 
     act(() => recordings[0].emit(3))
     act(() => recordings[0].emit(2))
@@ -133,7 +133,7 @@ describe('capture through the microphone row', () => {
 
   it('puts a broken uplink first', async () => {
     const { media, recordings } = fakePorts()
-    const failing: MediaPorts = { ...media, uplink: { open: (_s, _t, _m, onError) => ({ send: () => onError('Could not reach the media stream.'), close: async () => undefined }) } }
+    const failing: MediaPorts = { ...media, uplink: { open: (_s, _q, _t, _m, onError) => ({ send: () => onError('Could not reach the media stream.'), close: async () => undefined }) } }
     render(<Harness media={failing} videoDeviceId={null} />)
     await userEvent.click(screen.getByRole('button', { name: 'start' }))
     await waitFor(() => expect(screen.getByTestId('mic-state')).toHaveTextContent('Recording audio'))

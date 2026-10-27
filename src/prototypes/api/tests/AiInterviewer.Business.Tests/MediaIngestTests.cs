@@ -39,6 +39,7 @@ internal sealed class OneSinkFactory(RecordingSink sink, Func<MediaTrack, bool> 
 public class MediaIngestTests
 {
     private static readonly SessionId S1 = ((Succeeded<SessionId>)SessionId.From("s1")).Value;
+    private static readonly QuestionId Q1 = ((Succeeded<QuestionId>)QuestionId.From("q1")).Value;
 
     [Fact]
     public async Task Every_sink_that_wants_the_track_gets_every_chunk_in_order_and_is_completed()
@@ -47,7 +48,7 @@ public class MediaIngestTests
         var feed = new RecordingSink();
         var service = new MediaIngestService([new OneSinkFactory(file, _ => true), new OneSinkFactory(feed, t => t == MediaTrack.Audio)], TimeProvider.System);
 
-        var ingest = await service.BeginAsync(S1, MediaTrack.Audio, "audio/webm", default);
+        var ingest = await service.BeginAsync(S1, Q1, MediaTrack.Audio, "audio/webm", default);
         await ingest.WriteAsync(new byte[] { 1 }, default);
         await ingest.WriteAsync(new byte[] { 2 }, default);
         await ingest.WriteAsync(new byte[] { 3 }, default);
@@ -70,7 +71,7 @@ public class MediaIngestTests
         var feed = new RecordingSink();
         var service = new MediaIngestService([new OneSinkFactory(feed, t => t == MediaTrack.Audio)], TimeProvider.System);
 
-        var ingest = await service.BeginAsync(S1, MediaTrack.Composite, "video/webm", default);
+        var ingest = await service.BeginAsync(S1, Q1, MediaTrack.Composite, "video/webm", default);
         await ingest.WriteAsync(new byte[] { 1 }, default);
         await ingest.CompleteAsync(default);
 
@@ -82,7 +83,7 @@ public class MediaIngestTests
     public async Task The_chunk_is_copied_so_the_producer_may_reuse_its_buffer()
     {
         var sink = new RecordingSink();
-        var ingest = await new MediaIngestService([new OneSinkFactory(sink, _ => true)], TimeProvider.System).BeginAsync(S1, MediaTrack.Audio, "audio/webm", default);
+        var ingest = await new MediaIngestService([new OneSinkFactory(sink, _ => true)], TimeProvider.System).BeginAsync(S1, Q1, MediaTrack.Audio, "audio/webm", default);
         var buffer = new byte[] { 7 };
         await ingest.WriteAsync(buffer, default);
         buffer[0] = 8;
@@ -95,7 +96,7 @@ public class MediaIngestTests
     public async Task A_slow_sink_holds_the_producer_once_its_channel_is_full_instead_of_dropping_chunks()
     {
         var slow = new RecordingSink { Gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously) };
-        var ingest = await new MediaIngestService([new OneSinkFactory(slow, _ => true)], TimeProvider.System).BeginAsync(S1, MediaTrack.Audio, "audio/webm", default, capacity: 1);
+        var ingest = await new MediaIngestService([new OneSinkFactory(slow, _ => true)], TimeProvider.System).BeginAsync(S1, Q1, MediaTrack.Audio, "audio/webm", default, capacity: 1);
 
         await ingest.WriteAsync(new byte[] { 1 }, default); // taken by the reader, which now waits at the gate
         await Task.Delay(50);

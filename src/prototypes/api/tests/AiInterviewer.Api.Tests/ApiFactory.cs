@@ -19,5 +19,7 @@ public class ApiFactory : WebApplicationFactory<Program>
     {
         builder.UseSetting(Storage.SqlitePathKey, SqliteDatabase.InMemoryPath);
         builder.UseSetting(MediaStreams.RootKey, Path.Combine(Path.GetTempPath(), "ai-interviewer-tests", "media", Guid.NewGuid().ToString("N")));
+        // No Python worker runs under the tests: the counting stand-in takes the audio.
+        builder.UseSetting(Transcription.ProviderKey, Transcription.Counting);
     }
 }

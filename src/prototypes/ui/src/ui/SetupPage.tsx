@@ -495,6 +495,7 @@ function Harness({ config, onConfig }: { config: MockHostConfig; onConfig: (conf
       {pick('load', 'Loading this page', ['works', 'fails'])}
       {pick('preparation', 'Preparing the interview', ['succeeds', 'retries-then-succeeds', 'fails'])}
       {pick('upload', 'Processing a loaded resume', ['succeeds', 'fails'])}
+      {pick('transcription', 'Transcribing the interview', ['works', 'unavailable'])}
     </section>
   )
 }

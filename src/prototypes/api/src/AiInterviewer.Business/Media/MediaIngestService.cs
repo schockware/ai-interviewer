@@ -15,9 +15,9 @@ public sealed class MediaIngestService(IEnumerable<IMediaSinkFactory> factories,
     /// <summary>Chunks a sink may fall behind by before the producer waits. At 250 ms a chunk, eight seconds. PROPOSAL.</summary>
     public const int DefaultCapacity = 32;
 
-    public async Task<MediaIngest> BeginAsync(SessionId session, MediaTrack track, string mimeType, CancellationToken ct, int capacity = DefaultCapacity)
+    public async Task<MediaIngest> BeginAsync(SessionId session, QuestionId question, MediaTrack track, string mimeType, CancellationToken ct, int capacity = DefaultCapacity)
     {
-        var opened = new MediaTrackOpened(session, track, mimeType, clock.GetUtcNow());
+        var opened = new MediaTrackOpened(session, question, track, mimeType, clock.GetUtcNow());
         var lanes = new List<MediaIngest.Lane>();
         foreach (var factory in factories.Where(f => f.Wants(track)))
         {
@@ -81,7 +81,7 @@ public sealed class MediaIngest
     /// <summary>Hands a chunk to every sink. Waits while any sink's channel is full. The bytes are copied, so the caller may reuse its buffer.</summary>
     public async ValueTask WriteAsync(ReadOnlyMemory<byte> bytes, CancellationToken ct)
     {
-        var chunk = new MediaChunk(Track.Session, Track.Track, Interlocked.Increment(ref sequence), bytes.ToArray(), clock.GetUtcNow());
+        var chunk = new MediaChunk(Track.Session, Track.Question, Track.Track, Interlocked.Increment(ref sequence), bytes.ToArray(), clock.GetUtcNow());
         foreach (var lane in lanes) await lane.Channel.Writer.WriteAsync(chunk, ct);
     }
 
