@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-27 16:26:35 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Said the Role focus panel on the Application setup page looks out of date, and asked whether Role set up should be a separate page, forcing an Interview type selection and replacing the Prepare interview button on the first page with Role set up.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: no code changes. Read the live canvas (version 30): the Role focus panel looks out of date only because the default Tweak state has no role chosen, so the Setup questions button and the questions panel are hidden. Gave a recommendation to split the page; waiting for a go-ahead before restructuring.
+Tokens: ~4,000 (estimated)
+---
 ## 2026-10-27 16:22:50 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Said no PR yet, and asked that the Role focus panel be able to enter the questions setup for existing roles through a "Setup questions" button that shows once a Role title is selected, and may be shown disabled.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
