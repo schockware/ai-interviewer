@@ -1,5 +1,11 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-27 16:53:31 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked for the Upload and Paste text buttons to sit to the left of the Setup questions button, and for the selected role's description to display between the Role title select and those buttons.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: Design canvas version 32: on the Role set up page the Upload file, Paste text and Setup questions buttons are now in one row (job description group on the left, questions group on the right, wrapping on narrow widths), and a scrollable About this role box with the description shows under the Role title once a role is selected (a placeholder message while a new role's upload finishes). The RoleQuestions board entry frames show the same layout. Checked the script with node --check and the logic run; nothing rendered. specs/page-flow.md updated; synced RoleSetup and RoleQuestions into design/mockups/ui/ and its README.
+Tokens: ~12,000 (derived: counter 15,000,000 -> ~14,988,000)
+---
 ## 2026-10-27 16:47:17 | Claude Sonnet 5.5 (claude-sonnet-5-5)
 Summary prompt: Explained why Prepare interview exists (the resume and role uploads are needed before the script can be prepared), then decided that uploads must never stop anything on the setup pages and only lead to the waiting room, that the role starts unanswered (no guessing from interview type or resume, and a new role from an upload is selected automatically when there are no roles), that the questions default to the AI writing them, and that the default or already-loaded questions are called out next to the Setup questions button.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry

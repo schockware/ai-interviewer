@@ -60,41 +60,42 @@ Accessibility
 <sc-if value="{{noRoles}}" hint-placeholder-val="{{ false }}">
 <p style="margin: 0; padding: 12px 14px; border-radius: 10px; background: #FFF1DC; border: 1px solid #F0C98E; font-size: 14px; line-height: 1.5; color: #4A2600">No roles are saved yet. Add a job description below. The new role is selected for you.</p>
 </sc-if>
-<div style="display: flex; flex-direction: column; gap: 8px">
+<sc-if value="{{showDescription}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 16px 18px; border-radius: 12px; background: #F3F5F7; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 6px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #4A5562">About this role</span>
+<h3 style="margin: 0; font-size: 16px; font-weight: 600">{{roleOption}}</h3>
+<div role="region" aria-label="Role description" tabindex="0" style="max-height: 120px; overflow-y: auto; font-size: 14px; line-height: 1.5; color: #2B3540">{{roleDescription}}</div>
+</div>
+</sc-if>
+<div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px 32px">
+<div role="group" aria-labelledby="jd-label" style="display: flex; flex-direction: column; gap: 8px">
 <span id="jd-label" style="font-size: 14px; font-weight: 500">Job description <span style="color: #4A5562">{{jdHint}}</span></span>
 <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
-<button type="button" aria-describedby="jd-label" style="min-height: 48px; padding: 0 18px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font: inherit; font-size: 15px; font-weight: 500; cursor: pointer">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m17 8-5-5-5 5"></path><path d="M12 3v12"></path></svg>
-Upload file
-</button>
-<button type="button" aria-describedby="jd-label" style="min-height: 48px; padding: 0 18px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font: inherit; font-size: 15px; font-weight: 500; cursor: pointer">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path></svg>
-Paste text
-</button>
+<button type="button" style="min-height: 48px; padding: 0 18px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font: inherit; font-size: 15px; font-weight: 500; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m17 8-5-5-5 5"></path><path d="M12 3v12"></path></svg>Upload file</button>
+<button type="button" style="min-height: 48px; padding: 0 18px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font: inherit; font-size: 15px; font-weight: 500; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path></svg>Paste text</button>
+</div>
+</div>
+<sc-if value="{{showSetupBtn}}" hint-placeholder-val="{{ false }}">
+<div role="group" aria-labelledby="q-label" style="display: flex; flex-direction: column; gap: 8px; flex: 1 1 320px; min-width: 0">
+<span id="q-label" style="font-size: 14px; font-weight: 500">Interview questions</span>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+<button type="button" aria-disabled="{{qBtnDisabled}}" aria-expanded="{{qOpen}}" aria-controls="questions-panel" aria-describedby="qbtn-note" onClick="{{toggleQ}}" style="{{qBtnStyle}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>Setup questions</button>
+<span id="qbtn-note" role="status" style="flex: 1 1 200px; font-size: 14px; line-height: 1.5; color: #2B3540"><b>{{qBtnLead}}</b> {{qBtnNote}}</span>
+</div>
+</div>
+</sc-if>
+</div>
 <sc-if value="{{roleLoading}}" hint-placeholder-val="{{ false }}">
-<span role="status" style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: #7A3E00; padding: 8px 12px; border-radius: 8px; background: #FFF1DC">
+<span role="status" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: #7A3E00; padding: 8px 12px; border-radius: 8px; background: #FFF1DC">
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h12"></path><path d="M6 22h12"></path><path d="M6 2v4l6 6-6 6v4"></path><path d="M18 2v4l-6 6 6 6v4"></path></svg>
 Uploading the job description. You can keep going; the waiting room finishes it.
 </span>
 </sc-if>
 <sc-if value="{{roleReady}}" hint-placeholder-val="{{ false }}">
-<span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: #0F6B5C; padding: 8px 12px; border-radius: 8px; background: #DDF2EC">
+<span style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: #0F6B5C; padding: 8px 12px; border-radius: 8px; background: #DDF2EC">
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
 [JOB DESCRIPTION DISPLAY NAME] is added and selected.
 </span>
-</sc-if>
-</div>
-</div>
-<sc-if value="{{showSetupBtn}}" hint-placeholder-val="{{ false }}">
-<div style="display: flex; flex-direction: column; gap: 8px; padding-top: 4px">
-<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
-<button type="button" aria-disabled="{{qBtnDisabled}}" aria-expanded="{{qOpen}}" aria-controls="questions-panel" aria-describedby="qbtn-note" onClick="{{toggleQ}}" style="{{qBtnStyle}}">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>
-Setup questions
-</button>
-<span id="qbtn-note" role="status" style="font-size: 14px; line-height: 1.5; color: #2B3540"><b>{{qBtnLead}}</b> {{qBtnNote}}</span>
-</div>
-</div>
 </sc-if>
 <sc-if value="{{showQuestions}}" hint-placeholder-val="{{ false }}">
 <div id="questions-panel" style="display: flex; flex-direction: column; gap: 14px; padding-top: 16px; border-top: 1px solid #E1E5EA">
@@ -275,6 +276,8 @@ class Component extends DCLogic {
       hasRoles: roleStatus !== 'required',
       noRoles: roleStatus === 'required',
       roleOption: picked ? '[ROLE TITLE]' : 'Choose a role…',
+      showDescription: picked,
+      roleDescription: (isNew && jdState === 'uploading') ? 'The description appears here when the upload finishes. You can keep going.' : '[ROLE DESCRIPTION]',
       jdHint: roleStatus === 'required' ? '(required, because no roles are saved yet)' : '(optional)',
       roleLoading: isNew && jdState === 'uploading',
       roleReady: isNew && jdState === 'added',

@@ -51,6 +51,8 @@ Two shared components, so every page looks and behaves the same.
   - *Required.* It starts out unanswered, because the role cannot be guessed from the interview type or the resume.
   - The user can select industry-standard titles.
   - If there are no roles, the user must upload a job description. That role is then selected automatically.
+  - Once a role is selected, its **description** shows between the Role title and the buttons. A long description scrolls inside its box.
+  - The buttons sit in one row: **Upload file** and **Paste text** (for the job description) on the left, and **Setup questions** on the right.
   - The user may upload a job description, even when there are roles.
   - **Setup questions** button. For an existing role, the questions setup opens from this button.
     - It appears once a Role title is chosen.
