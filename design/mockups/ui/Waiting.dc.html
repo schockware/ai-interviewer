@@ -31,7 +31,7 @@ Accessibility
 </button>
 <div style="display: flex; flex-direction: column; gap: 2px">
 <h1 style="margin: 0; font-size: 22px; font-weight: 600">Waiting room</h1>
-<p style="margin: 0; font-size: 14px; color: #4A5562">Step 3 of 3 · Getting your interview ready</p>
+<p style="margin: 0; font-size: 14px; color: #4A5562">Step 4 of 4 · Getting your interview ready</p>
 </div>
 </div>
 <a href="Hardware.dc.html" style="font-size: 15px; font-weight: 500">Leave the waiting room</a>
@@ -177,7 +177,7 @@ Review your role
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"prep":{"editor":"enum","options":["preparing","retrying","diagnosing","ready"],"default":"preparing","section":"Preview"},"interviewType":{"editor":"enum","options":["hot","cold"],"default":"hot","section":"Preview"},"jobDescription":{"editor":"enum","options":["uploaded","role-only"],"default":"uploaded","section":"Preview"},"step":{"editor":"range","min":0,"max":12,"step":1,"default":5,"section":"Preview"},"countdown":{"editor":"enum","options":["running","paused"],"default":"running","section":"Preview"},"pez":{"editor":"enum","options":["closed","tips","faq","role"],"default":"closed","section":"Preview"},"$preview":{"width":1280,"height":1400}}'>
+<script type="text/x-dc" data-dc-script data-props='{"prep":{"editor":"enum","options":["preparing","retrying","diagnosing","ready"],"default":"preparing","section":"Preview"},"interviewType":{"editor":"enum","options":["hot","cold"],"default":"hot","section":"Preview"},"jobDescription":{"editor":"enum","options":["uploaded","role-only"],"default":"uploaded","section":"Preview"},"step":{"editor":"range","min":0,"max":14,"step":1,"default":5,"section":"Preview"},"questions":{"editor":"enum","options":["generate","upload","keep"],"default":"generate","section":"Preview"},"countdown":{"editor":"enum","options":["running","paused"],"default":"running","section":"Preview"},"pez":{"editor":"enum","options":["closed","tips","faq","role"],"default":"closed","section":"Preview"},"$preview":{"width":1280,"height":1400}}'>
 class Component extends DCLogic {
   renderVals() {
     const p = this.props;
@@ -185,6 +185,7 @@ class Component extends DCLogic {
     const hot = (p.interviewType ?? 'hot') === 'hot';
     const uploaded = (p.jobDescription ?? 'uploaded') === 'uploaded';
     const stepProp = p.step ?? 5;
+    const qsrc = p.questions ?? 'generate';
     const paused = this.state.paused ?? ((p.countdown ?? 'running') === 'paused');
     const pezKind = this.state.pez ?? (p.pez ?? 'closed');
 
@@ -200,7 +201,10 @@ class Component extends DCLogic {
       { g: G1, label: 'Uploading your job description', who: '', on: uploaded },
       { g: G1, label: uploaded ? 'Reading the role and job description' : 'Looking up the role', who: 'Interviewer model', on: true },
       { g: G1, label: 'Preparing your role review', who: 'Interviewer model', on: true },
-      { g: G2, label: 'Planning the questions', who: 'Interviewer model', on: true },
+      { g: G1, label: 'Uploading your questions', who: '', on: qsrc === 'upload' },
+      { g: G1, label: 'Reading your questions', who: 'Interviewer model', on: qsrc === 'upload' },
+      { g: G1, label: 'Loading the saved questions', who: '', on: qsrc === 'keep' },
+      { g: G2, label: 'Writing the questions', who: 'Interviewer model', on: qsrc === 'generate' },
       { g: G2, label: 'Writing the opening script', who: 'Interviewer model', on: true },
       { g: G2, label: 'Preparing the follow-up questions', who: 'Follow-up model', on: true },
       { g: G2, label: 'Preparing the scoring guide', who: 'Evaluator model', on: true },

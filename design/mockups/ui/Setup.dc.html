@@ -31,7 +31,7 @@ Accessibility
 </button>
 <div style="display: flex; flex-direction: column; gap: 2px">
 <h1 style="margin: 0; font-size: 22px; font-weight: 600">Set up your interview</h1>
-<p style="margin: 0; font-size: 14px; color: #4A5562">Step 1 of 3 · Application setup</p>
+<p style="margin: 0; font-size: 14px; color: #4A5562">Step 1 of 4 · Application setup</p>
 </div>
 </div>
 <button type="button" aria-expanded="{{settingsOpen}}" aria-controls="app-settings" onClick="{{toggleSettings}}" style="min-height: 48px; padding: 0 16px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font: inherit; font-size: 15px; font-weight: 500; cursor: pointer">
@@ -135,7 +135,7 @@ Load resume
 <sc-if value="{{resumeProcessing}}" hint-placeholder-val="{{ false }}">
 <span role="status" style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: #7A3E00; padding: 8px 12px; border-radius: 8px; background: #FFF1DC">
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h12"></path><path d="M6 22h12"></path><path d="M6 2v4l6 6-6 6v4"></path><path d="M18 2v4l-6 6 6 6v4"></path></svg>
-Processing [RESUME FILE NAME]. This can take a moment.
+Uploading [RESUME FILE NAME]. You can keep going; the waiting room finishes it.
 </span>
 </sc-if>
 <sc-if value="{{resumeReady}}" hint-placeholder-val="{{ false }}">
@@ -153,60 +153,19 @@ Processing [RESUME FILE NAME]. This can take a moment.
 </sc-if>
 </section>
 
-<section aria-labelledby="role-title" style="background: #FFFFFF; border-radius: 16px; padding: 28px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 16px">
-<h2 id="role-title" style="margin: 0; font-size: 18px; font-weight: 600">Role focus <span style="font-size: 14px; font-weight: 500; color: #B42318">(required)</span></h2>
-<sc-if value="{{hasRoles}}" hint-placeholder-val="{{ true }}">
-<div style="display: flex; flex-direction: column; gap: 6px; max-width: 480px">
-<label for="role-pick" style="font-size: 14px; font-weight: 500">Role title</label>
-<select id="role-pick" style="min-height: 44px; border-radius: 10px; border: 1px solid #C5CCD3; padding: 0 12px; font: inherit; font-size: 15px; background: #FFFFFF; color: #16202A">
-<option>{{roleOption}}</option>
-</select>
-<span style="font-size: 13px; color: #4A5562">Industry-standard titles.</span>
-</div>
-</sc-if>
-<sc-if value="{{noRoles}}" hint-placeholder-val="{{ false }}">
-<p style="margin: 0; padding: 12px 14px; border-radius: 10px; background: #FFF1DC; border: 1px solid #F0C98E; font-size: 14px; line-height: 1.5; color: #4A2600">No roles are saved yet. Add a job description below to continue.</p>
-</sc-if>
-<div style="display: flex; flex-direction: column; gap: 8px">
-<span id="jd-label" style="font-size: 14px; font-weight: 500">Job description <span style="color: #4A5562">{{jdHint}}</span></span>
-<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
-<button type="button" aria-describedby="jd-label" style="min-height: 48px; padding: 0 18px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font: inherit; font-size: 15px; font-weight: 500; cursor: pointer">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m17 8-5-5-5 5"></path><path d="M12 3v12"></path></svg>
-Upload file
-</button>
-<button type="button" aria-describedby="jd-label" style="min-height: 48px; padding: 0 18px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 1px solid #C5CCD3; background: #FFFFFF; color: #16202A; font: inherit; font-size: 15px; font-weight: 500; cursor: pointer">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path></svg>
-Paste text
-</button>
-<sc-if value="{{roleLoading}}" hint-placeholder-val="{{ false }}">
-<span role="status" style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: #7A3E00; padding: 8px 12px; border-radius: 8px; background: #FFF1DC">
-<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h12"></path><path d="M6 22h12"></path><path d="M6 2v4l6 6-6 6v4"></path><path d="M18 2v4l-6 6 6 6v4"></path></svg>
-Processing the job description. This can take a moment.
-</span>
-</sc-if>
-<sc-if value="{{roleReady}}" hint-placeholder-val="{{ false }}">
-<span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: #0F6B5C; padding: 8px 12px; border-radius: 8px; background: #DDF2EC">
-<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
-[JOB DESCRIPTION DISPLAY NAME] is added and selected.
-</span>
-</sc-if>
-</div>
-</div>
-</section>
-
-<section aria-label="Prepare the interview" style="background: #FFFFFF; border-radius: 16px; padding: 28px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 14px">
+<section aria-label="Continue to role set up" style="background: #FFFFFF; border-radius: 16px; padding: 28px; border: 1px solid #E1E5EA; display: flex; flex-direction: column; gap: 14px">
 <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
-<button type="button" aria-disabled="{{prepareDisabled}}" aria-describedby="prep-note" style="{{prepStyle}}">
-Prepare interview
+<button type="button" aria-disabled="{{continueDisabled}}" aria-describedby="cont-note" style="{{contStyle}}">
+Role set up
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
 </button>
-<p id="prep-note" style="margin: 0; flex: 1 1 280px; font-size: 14px; line-height: 1.5; color: #2B3540">The interviewer takes a little while to build your interview from the role and resume. You go straight to hardware setup, and a progress bar shows how it is going.</p>
+<p id="cont-note" style="margin: 0; flex: 1 1 280px; font-size: 14px; line-height: 1.5; color: #2B3540">Next you choose the role and its questions. A resume that is still uploading does not stop you. The waiting room finishes it.</p>
 </div>
-<sc-if value="{{prepareDisabled}}" hint-placeholder-val="{{ true }}">
+<sc-if value="{{continueDisabled}}" hint-placeholder-val="{{ true }}">
 <div role="status" style="padding: 12px 14px; border-radius: 10px; background: #FFF1DC; border: 1px solid #F0C98E; display: flex; flex-direction: column; gap: 6px">
 <span style="font-size: 14px; font-weight: 600; color: #4A2600">Before you can continue</span>
 <ul style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.5; color: #4A2600">
-<sc-for list="{{reasons}}" as="r" hint-placeholder-count="2">
+<sc-for list="{{reasons}}" as="r" hint-placeholder-count="1">
 <li>{{r.text}}</li>
 </sc-for>
 </ul>
@@ -222,7 +181,6 @@ Prepare interview
 <dl style="margin: 0; display: flex; flex-direction: column; gap: 12px; font-size: 14px; line-height: 1.45">
 <div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-weight: 600">Interview type</dt><dd style="margin: 0; color: #2B3540">{{typeLabel}}</dd></div>
 <div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-weight: 600">Resume</dt><dd style="margin: 0; color: #2B3540">{{resumeSummary}}</dd></div>
-<div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-weight: 600">Role focus</dt><dd style="margin: 0; color: #2B3540">{{roleSummary}}</dd></div>
 <div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-weight: 600">AI models</dt><dd style="margin: 0; color: #2B3540">All defaults</dd></div>
 </dl>
 </section>
@@ -238,24 +196,23 @@ Prepare interview
 </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"page":{"editor":"enum","options":["ready","loading","error"],"default":"ready","section":"Preview"},"interviewType":{"editor":"enum","options":["cold","hot"],"default":"cold","section":"Preview"},"resumes":{"editor":"enum","options":["some","none"],"default":"some","section":"Preview"},"resumeStatus":{"editor":"enum","options":["none","processing","ready"],"default":"none","section":"Preview"},"roleStatus":{"editor":"enum","options":["unanswered","loading","ready","required"],"default":"unanswered","section":"Preview"},"settingsOpen":{"editor":"boolean","default":false,"section":"Preview"},"preparing":{"editor":"enum","options":["none","preparing","retrying","diagnosing","ready"],"default":"none","section":"Preview"},"$preview":{"width":1280,"height":1100}}'>
+<script type="text/x-dc" data-dc-script data-props='{"page":{"editor":"enum","options":["ready","loading","error"],"default":"ready","section":"Preview"},"interviewType":{"editor":"enum","options":["cold","hot"],"default":"cold","section":"Preview"},"resumes":{"editor":"enum","options":["some","none"],"default":"some","section":"Preview"},"resumeStatus":{"editor":"enum","options":["none","processing","ready"],"default":"none","section":"Preview"},"roleUploading":{"editor":"boolean","default":false,"section":"Preview"},"settingsOpen":{"editor":"boolean","default":false,"section":"Preview"},"preparing":{"editor":"enum","options":["none","preparing","retrying","diagnosing","ready"],"default":"none","section":"Preview"},"$preview":{"width":1280,"height":1250}}'>
 class Component extends DCLogic {
   renderVals() {
     const p = this.props;
     const page = p.page ?? 'ready';
     const type = this.state.type ?? p.interviewType ?? 'cold';
     const hot = type === 'hot';
-    const resumeStatus = p.resumeStatus ?? 'none';
-    const roleStatus = p.roleStatus ?? 'unanswered';
-    const settingsOpen = this.state.settingsOpen ?? (p.settingsOpen ?? false);
     const hasRes = (p.resumes ?? 'some') === 'some';
-    const selectedResume = hasRes || resumeStatus === 'ready';
-    const needResume = hot && (resumeStatus === 'processing' || !selectedResume);
-    const roleOk = roleStatus === 'ready';
-    const canPrepare = roleOk && !needResume;
+    const resumeStatus = p.resumeStatus ?? 'none';
+    const settingsOpen = this.state.settingsOpen ?? (p.settingsOpen ?? false);
+    const picked = hasRes || resumeStatus === 'ready' || resumeStatus === 'processing';
+    const canContinue = !hot || picked;
+    const reasons = [];
+    if (!canContinue) reasons.push({ text: 'Pick or load a resume, or switch to a cold interview.' });
     const prepare = p.preparing ?? 'none';
     const upResume = hot && resumeStatus === 'processing';
-    const upRole = roleStatus === 'loading';
+    const upRole = p.roleUploading ?? false;
     const uploading = upResume || upRole;
     let bannerKind = 'hidden';
     if (prepare === 'diagnosing') bannerKind = 'problem';
@@ -264,12 +221,6 @@ class Component extends DCLogic {
     else if (prepare === 'retrying') bannerKind = 'retrying';
     else if (prepare === 'ready') bannerKind = 'ready';
     const progressPct = { none: 0, preparing: 45, retrying: 62, diagnosing: 0, ready: 100 }[prepare];
-    const reasons = [];
-    if (hot && resumeStatus === 'none' && !selectedResume) reasons.push({ text: 'Pick or load a resume, or switch to a cold interview.' });
-    if (hot && resumeStatus === 'processing') reasons.push({ text: 'Wait for your resume to finish processing.' });
-    if (roleStatus === 'unanswered') reasons.push({ text: 'Choose a role focus.' });
-    if (roleStatus === 'loading') reasons.push({ text: 'Wait for the job description to finish processing.' });
-    if (roleStatus === 'required') reasons.push({ text: 'Add a job description. No roles are saved yet.' });
     const on = 'padding: 18px; border-radius: 12px; border: 2px solid #1D4ED8; background: #EEF3FD; display: flex; flex-direction: column; gap: 8px; cursor: pointer';
     const off = 'padding: 18px; border-radius: 12px; border: 1px solid #C5CCD3; background: #FFFFFF; display: flex; flex-direction: column; gap: 8px; cursor: pointer';
     const slotsBase = [
@@ -280,8 +231,6 @@ class Component extends DCLogic {
       { id: 'slot-interviewer', label: 'Interviewer', options: ['Default', 'Qwen3.5 ladder', 'Custom (local)…', 'Cloud: [PROVIDER]'], note: 'Local or cloud.' },
       { id: 'slot-evaluator', label: 'Evaluator', options: ['Same as interviewer', 'Custom (local)…', 'Cloud: [PROVIDER]'], note: 'Scores your answers. Local or cloud.' }
     ];
-    const roleOptions = { unanswered: 'Choose a role…', loading: 'Choose a role…', ready: '[ROLE TITLE]', required: '' };
-    const jdHints = { unanswered: '(optional)', loading: '(optional)', ready: '(optional)', required: '(required, because no roles are saved yet)' };
     return {
       bannerOn: page === 'ready' && bannerKind !== 'hidden',
       bannerKind: bannerKind,
@@ -304,21 +253,14 @@ class Component extends DCLogic {
       hasResumes: hasRes,
       resumeProcessing: resumeStatus === 'processing',
       resumeReady: resumeStatus === 'ready',
-      resumeMissing: needResume,
-      hasRoles: roleStatus !== 'required',
-      noRoles: roleStatus === 'required',
-      roleOption: roleOptions[roleStatus] || 'Choose a role…',
-      jdHint: jdHints[roleStatus] || '(optional)',
-      roleLoading: roleStatus === 'loading',
-      roleReady: roleStatus === 'ready',
-      prepareDisabled: !canPrepare,
-      prepStyle: canPrepare
+      resumeMissing: hot && !picked,
+      continueDisabled: !canContinue,
+      contStyle: canContinue
         ? 'min-height: 52px; padding: 0 24px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 0; background: #1D4ED8; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer'
         : 'min-height: 52px; padding: 0 24px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 0; background: #D5DAE0; color: #4A5562; font: inherit; font-size: 16px; font-weight: 600; cursor: not-allowed',
       reasons: reasons,
       typeLabel: hot ? 'Hot interview' : 'Cold interview',
-      resumeSummary: hot ? (resumeStatus === 'processing' ? 'Processing…' : (resumeStatus === 'ready' ? '[RESUME DISPLAY NAME]' : (hasRes ? '[LAST PICKED RESUME]' : 'Not chosen yet'))) : 'Not used',
-      roleSummary: roleStatus === 'ready' ? '[ROLE TITLE]' : 'Not chosen yet'
+      resumeSummary: hot ? (resumeStatus === 'processing' ? 'Uploading…' : (resumeStatus === 'ready' ? '[RESUME DISPLAY NAME]' : (hasRes ? '[LAST PICKED RESUME]' : 'Not chosen yet'))) : 'Not used'
     };
   }
 }

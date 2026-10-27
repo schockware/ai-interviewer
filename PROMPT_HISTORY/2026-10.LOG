@@ -1,5 +1,41 @@
 PROMPT HISTORY 2026-10 (newest first; see PROMPT_HISTORY/README.MD)
 ---
+## 2026-10-27 16:57:22 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Said the Role set up layout looks good and asked for a pull request.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: merged origin/main, pushed, and opened a pull request against main covering the Role set up split, the questions panel, the Setup questions button and the spec and mockup updates.
+Tokens: ~2,000 (estimated)
+---
+## 2026-10-27 16:53:31 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked for the Upload and Paste text buttons to sit to the left of the Setup questions button, and for the selected role's description to display between the Role title select and those buttons.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: Design canvas version 32: on the Role set up page the Upload file, Paste text and Setup questions buttons are now in one row (job description group on the left, questions group on the right, wrapping on narrow widths), and a scrollable About this role box with the description shows under the Role title once a role is selected (a placeholder message while a new role's upload finishes). The RoleQuestions board entry frames show the same layout. Checked the script with node --check and the logic run; nothing rendered. specs/page-flow.md updated; synced RoleSetup and RoleQuestions into design/mockups/ui/ and its README.
+Tokens: ~12,000 (derived: counter 15,000,000 -> ~14,988,000)
+---
+## 2026-10-27 16:47:17 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Explained why Prepare interview exists (the resume and role uploads are needed before the script can be prepared), then decided that uploads must never stop anything on the setup pages and only lead to the waiting room, that the role starts unanswered (no guessing from interview type or resume, and a new role from an upload is selected automatically when there are no roles), that the questions default to the AI writing them, and that the default or already-loaded questions are called out next to the Setup questions button.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: Design canvas version 31: split Application setup into two pages. Application setup (step 1 of 4: settings, interview type, resume, a Role set up button, never blocked by an upload) and a new Role set up page (step 2 of 4: Role focus starting unanswered, job description, Setup questions button with a default or loaded call-out, questions panel defaulting to the AI, and Prepare interview, blocked only by an unanswered role, the questions check, or an upload chosen with no file). Hardware is now step 3 and the waiting room step 4. The questions-states board is renamed RoleQuestions and updated to the new defaults; SetupHot uses Role set up. Canvas layout rearranged (no overlaps). Checked the page scripts with node --check and a logic run over 14 state combinations; nothing rendered. I did not force the Interview type choice, since no unanswered value is wanted for it; Cold stays the default. specs/page-flow.md rewritten for the split and the upload rules. Synced the changed boards into design/mockups/ui/ (README and canvas.json updated, SetupRole removed). contracts/page-flow.md not changed.
+Tokens: ~46,600 (derived: counter 15,000,000 -> ~14,953,400)
+---
+## 2026-10-27 16:26:35 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Said the Role focus panel on the Application setup page looks out of date, and asked whether Role set up should be a separate page, forcing an Interview type selection and replacing the Prepare interview button on the first page with Role set up.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: no code changes. Read the live canvas (version 30): the Role focus panel looks out of date only because the default Tweak state has no role chosen, so the Setup questions button and the questions panel are hidden. Gave a recommendation to split the page; waiting for a go-ahead before restructuring.
+Tokens: ~4,000 (estimated)
+---
+## 2026-10-27 16:22:50 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Said no PR yet, and asked that the Role focus panel be able to enter the questions setup for existing roles through a "Setup questions" button that shows once a Role title is selected, and may be shown disabled.
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: Design canvas version 30: Application setup now shows a Setup questions button under Role focus when an existing role is chosen (not for a new role), disabled while the role's questions are checked (my reading of "disabled"); pressing it opens the questions panel; Prepare is blocked with a reason until the questions are set up, and a role that already has questions keeps them by default. New Tweaks questionsButton (checking or ready) and questionsOpen. SetupRole board gained three entry frames (checking, no questions, has questions). Checked the page scripts with node --check and a small run of the Setup logic over eight state combinations; nothing rendered. specs/page-flow.md: Setup questions button bullets. Copied SetupRole and Setup into design/mockups/ui/ and updated its canvas.json and README.
+Tokens: ~25,000 (derived: counter 15,000,000 -> ~14,985,000)
+---
+## 2026-10-27 14:46:36 | Claude Sonnet 5.5 (claude-sonnet-5-5)
+Summary prompt: Asked to pull the latest main, then described that a role needs questions either uploaded or generated by the LLM, in three states: a new role (upload the role description, then ask generate or upload), an existing role missing questions (ask generate or upload), and an existing role with questions (ask whether to purge).
+Redaction check: passed; nothing redacted; original in the matching .REDACTED entry
+Actions: main already contained the earlier PR, so restarted the branch from the latest main. Design canvas version 29: new SetupRole.dc.html board with six states (the three cases plus AI writes them, uploading, and purge chosen); the Application setup page now has an Interview questions panel under Role focus with Tweaks for the case, source, upload state and keep or purge, and Prepare gating; Setup made taller and the boards below it moved down; the waiting room steps now follow the choice (writing, uploading and reading, or loading the saved questions). specs/page-flow.md: Role Focus questions cases and the waiting room steps. Copied SetupRole, Setup and Waiting into design/mockups/ui/ and updated its canvas.json and README. contracts/page-flow.md not changed (no contract for the questions yet). Purge confirmation step left open. Not rendered.
+Tokens: ~29,000 (derived: counter 15,000,000 -> ~14,971,000)
+---
 ## 2026-10-27 08:15:52 | Claude Fable 5.1 (claude-fable-5-1)
 Summary prompt: Asked to build the two transcription AIs, the real-time transcriber and the post-question transcriber (a large GPU-backed model over the completed audio file), noted that there should be a new file per question while another model produces questions for the roles, and said to assume a one-question interview for now.
 Redaction check: passed; nothing redacted; original in the matching .REDACTED entry

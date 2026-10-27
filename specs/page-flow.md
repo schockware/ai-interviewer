@@ -14,7 +14,7 @@ Two shared components, so every page looks and behaves the same.
   - **The host ran into a problem:** nothing interrupts the user. The AI models diagnose it.
   - **The host is ready.**
   - It is a status message (polite). It is announced when it appears or changes, never moves focus, and has a text label as well as an icon and colour.
-- **Preparing your interview** progress bar. At the bottom of every setup page (Application setup, Hardware setup and the waiting room), once preparation has started. It slows if preparation is retrying, and shows no percentage while the problem is diagnosed. It has a name and a fixed text value, and its movement is not announced.
+- **Preparing your interview** progress bar. At the bottom of every setup page (Application setup, Role set up, Hardware setup and the waiting room), once preparation has started. It slows if preparation is retrying, and shows no percentage while the problem is diagnosed. It has a name and a fixed text value, and its movement is not announced.
 
 ## 1. Application setup
 
@@ -26,7 +26,7 @@ Two shared components, so every page looks and behaves the same.
   - **Cold interview** (*default*)
     - *The AI ignores any loaded resumes and goes off boilerplate questions. Many AI pre-screens are Cold interviews only.*
   - **Hot interview**
-    - Prevents the form from saving until a resume is selected.
+    - Prevents the user moving on until a resume is selected or uploading.
       - Make sure that if the form bypasses the resume validation, it describes that it will fall back to a cold interview.
     - Select Existing Resume
       - *Do not show if no resumes available.*
@@ -37,18 +37,42 @@ Two shared components, so every page looks and behaves the same.
       - *Required*
       - The user can load and select a resume that the interviewer will go off of, for a few questions or for interview flavor.
       - Selects the resume once it is processed.
-- **Role Focus**
-  - *Required*
-  - The user can select industry-standard titles.
-  - The user may upload a job description.
-- **Prepare Interview button**
-  - The AI needs time to build out an interview based on the Role and Resume (if provided).
-  - *Disabled while anything is missing or still processing, with a list that says what is missing.*
-  - It takes the user to the Hardware setup and verification screen right away, with a progress bar at the bottom of the screen.
+      - **An upload in progress never stops the user.** The status banner says it is uploading, and the waiting room finishes it.
+- **Role set up button**
+  - Takes the user to the Role set up page.
+  - *Disabled only while a hot interview has no resume at all.* A resume that is uploading counts.
   - If the user comes back to this page while the interview is preparing, the status banner and the progress bar show here too.
-  - While a resume or role is uploading, the status banner says so, and Prepare interview stays disabled.
 
-## 2. Hardware setup and verification
+## 2. Role set up
+
+*The role and its questions. This was split from Application setup because that page had too much on it.*
+
+- **Role Focus**
+  - *Required.* It starts out unanswered, because the role cannot be guessed from the interview type or the resume.
+  - The user can select industry-standard titles.
+  - If there are no roles, the user must upload a job description. That role is then selected automatically.
+  - Once a role is selected, its **description** shows between the Role title and the buttons. A long description scrolls inside its box.
+  - The buttons sit in one row: **Upload file** and **Paste text** (for the job description) on the left, and **Setup questions** on the right.
+  - The user may upload a job description, even when there are roles.
+  - **Setup questions** button. For an existing role, the questions setup opens from this button.
+    - It appears once a Role title is chosen.
+    - It is disabled while the app checks whether the role already has questions.
+    - A new role does not need it: the questions panel opens after its job description is added.
+    - Next to it, a note calls out the default ("The AI will write the questions"), or that questions are already loaded (how many, and that they are kept unless the user changes them), or the user's own file.
+  - **Interview questions** for the chosen role. The default is that the AI writes them, so the question is answered unless the user changes it. There are three starting cases:
+    - **New role:** the user uploads the role description, then is asked whether the LLM should generate the questions (the default) or the user will upload questions.
+    - **Existing role with missing questions:** the user is asked the same: generate with the LLM (the default), or upload questions.
+    - **Existing role with existing questions:** the user is asked whether to purge the existing questions. Keeping them is the default, so nothing is deleted by accident.
+      - If the user chooses to purge, a warning says how many questions go and that it cannot be undone, and the user is then asked the same question: generate (the default) or upload.
+      - The purge happens when Prepare Interview is pressed. *Whether it also needs a confirmation step is open.*
+- **Prepare Interview button**
+  - The AI needs time to build out an interview based on the Role and Resume (if provided). The uploads of the resume and role are required before the script can be prepared, which is why this step exists.
+  - *Disabled only while the role is unanswered, while the app checks the role's questions, or when the user chose to upload questions but has not picked a file.* A list says what is missing.
+  - **Uploads never stop the user.** A resume, job description or questions file that is still uploading does not disable anything on these pages. It only leads to the waiting room, which finishes the work.
+  - It takes the user to the Hardware setup and verification screen right away, with a progress bar at the bottom of the screen.
+  - A "Back to application setup" link returns to the previous page.
+
+## 3. Hardware setup and verification
 
 *This is what a user would normally experience during interview prep.*
 
@@ -61,13 +85,15 @@ Two shared components, so every page looks and behaves the same.
   - *Disabled until the required hardware settings are verified and rated clear, intermittent or readable.*
   - It no longer waits for the interview to be prepared. The waiting room (next) covers that.
 
-## 3. Waiting room
+## 4. Waiting room
 
 *An interstitial between Hardware setup and the Interview. It mimics "Waiting for host...", with the same banner and progress bar as the earlier pages.*
 
+- Any upload still running from the earlier pages (the resume, the job description, the questions) is finished here, so the user waits in one place and nothing on the earlier pages had to stop them.
 - Shows each step of the preparation, so the user can see their resume and role being uploaded and processed:
   - **Your materials:** uploading and reading the resume (hot interviews only), uploading and reading the job description (if any) or looking up the role, and preparing the role review.
-  - **Interview scripts, written by the AI:** planning the questions, writing the opening, preparing the follow-up questions, preparing the scoring guide, and writing the closing.
+  - **Interview scripts, written by the AI:** writing the questions (only if the AI is generating them), writing the opening, preparing the follow-up questions, preparing the scoring guide, and writing the closing.
+  - If the user uploaded questions, the steps are uploading and reading them under *Your materials* instead. If the role already has saved questions that were kept, the step is loading them.
   - **Voice and connection:** warming up the interviewer's voice and connecting to the interview room.
   - *The exact step list is a proposal. The server would need to send progress for each step.*
 - If preparation fails, nothing interrupts the user. The progress bar slows and the system retries quietly. If it still fails, the AI models diagnose the problem, and the user can try again or change the application setup.
@@ -85,7 +111,7 @@ Two shared components, so every page looks and behaves the same.
   - Tells the user the interview starts with the opening, and that the interviewer is not listening during it.
 - A "Leave the waiting room" link goes back to Hardware setup.
 
-## 4. Interview
+## 5. Interview
 
 - A status section describing different visual and audio cues:
   - AI Listening (Your turn)
