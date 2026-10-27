@@ -14,11 +14,61 @@
 body{margin:0}
 </style>
 </helmet>
-<div style="width: 1680px; min-height: 1900px; box-sizing: border-box; padding: 48px; background: #F3F5F7; color: #16202A; font-family: 'IBM Plex Sans', system-ui, sans-serif; display: flex; flex-direction: column; gap: 28px">
+<div style="width: 1680px; min-height: 2640px; box-sizing: border-box; padding: 48px; background: #F3F5F7; color: #16202A; font-family: 'IBM Plex Sans', system-ui, sans-serif; display: flex; flex-direction: column; gap: 28px">
 <div style="display: flex; flex-direction: column; gap: 6px">
 <h1 style="margin: 0; font-size: 30px; font-weight: 600">Role focus: where the questions come from</h1>
-<p style="margin: 0; font-size: 16px; color: #4A5562">A role needs questions. States 1 to 3 are the three starting cases. States 4 to 6 are what follows. Prepare interview stays disabled until the questions are settled. This panel sits under the job description in Role focus on the Application setup page.</p>
+<p style="margin: 0; font-size: 16px; color: #4A5562">A role needs questions. States 1 to 3 are the three starting cases. States 4 to 6 are what follows. For an existing role the panel opens from the Setup questions button. Prepare interview stays disabled until the questions are settled. This panel sits under the job description in Role focus on the Application setup page.</p>
 </div>
+<section aria-labelledby="entry-title" style="display: flex; flex-direction: column; gap: 14px">
+<h2 id="entry-title" style="margin: 0; font-size: 20px; font-weight: 600">How the user gets in</h2>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #4A5562">For an existing role, the questions setup opens from a <b>Setup questions</b> button. It appears once a Role title is chosen, and it is disabled while the app checks whether the role already has questions. A new role goes straight to the panel after its job description is added.</p>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; align-items: start">
+<article aria-labelledby="rA-title" style="background: #FFFFFF; border: 1px solid #E1E5EA; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 16px; min-width: 0">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #4A5562">Entry A</span>
+<h2 id="rA-title" style="margin: 0; font-size: 19px; font-weight: 600">Role title chosen, checking</h2>
+<div><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1.5; padding: 4px 8px; border-radius: 6px; background: #E6EAEE; color: #2B3540; word-break: break-word">Button: disabled</span></div>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #2B3540">As soon as an existing Role title is chosen, the Setup questions button appears. It is disabled while the app checks whether the role already has questions.</p>
+</div>
+<div style="height: 1px; background: #E1E5EA"></div>
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="role-a" style="font-size: 14px; font-weight: 500">Role title</label><select id="role-a" style="min-height: 44px; border-radius: 10px; border: 1px solid #C5CCD3; padding: 0 12px; font: inherit; font-size: 15px; background: #FFFFFF; color: #16202A"><option>[ROLE TITLE]</option></select></div><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px"><button type="button" aria-disabled="true" aria-expanded="false" style="min-height: 48px; padding: 0 18px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 1px solid #D5DAE0; background: #F3F5F7; color: #4A5562; font: inherit; font-size: 15px; font-weight: 600; cursor: not-allowed"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>Setup questions</button><span role="status" style="font-size: 14px; line-height: 1.5; color: #2B3540">Checking whether [ROLE TITLE] already has questions…</span></div>
+</div>
+<div style="height: 1px; background: #E1E5EA"></div>
+<div style="display: flex; flex-direction: column; gap: 10px"><button type="button" aria-disabled="true" style="min-height: 52px; padding: 0 24px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 0; background: #D5DAE0; color: #4A5562; font: inherit; font-size: 16px; font-weight: 600; cursor: not-allowed">Prepare interview <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></button><span style="font-size: 13px; line-height: 1.5; color: #4A5562">Disabled while we check the role's questions.</span></div>
+</article>
+<article aria-labelledby="rB-title" style="background: #FFFFFF; border: 1px solid #E1E5EA; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 16px; min-width: 0">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #4A5562">Entry B</span>
+<h2 id="rB-title" style="margin: 0; font-size: 19px; font-weight: 600">Role has no questions</h2>
+<div><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1.5; padding: 4px 8px; border-radius: 6px; background: #E6EAEE; color: #2B3540; word-break: break-word">Button: enabled</span></div>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #2B3540">The check found no saved questions. The button turns on. Prepare stays disabled until the questions are set up, and the list tells the user to press it.</p>
+</div>
+<div style="height: 1px; background: #E1E5EA"></div>
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="role-b" style="font-size: 14px; font-weight: 500">Role title</label><select id="role-b" style="min-height: 44px; border-radius: 10px; border: 1px solid #C5CCD3; padding: 0 12px; font: inherit; font-size: 15px; background: #FFFFFF; color: #16202A"><option>[ROLE TITLE]</option></select></div><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px"><button type="button" aria-disabled="false" aria-expanded="false" style="min-height: 48px; padding: 0 18px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 1px solid #1D4ED8; background: #FFFFFF; color: #1D4ED8; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>Setup questions</button><span role="status" style="font-size: 14px; line-height: 1.5; color: #2B3540">[ROLE TITLE] has no saved questions yet. Set them up to continue.</span></div>
+</div>
+<div style="height: 1px; background: #E1E5EA"></div>
+<div style="display: flex; flex-direction: column; gap: 10px"><button type="button" aria-disabled="true" style="min-height: 52px; padding: 0 24px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 0; background: #D5DAE0; color: #4A5562; font: inherit; font-size: 16px; font-weight: 600; cursor: not-allowed">Prepare interview <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></button><span style="font-size: 13px; line-height: 1.5; color: #4A5562">Press Setup questions to set up the interview questions for this role.</span></div>
+</article>
+<article aria-labelledby="rC-title" style="background: #FFFFFF; border: 1px solid #E1E5EA; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 16px; min-width: 0">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #4A5562">Entry C</span>
+<h2 id="rC-title" style="margin: 0; font-size: 19px; font-weight: 600">Role has questions</h2>
+<div><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1.5; padding: 4px 8px; border-radius: 6px; background: #E6EAEE; color: #2B3540; word-break: break-word">Button: enabled</span></div>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #2B3540">The role already has questions. They are kept by default, so Prepare is enabled. The button is there to change them: keep or purge.</p>
+</div>
+<div style="height: 1px; background: #E1E5EA"></div>
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="role-c" style="font-size: 14px; font-weight: 500">Role title</label><select id="role-c" style="min-height: 44px; border-radius: 10px; border: 1px solid #C5CCD3; padding: 0 12px; font: inherit; font-size: 15px; background: #FFFFFF; color: #16202A"><option>[ROLE TITLE]</option></select></div><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px"><button type="button" aria-disabled="false" aria-expanded="false" style="min-height: 48px; padding: 0 18px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 1px solid #1D4ED8; background: #FFFFFF; color: #1D4ED8; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>Setup questions</button><span role="status" style="font-size: 14px; line-height: 1.5; color: #2B3540">[ROLE TITLE] has [N] saved questions. They are kept unless you change them.</span></div>
+</div>
+<div style="height: 1px; background: #E1E5EA"></div>
+<div style="display: flex; flex-direction: column; gap: 10px"><button type="button" aria-disabled="false" style="min-height: 52px; padding: 0 24px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 0; background: #1D4ED8; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer">Prepare interview <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></button><span style="font-size: 13px; line-height: 1.5; color: #4A5562">Ready once the rest of the form is complete.</span></div>
+</article>
+</div>
+</section>
+<section aria-labelledby="states-title" style="display: flex; flex-direction: column; gap: 14px">
+<h2 id="states-title" style="margin: 0; font-size: 20px; font-weight: 600">What the button opens</h2>
 <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; align-items: start">
 <article aria-labelledby="r1-title" style="background: #FFFFFF; border: 1px solid #E1E5EA; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 16px; min-width: 0">
 <div style="display: flex; flex-direction: column; gap: 8px">
@@ -124,9 +174,10 @@ body{margin:0}
 <div style="display: flex; flex-direction: column; gap: 10px"><button type="button" aria-disabled="true" style="min-height: 52px; padding: 0 24px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 0; background: #D5DAE0; color: #4A5562; font: inherit; font-size: 16px; font-weight: 600; cursor: not-allowed">Prepare interview <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></button><span style="font-size: 13px; line-height: 1.5; color: #4A5562">Disabled until you choose where the new questions come from.</span></div>
 </article>
 </div>
+</section>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1680,"height":1900}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1680,"height":2640}}'>
 class Component extends DCLogic {
   renderVals() {
     return {};

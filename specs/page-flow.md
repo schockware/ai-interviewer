@@ -41,6 +41,11 @@ Two shared components, so every page looks and behaves the same.
   - *Required*
   - The user can select industry-standard titles.
   - The user may upload a job description.
+  - **Setup questions** button. For an existing role, the questions setup opens from this button.
+    - It appears once a Role title is chosen.
+    - It is disabled while the app checks whether the role already has questions, with a note saying so.
+    - A new role does not need it: the questions panel opens after its job description is added.
+    - If the role has no questions, Prepare Interview stays disabled until they are set up. If it has questions, they are kept by default, so the button is only there to change them.
   - **Interview questions** for the chosen role. There are three starting cases:
     - **New role:** the user uploads the role description, then is asked whether the LLM should generate the questions or the user will upload questions.
     - **Existing role with missing questions:** the user is asked the same: generate with the LLM, or upload questions.

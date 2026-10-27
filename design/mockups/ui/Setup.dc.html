@@ -192,8 +192,19 @@ Processing the job description. This can take a moment.
 </sc-if>
 </div>
 </div>
+<sc-if value="{{showSetupBtn}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 8px; padding-top: 4px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+<button type="button" aria-disabled="{{qBtnDisabled}}" aria-expanded="{{qOpen}}" aria-controls="questions-panel" aria-describedby="qbtn-note" onClick="{{toggleQ}}" style="{{qBtnStyle}}">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>
+Setup questions
+</button>
+<span id="qbtn-note" role="status" style="font-size: 14px; line-height: 1.5; color: #2B3540">{{qBtnNote}}</span>
+</div>
+</div>
+</sc-if>
 <sc-if value="{{showQuestions}}" hint-placeholder-val="{{ false }}">
-<div style="display: flex; flex-direction: column; gap: 14px; padding-top: 16px; border-top: 1px solid #E1E5EA">
+<div id="questions-panel" style="display: flex; flex-direction: column; gap: 14px; padding-top: 16px; border-top: 1px solid #E1E5EA">
 <h3 style="margin: 0; font-size: 16px; font-weight: 600">Interview questions</h3>
 <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #2B3540">{{qIntro}}</p>
 <sc-if value="{{hasExisting}}" hint-placeholder-val="{{ false }}">
@@ -302,7 +313,7 @@ Prepare interview
 </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"page":{"editor":"enum","options":["ready","loading","error"],"default":"ready","section":"Preview"},"interviewType":{"editor":"enum","options":["cold","hot"],"default":"cold","section":"Preview"},"resumes":{"editor":"enum","options":["some","none"],"default":"some","section":"Preview"},"resumeStatus":{"editor":"enum","options":["none","processing","ready"],"default":"none","section":"Preview"},"roleStatus":{"editor":"enum","options":["unanswered","loading","ready","required"],"default":"unanswered","section":"Preview"},"settingsOpen":{"editor":"boolean","default":false,"section":"Preview"},"roleCase":{"editor":"enum","options":["existing-missing","new","existing-has"],"default":"existing-missing","section":"Preview"},"questionsSource":{"editor":"enum","options":["undecided","generate","upload"],"default":"undecided","section":"Preview"},"questionsUpload":{"editor":"enum","options":["idle","processing","ready"],"default":"idle","section":"Preview"},"existingQuestions":{"editor":"enum","options":["keep","purge"],"default":"keep","section":"Preview"},"preparing":{"editor":"enum","options":["none","preparing","retrying","diagnosing","ready"],"default":"none","section":"Preview"},"$preview":{"width":1280,"height":1100}}'>
+<script type="text/x-dc" data-dc-script data-props='{"page":{"editor":"enum","options":["ready","loading","error"],"default":"ready","section":"Preview"},"interviewType":{"editor":"enum","options":["cold","hot"],"default":"cold","section":"Preview"},"resumes":{"editor":"enum","options":["some","none"],"default":"some","section":"Preview"},"resumeStatus":{"editor":"enum","options":["none","processing","ready"],"default":"none","section":"Preview"},"roleStatus":{"editor":"enum","options":["unanswered","loading","ready","required"],"default":"unanswered","section":"Preview"},"settingsOpen":{"editor":"boolean","default":false,"section":"Preview"},"roleCase":{"editor":"enum","options":["existing-missing","new","existing-has"],"default":"existing-missing","section":"Preview"},"questionsSource":{"editor":"enum","options":["undecided","generate","upload"],"default":"undecided","section":"Preview"},"questionsUpload":{"editor":"enum","options":["idle","processing","ready"],"default":"idle","section":"Preview"},"existingQuestions":{"editor":"enum","options":["keep","purge"],"default":"keep","section":"Preview"},"questionsButton":{"editor":"enum","options":["checking","ready"],"default":"checking","section":"Preview"},"questionsOpen":{"editor":"boolean","default":false,"section":"Preview"},"preparing":{"editor":"enum","options":["none","preparing","retrying","diagnosing","ready"],"default":"none","section":"Preview"},"$preview":{"width":1280,"height":1100}}'>
 class Component extends DCLogic {
   renderVals() {
     const p = this.props;
@@ -321,11 +332,22 @@ class Component extends DCLogic {
     const upState = p.questionsUpload ?? 'idle';
     const existing = this.state.existing ?? (p.existingQuestions ?? 'keep');
     const hasExisting = roleCase === 'existing-has';
+    const existingRole = roleCase !== 'new';
+    const btnChecking = (p.questionsButton ?? 'checking') === 'checking';
+    const rolePicked = roleStatus === 'ready';
+    const showSetupBtn = rolePicked && existingRole;
+    const qOpen = rolePicked && (!existingRole || (!btnChecking && (this.state.qOpen ?? (p.questionsOpen ?? false))));
     const purging = hasExisting && existing === 'purge';
-    const showQ = roleStatus === 'ready';
+    const showQ = qOpen;
     const showSource = !hasExisting || purging;
     const keepOk = hasExisting && existing === 'keep';
-    const questionsOk = !showQ || keepOk || src === 'generate' || (src === 'upload' && upState === 'ready');
+    const qChecking = showSetupBtn && btnChecking;
+    let questionsOk = true;
+    if (rolePicked) {
+      if (qChecking) questionsOk = false;
+      else if (!qOpen) questionsOk = hasExisting;
+      else questionsOk = keepOk || src === 'generate' || (src === 'upload' && upState === 'ready');
+    }
     const qProcessing = showQ && showSource && src === 'upload' && upState === 'processing';
     const canPrepare = roleOk && !needResume && questionsOk;
     const prepare = p.preparing ?? 'none';
@@ -345,8 +367,10 @@ class Component extends DCLogic {
     if (roleStatus === 'unanswered') reasons.push({ text: 'Choose a role focus.' });
     if (roleStatus === 'loading') reasons.push({ text: 'Wait for the job description to finish processing.' });
     if (roleStatus === 'required') reasons.push({ text: 'Add a job description. No roles are saved yet.' });
-    if (showQ && !questionsOk) {
-      if (src === 'undecided') reasons.push({ text: 'Choose where the interview questions come from.' });
+    if (rolePicked && !questionsOk) {
+      if (qChecking) reasons.push({ text: 'Wait while we check whether this role has questions.' });
+      else if (!qOpen) reasons.push({ text: 'Press Setup questions to set up the interview questions for this role.' });
+      else if (src === 'undecided') reasons.push({ text: 'Choose where the interview questions come from.' });
       else if (qProcessing) reasons.push({ text: 'Wait for your questions to finish processing.' });
       else reasons.push({ text: 'Upload your questions, or let the AI write them.' });
     }
@@ -393,6 +417,14 @@ class Component extends DCLogic {
       roleLoading: roleStatus === 'loading',
       roleReady: roleStatus === 'ready' && roleCase === 'new',
       showQuestions: showQ,
+      showSetupBtn: showSetupBtn,
+      qBtnDisabled: btnChecking,
+      qOpen: qOpen,
+      toggleQ: () => { if (!btnChecking) this.setState({ qOpen: !qOpen }); },
+      qBtnStyle: btnChecking
+        ? 'min-height: 48px; padding: 0 18px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 1px solid #D5DAE0; background: #F3F5F7; color: #4A5562; font: inherit; font-size: 15px; font-weight: 600; cursor: not-allowed'
+        : 'min-height: 48px; padding: 0 18px; display: inline-flex; align-items: center; gap: 10px; border-radius: 12px; border: 1px solid #1D4ED8; background: ' + (qOpen ? '#EEF3FD' : '#FFFFFF') + '; color: #1D4ED8; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer',
+      qBtnNote: btnChecking ? 'Checking whether [ROLE TITLE] already has questions…' : (hasExisting ? '[ROLE TITLE] has [N] saved questions. They are kept unless you change them.' : '[ROLE TITLE] has no saved questions yet. Set them up to continue.'),
       hasExisting: hasExisting,
       showSource: showSource,
       isKeep: existing === 'keep',
@@ -422,7 +454,7 @@ class Component extends DCLogic {
       reasons: reasons,
       typeLabel: hot ? 'Hot interview' : 'Cold interview',
       resumeSummary: hot ? (resumeStatus === 'processing' ? 'Processing…' : (resumeStatus === 'ready' ? '[RESUME DISPLAY NAME]' : (hasRes ? '[LAST PICKED RESUME]' : 'Not chosen yet'))) : 'Not used',
-      questionsSummary: !showQ ? 'After you choose a role' : (keepOk ? '[N] saved questions' : (src === 'generate' ? 'The AI writes them' : (src === 'upload' ? (upState === 'ready' ? '[QUESTIONS FILE NAME]' : 'Waiting for your file') : 'Not chosen yet'))),
+      questionsSummary: !rolePicked ? 'After you choose a role' : qChecking ? 'Checking…' : (!qOpen ? (hasExisting ? '[N] saved questions' : 'Not set up yet') : (keepOk ? '[N] saved questions' : (src === 'generate' ? 'The AI writes them' : (src === 'upload' ? (upState === 'ready' ? '[QUESTIONS FILE NAME]' : 'Waiting for your file') : 'Not chosen yet')))),
       roleSummary: roleStatus === 'ready' ? '[ROLE TITLE]' : 'Not chosen yet'
     };
   }
