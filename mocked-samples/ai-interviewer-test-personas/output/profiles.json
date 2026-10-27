@@ -1,0 +1,5601 @@
+[
+  {
+    "id": "RET-01",
+    "synthetic": true,
+    "name": "Dana Whitcomb",
+    "industry": "retail",
+    "role": "Store Associate (grocery)",
+    "seniority": "entry",
+    "contact": {
+      "email": "dana.whitcomb@example.test",
+      "phone": "555-0101",
+      "location": "Tucson, AZ"
+    },
+    "setup": {
+      "interview_type": "cold",
+      "resume_scenario": "n/a",
+      "resume_file": "resumes/RET-01-dana-whitcomb.md",
+      "job_description_file": "job_descriptions/RET-01-dana-whitcomb.md",
+      "resume_files": {
+        "md": "resumes/RET-01-dana-whitcomb.md",
+        "pdf": "resumes/RET-01-dana-whitcomb.pdf",
+        "docx": "resumes/RET-01-dana-whitcomb.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/RET-01-dana-whitcomb.md",
+        "pdf": "job_descriptions/RET-01-dana-whitcomb.pdf",
+        "docx": "job_descriptions/RET-01-dana-whitcomb.docx"
+      },
+      "role_display_name": "Store Associate (grocery)"
+    },
+    "interview_focus": [
+      "How she handled rush-hour checkout pressure and what drawer accuracy looked like",
+      "Her cross-training in the bakery and how quickly she picked up a new department",
+      "Experience with produce handling, which is new relative to her dry goods and dairy background"
+    ],
+    "accommodation": {
+      "key": "nt_voice",
+      "label": "Neurotypical, voice, defaults",
+      "category": "neurotypical",
+      "simulates": "Candidate using voice with all defaults and no assistive technology."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": true,
+        "ambient_volume": 0.3,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "automated",
+      "manual_note": null,
+      "wcag_2_2": [
+        {
+          "sc": "2.1.1",
+          "name": "Keyboard",
+          "level": "A"
+        },
+        {
+          "sc": "4.1.2",
+          "name": "Name, Role, Value",
+          "level": "A"
+        },
+        {
+          "sc": "3.3.2",
+          "name": "Labels or Instructions",
+          "level": "A"
+        },
+        {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        },
+        {
+          "id": "CUE-CTL-001",
+          "rule": "User can pause, resume, repeat, skip, ask for a hint, ask for a moment, and switch voice/text; push-to-talk available."
+        },
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        }
+      ],
+      "control_events_to_exercise": [
+        "give_me_a_sec"
+      ],
+      "tester_notes": [
+        "Control run: answer naturally in turns; no accommodations.",
+        "Use this persona to establish baseline scores and latency to compare every other persona against."
+      ]
+    }
+  },
+  {
+    "id": "RET-02",
+    "synthetic": true,
+    "name": "Marcus Oyelaran",
+    "industry": "retail",
+    "role": "Customer Service Representative (online retail)",
+    "seniority": "mid",
+    "contact": {
+      "email": "marcus.oyelaran@example.test",
+      "phone": "555-0102",
+      "location": "Columbus, OH"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "upload_new",
+      "resume_file": "resumes/RET-02-marcus-oyelaran.md",
+      "job_description_file": "job_descriptions/RET-02-marcus-oyelaran.md",
+      "resume_files": {
+        "md": "resumes/RET-02-marcus-oyelaran.md",
+        "pdf": "resumes/RET-02-marcus-oyelaran.pdf",
+        "docx": "resumes/RET-02-marcus-oyelaran.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/RET-02-marcus-oyelaran.md",
+        "pdf": "job_descriptions/RET-02-marcus-oyelaran.pdf",
+        "docx": "job_descriptions/RET-02-marcus-oyelaran.docx"
+      },
+      "role_display_name": "Customer Service Representative (online retail)"
+    },
+    "interview_focus": [
+      "Moving from peer coach to formal team lead, and how he would handle managing former peers",
+      "The template rewrite project and how the 20% reduction in repeat contacts was measured",
+      "His limited experience with queue forecasting and staffing, which the pod lead role requires"
+    ],
+    "accommodation": {
+      "key": "blind_nvda_chrome",
+      "label": "Blind, NVDA + Chrome (Windows)",
+      "category": "vision",
+      "simulates": "Totally blind candidate using NVDA with speech output, keyboard only."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": false,
+        "ambient_volume": 0.0,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": true,
+        "sr_profile": "NVDA",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": 250,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "keyboard_only",
+      "assistive_tech": "NVDA",
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "hybrid",
+      "manual_note": "Real screen reader pass required; automated tools (axe-core etc.) catch only part of the issues (docs/research/ui-testing-tools.md).",
+      "wcag_2_2": [
+        {
+          "sc": "1.3.1",
+          "name": "Info and Relationships",
+          "level": "A"
+        },
+        {
+          "sc": "1.3.2",
+          "name": "Meaningful Sequence",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.3",
+          "name": "Focus Order",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.6",
+          "name": "Headings and Labels",
+          "level": "AA"
+        },
+        {
+          "sc": "4.1.2",
+          "name": "Name, Role, Value",
+          "level": "A"
+        },
+        {
+          "sc": "4.1.3",
+          "name": "Status Messages",
+          "level": "AA"
+        },
+        {
+          "sc": "2.1.1",
+          "name": "Keyboard",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.2",
+          "name": "No Keyboard Trap",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.4",
+          "name": "Character Key Shortcuts",
+          "level": "A"
+        },
+        {
+          "sc": "1.4.2",
+          "name": "Audio Control",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        },
+        {
+          "id": "SPEC 4.3",
+          "rule": "Screen reader mode: one speaker at a time, gate on played audio, coalesced announcements, navigable transcript (role=log)."
+        },
+        {
+          "id": "SPEC 4.5",
+          "rule": "Advanced Accessibility: screen reader profiles (Generic, NVDA, JAWS, Narrator, VoiceOver macOS/iOS, TalkBack, Orca); untested profiles behave like Generic."
+        },
+        {
+          "id": "SPEC 4.1",
+          "rule": "End interview is a separate control with a confirmation whose safe choice takes focus; Uninterruptible states show a text banner and a hold."
+        },
+        {
+          "id": "CUE-AMB-001",
+          "rule": "Ambient sound has an independent volume and off switch."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        }
+      ],
+      "control_events_to_exercise": [
+        "pause",
+        "repeat",
+        "give_me_a_sec"
+      ],
+      "tester_notes": [
+        "Wear headphones; speaker playback can leak into the mic (SPEC 4.1 echo trap).",
+        "Listen for screen reader speech colliding with the interviewer's voice, and for any state announced twice.",
+        "Confirm 'Your turn' is announced only after the interviewer's last audio has played.",
+        "Confirm the transcript (role=log) can be navigated by reading commands."
+      ]
+    }
+  },
+  {
+    "id": "RET-03",
+    "synthetic": true,
+    "name": "Priya Raghunathan",
+    "industry": "retail",
+    "role": "Assistant Store Manager",
+    "seniority": "mid",
+    "contact": {
+      "email": "priya.raghunathan@example.test",
+      "phone": "555-0103",
+      "location": "Edison, NJ"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "select_saved",
+      "resume_file": "resumes/RET-03-priya-raghunathan.md",
+      "job_description_file": "job_descriptions/RET-03-priya-raghunathan.md",
+      "resume_files": {
+        "md": "resumes/RET-03-priya-raghunathan.md",
+        "pdf": "resumes/RET-03-priya-raghunathan.pdf",
+        "docx": "resumes/RET-03-priya-raghunathan.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/RET-03-priya-raghunathan.md",
+        "pdf": "job_descriptions/RET-03-priya-raghunathan.pdf",
+        "docx": "job_descriptions/RET-03-priya-raghunathan.docx"
+      },
+      "role_display_name": "Assistant Store Manager"
+    },
+    "interview_focus": [
+      "Stepping from assistant to full P&L ownership and where her budgeting experience is thinnest",
+      "How she achieved the shrink reduction and which steps would transfer to a new store",
+      "Hiring and promotion decisions she has made or influenced as an assistant manager"
+    ],
+    "accommodation": {
+      "key": "colorblind_deuteranopia",
+      "label": "Color vision: deuteranopia",
+      "category": "vision",
+      "simulates": "Candidate with red-green color vision deficiency (deuteranopia)."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": true,
+        "ambient_volume": 0.3,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "deuteranopia",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "automated",
+      "manual_note": null,
+      "wcag_2_2": [
+        {
+          "sc": "1.4.1",
+          "name": "Use of Color",
+          "level": "A"
+        },
+        {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.11",
+          "name": "Non-text Contrast",
+          "level": "AA"
+        },
+        {
+          "sc": "4.1.2",
+          "name": "Name, Role, Value",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        }
+      ],
+      "control_events_to_exercise": [
+        "pause"
+      ],
+      "tester_notes": [
+        "Status, mic level, error and success states must be distinguishable without color alone.",
+        "Check the simulator badge and call-conditions preset selector."
+      ]
+    }
+  },
+  {
+    "id": "RET-04",
+    "synthetic": true,
+    "name": "Tomas Villareal",
+    "industry": "retail",
+    "role": "Sales Associate, Consumer Electronics",
+    "seniority": "entry",
+    "contact": {
+      "email": "tomas.villareal@example.test",
+      "phone": "555-0104",
+      "location": "San Antonio, TX"
+    },
+    "setup": {
+      "interview_type": "cold",
+      "resume_scenario": "n/a",
+      "resume_file": "resumes/RET-04-tomas-villareal.md",
+      "job_description_file": "job_descriptions/RET-04-tomas-villareal.md",
+      "resume_files": {
+        "md": "resumes/RET-04-tomas-villareal.md",
+        "pdf": "resumes/RET-04-tomas-villareal.pdf",
+        "docx": "resumes/RET-04-tomas-villareal.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/RET-04-tomas-villareal.md",
+        "pdf": "job_descriptions/RET-04-tomas-villareal.pdf",
+        "docx": "job_descriptions/RET-04-tomas-villareal.docx"
+      },
+      "role_display_name": "Sales Associate, Consumer Electronics"
+    },
+    "interview_focus": [
+      "How he reached a 38% attachment rate and how he avoids pushy selling",
+      "His comfort with carrier plans and activations, which are new to him",
+      "Balancing classes toward his IT degree with a retail schedule"
+    ],
+    "accommodation": {
+      "key": "dyslexia",
+      "label": "Dyslexia: text spacing, captions, read-aloud",
+      "category": "neurodivergent",
+      "simulates": "Candidate with dyslexia who reads slowly, uses text-spacing overrides and a read-aloud tool."
+    },
+    "session_config": {
+      "interface": "both",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "accurate",
+        "interviewer_voice": "on",
+        "ambient_audio": false,
+        "ambient_volume": 0.0,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "extended"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "mouse+keyboard",
+      "assistive_tech": "Read-aloud (text to speech)",
+      "braille_display": false,
+      "user_css": "* { line-height: 1.5 !important; letter-spacing: 0.12em !important; word-spacing: 0.16em !important; } p { margin-bottom: 2em !important; }",
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "hybrid",
+      "manual_note": "Readability is a human judgment.",
+      "wcag_2_2": [
+        {
+          "sc": "1.4.12",
+          "name": "Text Spacing",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.4",
+          "name": "Resize Text",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.8",
+          "name": "Visual Presentation",
+          "level": "AAA"
+        },
+        {
+          "sc": "2.2.1",
+          "name": "Timing Adjustable",
+          "level": "A"
+        },
+        {
+          "sc": "3.3.2",
+          "name": "Labels or Instructions",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "CUE-CAP-001/002",
+          "rule": "Captions have accurate and as_heard modes; a captions user is not penalised by degraded audio."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        },
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        }
+      ],
+      "control_events_to_exercise": [
+        "repeat",
+        "pause",
+        "switch_voice_text"
+      ],
+      "tester_notes": [
+        "Apply the 1.4.12 text-spacing override and confirm nothing clips or overlaps.",
+        "Use captions to re-read the question; spelling errors in typed answers must not lower the score.",
+        "Interviewer wording should be short and one question at a time (INT constraints)."
+      ]
+    }
+  },
+  {
+    "id": "RET-05",
+    "synthetic": true,
+    "name": "Lena Kowalczyk",
+    "industry": "retail",
+    "role": "E-commerce Merchandising Coordinator",
+    "seniority": "mid",
+    "contact": {
+      "email": "lena.kowalczyk@example.test",
+      "phone": "555-0105",
+      "location": "Milwaukee, WI"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "upload_new",
+      "resume_file": "resumes/RET-05-lena-kowalczyk.md",
+      "job_description_file": "job_descriptions/RET-05-lena-kowalczyk.md",
+      "resume_files": {
+        "md": "resumes/RET-05-lena-kowalczyk.md",
+        "pdf": "resumes/RET-05-lena-kowalczyk.pdf",
+        "docx": "resumes/RET-05-lena-kowalczyk.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/RET-05-lena-kowalczyk.md",
+        "pdf": "job_descriptions/RET-05-lena-kowalczyk.pdf",
+        "docx": "job_descriptions/RET-05-lena-kowalczyk.docx"
+      },
+      "role_display_name": "E-commerce Merchandising Coordinator"
+    },
+    "interview_focus": [
+      "The 9% conversion improvement and how she isolated the effect of reordering",
+      "Her path from coordination work to category ownership, including margin and pricing exposure she lacks",
+      "How she would manage vendor relationships given she has mostly worked internally"
+    ],
+    "accommodation": {
+      "key": "motor_tremor_one_hand",
+      "label": "Motor: hand tremor / one-handed use",
+      "category": "motor",
+      "simulates": "Candidate with imprecise pointer control, operating with one hand."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": true,
+        "ambient_volume": 0.3,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 8
+    },
+    "tests": {
+      "automation": "automated",
+      "manual_note": null,
+      "wcag_2_2": [
+        {
+          "sc": "2.5.1",
+          "name": "Pointer Gestures",
+          "level": "A"
+        },
+        {
+          "sc": "2.5.2",
+          "name": "Pointer Cancellation",
+          "level": "A"
+        },
+        {
+          "sc": "2.5.7",
+          "name": "Dragging Movements",
+          "level": "AA"
+        },
+        {
+          "sc": "2.5.8",
+          "name": "Target Size (Minimum)",
+          "level": "AA"
+        },
+        {
+          "sc": "2.4.7",
+          "name": "Focus Visible",
+          "level": "AA"
+        },
+        {
+          "sc": "2.1.4",
+          "name": "Character Key Shortcuts",
+          "level": "A"
+        },
+        {
+          "sc": "3.3.2",
+          "name": "Labels or Instructions",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "SPEC 4.1",
+          "rule": "End interview is a separate control with a confirmation whose safe choice takes focus; Uninterruptible states show a text banner and a hold."
+        },
+        {
+          "id": "CUE-CTL-001",
+          "rule": "User can pause, resume, repeat, skip, ask for a hint, ask for a moment, and switch voice/text; push-to-talk available."
+        }
+      ],
+      "control_events_to_exercise": [
+        "pause",
+        "repeat"
+      ],
+      "tester_notes": [
+        "Mis-click near controls; End interview must not be hit by accident, and its confirmation must default to 'Keep going'.",
+        "Check target sizes of at least 24x24 CSS px or sufficient spacing.",
+        "Test with one-handed keyboard use and any shortcuts."
+      ]
+    }
+  },
+  {
+    "id": "HOS-01",
+    "synthetic": true,
+    "name": "Grace Adeyemi-Park",
+    "industry": "hospitality",
+    "role": "Front Desk Agent (hotel)",
+    "seniority": "entry",
+    "contact": {
+      "email": "grace.park@example.test",
+      "phone": "555-0106",
+      "location": "Savannah, GA"
+    },
+    "setup": {
+      "interview_type": "cold",
+      "resume_scenario": "n/a",
+      "resume_file": "resumes/HOS-01-grace-adeyemi-park.md",
+      "job_description_file": "job_descriptions/HOS-01-grace-adeyemi-park.md",
+      "resume_files": {
+        "md": "resumes/HOS-01-grace-adeyemi-park.md",
+        "pdf": "resumes/HOS-01-grace-adeyemi-park.pdf",
+        "docx": "resumes/HOS-01-grace-adeyemi-park.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/HOS-01-grace-adeyemi-park.md",
+        "pdf": "job_descriptions/HOS-01-grace-adeyemi-park.pdf",
+        "docx": "job_descriptions/HOS-01-grace-adeyemi-park.docx"
+      },
+      "role_display_name": "Front Desk Agent (hotel)"
+    },
+    "interview_focus": [
+      "A specific guest complaint she handled and the outcome",
+      "Her limited experience with overnight audit duties and cash reconciliation",
+      "Whether her restaurant background helps with reservation and upselling work"
+    ],
+    "accommodation": {
+      "key": "hard_of_hearing",
+      "label": "Hard of hearing, captions + clipped audio",
+      "category": "hearing",
+      "simulates": "Candidate with partial hearing loss using captions, on a laggy clipped call."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "accurate",
+        "interviewer_voice": "on",
+        "ambient_audio": false,
+        "ambient_volume": 0.0,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "laggy_clipped",
+        "seed": 11
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "hybrid",
+      "manual_note": "Judge audio intelligibility by ear.",
+      "wcag_2_2": [
+        {
+          "sc": "1.2.4",
+          "name": "Captions (Live)",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.2",
+          "name": "Audio Control",
+          "level": "A"
+        },
+        {
+          "sc": "4.1.3",
+          "name": "Status Messages",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.1",
+          "name": "Use of Color",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "CUE-CAP-001/002",
+          "rule": "Captions have accurate and as_heard modes; a captions user is not penalised by degraded audio."
+        },
+        {
+          "id": "CUE-AMB-001",
+          "rule": "Ambient sound has an independent volume and off switch."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        },
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        }
+      ],
+      "control_events_to_exercise": [
+        "repeat"
+      ],
+      "tester_notes": [
+        "Run with the laggy_clipped preset and accurate captions: captions must show true text even when audio is clipped.",
+        "Compare with as_heard mode (hard-mode practice); the user relying on captions must not be penalised.",
+        "Use the interviewer voice volume control; ambient sound off."
+      ]
+    }
+  },
+  {
+    "id": "HOS-02",
+    "synthetic": true,
+    "name": "Jonah Feldstein",
+    "industry": "hospitality",
+    "role": "Event Coordinator",
+    "seniority": "mid",
+    "contact": {
+      "email": "jonah.feldstein@example.test",
+      "phone": "555-0107",
+      "location": "Denver, CO"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "upload_new",
+      "resume_file": "resumes/HOS-02-jonah-feldstein.md",
+      "job_description_file": "job_descriptions/HOS-02-jonah-feldstein.md",
+      "resume_files": {
+        "md": "resumes/HOS-02-jonah-feldstein.md",
+        "pdf": "resumes/HOS-02-jonah-feldstein.pdf",
+        "docx": "resumes/HOS-02-jonah-feldstein.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/HOS-02-jonah-feldstein.md",
+        "pdf": "job_descriptions/HOS-02-jonah-feldstein.pdf",
+        "docx": "job_descriptions/HOS-02-jonah-feldstein.docx"
+      },
+      "role_display_name": "Event Coordinator"
+    },
+    "interview_focus": [
+      "The 8% vendor savings and how he approached negotiating",
+      "Moving from coordinator to owning proposals and invoices, including sales exposure",
+      "An event that went wrong and how he recovered"
+    ],
+    "accommodation": {
+      "key": "adhd",
+      "label": "ADHD: pacing, interruptions, low distraction",
+      "category": "neurodivergent",
+      "simulates": "Candidate with ADHD who loses the thread, needs repeats and benefits from a calm interface."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": false,
+        "ambient_volume": 0.0,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": true,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "hybrid",
+      "manual_note": "Pacing and distraction need a human tester.",
+      "wcag_2_2": [
+        {
+          "sc": "2.2.1",
+          "name": "Timing Adjustable",
+          "level": "A"
+        },
+        {
+          "sc": "2.2.2",
+          "name": "Pause, Stop, Hide",
+          "level": "A"
+        },
+        {
+          "sc": "2.3.3",
+          "name": "Animation from Interactions",
+          "level": "AAA"
+        },
+        {
+          "sc": "1.4.2",
+          "name": "Audio Control",
+          "level": "A"
+        },
+        {
+          "sc": "3.2.1",
+          "name": "On Focus",
+          "level": "A"
+        },
+        {
+          "sc": "3.2.2",
+          "name": "On Input",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "CUE-CTL-001",
+          "rule": "User can pause, resume, repeat, skip, ask for a hint, ask for a moment, and switch voice/text; push-to-talk available."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        },
+        {
+          "id": "SPEC 4.1",
+          "rule": "End interview is a separate control with a confirmation whose safe choice takes focus; Uninterruptible states show a text banner and a hold."
+        }
+      ],
+      "control_events_to_exercise": [
+        "repeat",
+        "pause",
+        "hint",
+        "give_me_a_sec"
+      ],
+      "tester_notes": [
+        "Drift off-topic once, then ask for a repeat; ask for a hint on a question you pretend to be stuck on.",
+        "Pause mid-session for a few minutes and resume; resuming repeats the Uninterruptible notice once.",
+        "Check that nothing moves or sounds without a way to stop it."
+      ]
+    }
+  },
+  {
+    "id": "HOS-03",
+    "synthetic": true,
+    "name": "Rhys Callahan",
+    "industry": "hospitality",
+    "role": "Reservations Agent (travel/airline)",
+    "seniority": "mid",
+    "contact": {
+      "email": "rhys.callahan@example.test",
+      "phone": "555-0108",
+      "location": "Charlotte, NC"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "select_saved",
+      "resume_file": "resumes/HOS-03-rhys-callahan.md",
+      "job_description_file": "job_descriptions/HOS-03-rhys-callahan.md",
+      "resume_files": {
+        "md": "resumes/HOS-03-rhys-callahan.md",
+        "pdf": "resumes/HOS-03-rhys-callahan.pdf",
+        "docx": "resumes/HOS-03-rhys-callahan.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/HOS-03-rhys-callahan.md",
+        "pdf": "job_descriptions/HOS-03-rhys-callahan.pdf",
+        "docx": "job_descriptions/HOS-03-rhys-callahan.docx"
+      },
+      "role_display_name": "Reservations Agent (travel/airline)"
+    },
+    "interview_focus": [
+      "Shifting from high-volume phone work to longer relationship-based group bookings",
+      "How he handled disruption surges and what he did to keep quality scores high",
+      "His exposure to group fares and deposit schedules, which is thin on the resume"
+    ],
+    "accommodation": {
+      "key": "speech_stutter",
+      "label": "Speech: stutter / disfluent speech",
+      "category": "speech",
+      "simulates": "Candidate who stutters; repetitions, blocks and long pauses mid-answer."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": true,
+        "ambient_volume": 0.3,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.6,
+        "max_silence_secs": 5.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "hybrid",
+      "manual_note": "Needs recorded or synthesized disfluent audio to drive the microphone.",
+      "wcag_2_2": [
+        {
+          "sc": "2.2.1",
+          "name": "Timing Adjustable",
+          "level": "A"
+        },
+        {
+          "sc": "3.3.2",
+          "name": "Labels or Instructions",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "CUE-CTL-001",
+          "rule": "User can pause, resume, repeat, skip, ask for a hint, ask for a moment, and switch voice/text; push-to-talk available."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        },
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        }
+      ],
+      "control_events_to_exercise": [
+        "give_me_a_sec",
+        "repeat"
+      ],
+      "tester_notes": [
+        "Use recorded or synthesized disfluent speech: syllable repetitions and 3-5 second blocks inside one answer. Do not caricature.",
+        "Count false cutoffs: the interviewer must not talk over the candidate.",
+        "Fluency must not reduce the content score (EVL-FAI-001)."
+      ]
+    }
+  },
+  {
+    "id": "HOS-04",
+    "synthetic": true,
+    "name": "Amara Nwosu",
+    "industry": "hospitality",
+    "role": "Travel Consultant",
+    "seniority": "senior",
+    "contact": {
+      "email": "amara.nwosu@example.test",
+      "phone": "555-0109",
+      "location": "Atlanta, GA"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "upload_new",
+      "resume_file": "resumes/HOS-04-amara-nwosu.md",
+      "job_description_file": "job_descriptions/HOS-04-amara-nwosu.md",
+      "resume_files": {
+        "md": "resumes/HOS-04-amara-nwosu.md",
+        "pdf": "resumes/HOS-04-amara-nwosu.pdf",
+        "docx": "resumes/HOS-04-amara-nwosu.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/HOS-04-amara-nwosu.md",
+        "pdf": "job_descriptions/HOS-04-amara-nwosu.pdf",
+        "docx": "job_descriptions/HOS-04-amara-nwosu.docx"
+      },
+      "role_display_name": "Travel Consultant"
+    },
+    "interview_focus": [
+      "Her shift from individual production to leading a team and being measured on team results",
+      "How she grew repeat bookings by 24% and whether the approach scales to a team",
+      "Her depth in corporate travel policy after several years focused mainly on leisure clients"
+    ],
+    "accommodation": {
+      "key": "blind_voiceover_ios_safari",
+      "label": "Blind, VoiceOver + Safari (iPhone)",
+      "category": "vision",
+      "simulates": "Blind candidate on an iPhone using VoiceOver gestures."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": false,
+        "ambient_volume": 0.0,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": true,
+        "sr_profile": "VoiceOver on iOS and iPadOS",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": 240,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "webkit",
+      "os": "iOS",
+      "viewport": {
+        "w": 390,
+        "h": 844
+      },
+      "device_scale_factor": 3,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "touch",
+      "assistive_tech": "VoiceOver (iOS)",
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "manual_required",
+      "manual_note": "Real screen reader pass required; automated tools (axe-core etc.) catch only part of the issues (docs/research/ui-testing-tools.md).",
+      "wcag_2_2": [
+        {
+          "sc": "1.3.1",
+          "name": "Info and Relationships",
+          "level": "A"
+        },
+        {
+          "sc": "1.3.2",
+          "name": "Meaningful Sequence",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.3",
+          "name": "Focus Order",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.6",
+          "name": "Headings and Labels",
+          "level": "AA"
+        },
+        {
+          "sc": "4.1.2",
+          "name": "Name, Role, Value",
+          "level": "A"
+        },
+        {
+          "sc": "4.1.3",
+          "name": "Status Messages",
+          "level": "AA"
+        },
+        {
+          "sc": "2.1.1",
+          "name": "Keyboard",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.2",
+          "name": "No Keyboard Trap",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.4",
+          "name": "Character Key Shortcuts",
+          "level": "A"
+        },
+        {
+          "sc": "1.4.2",
+          "name": "Audio Control",
+          "level": "A"
+        },
+        {
+          "sc": "1.3.4",
+          "name": "Orientation",
+          "level": "AA"
+        },
+        {
+          "sc": "2.5.1",
+          "name": "Pointer Gestures",
+          "level": "A"
+        },
+        {
+          "sc": "2.5.8",
+          "name": "Target Size (Minimum)",
+          "level": "AA"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        },
+        {
+          "id": "SPEC 4.3",
+          "rule": "Screen reader mode: one speaker at a time, gate on played audio, coalesced announcements, navigable transcript (role=log)."
+        },
+        {
+          "id": "SPEC 4.5",
+          "rule": "Advanced Accessibility: screen reader profiles (Generic, NVDA, JAWS, Narrator, VoiceOver macOS/iOS, TalkBack, Orca); untested profiles behave like Generic."
+        },
+        {
+          "id": "SPEC 4.1",
+          "rule": "End interview is a separate control with a confirmation whose safe choice takes focus; Uninterruptible states show a text banner and a hold."
+        },
+        {
+          "id": "CUE-AMB-001",
+          "rule": "Ambient sound has an independent volume and off switch."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        }
+      ],
+      "control_events_to_exercise": [
+        "pause",
+        "repeat",
+        "give_me_a_sec"
+      ],
+      "tester_notes": [
+        "Wear headphones; speaker playback can leak into the mic (SPEC 4.1 echo trap).",
+        "Listen for screen reader speech colliding with the interviewer's voice, and for any state announced twice.",
+        "Confirm 'Your turn' is announced only after the interviewer's last audio has played.",
+        "Confirm the transcript (role=log) can be navigated by reading commands.",
+        "Run in portrait and landscape; no controls may need a multi-finger or path gesture.",
+        "Check mic permission prompt is reachable with VoiceOver."
+      ]
+    }
+  },
+  {
+    "id": "HLT-01",
+    "synthetic": true,
+    "name": "Elias Brandt",
+    "industry": "healthcare",
+    "role": "Patient Access Representative",
+    "seniority": "entry",
+    "contact": {
+      "email": "elias.brandt@example.test",
+      "phone": "555-0110",
+      "location": "Madison, WI"
+    },
+    "setup": {
+      "interview_type": "cold",
+      "resume_scenario": "n/a",
+      "resume_file": "resumes/HLT-01-elias-brandt.md",
+      "job_description_file": "job_descriptions/HLT-01-elias-brandt.md",
+      "resume_files": {
+        "md": "resumes/HLT-01-elias-brandt.md",
+        "pdf": "resumes/HLT-01-elias-brandt.pdf",
+        "docx": "resumes/HLT-01-elias-brandt.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/HLT-01-elias-brandt.md",
+        "pdf": "job_descriptions/HLT-01-elias-brandt.pdf",
+        "docx": "job_descriptions/HLT-01-elias-brandt.docx"
+      },
+      "role_display_name": "Patient Access Representative"
+    },
+    "interview_focus": [
+      "Experience moving from clinic registration to a hospital setting with emergency volume",
+      "How the candidate handles upset patients or families at the registration desk",
+      "Depth of knowledge on insurance verification and authorizations"
+    ],
+    "accommodation": {
+      "key": "nt_text_first",
+      "label": "Neurotypical, text-first, switches to voice",
+      "category": "neurotypical",
+      "simulates": "Candidate who prefers typing and tries voice partway through."
+    },
+    "session_config": {
+      "interface": "text",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": true,
+        "ambient_volume": 0.3,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "automated",
+      "manual_note": null,
+      "wcag_2_2": [
+        {
+          "sc": "2.1.1",
+          "name": "Keyboard",
+          "level": "A"
+        },
+        {
+          "sc": "3.3.2",
+          "name": "Labels or Instructions",
+          "level": "A"
+        },
+        {
+          "sc": "4.1.3",
+          "name": "Status Messages",
+          "level": "AA"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "ORC-MOD-001",
+          "rule": "Switch between voice and text mid-session without losing history."
+        },
+        {
+          "id": "CUE-MOD-002",
+          "rule": "Switching mode takes effect at once, no restart, no replay."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        }
+      ],
+      "control_events_to_exercise": [
+        "switch_voice_text"
+      ],
+      "tester_notes": [
+        "Start in text, switch to voice after question 2, then back to text.",
+        "History must stay intact; nothing replays."
+      ]
+    }
+  },
+  {
+    "id": "HLT-02",
+    "synthetic": true,
+    "name": "Sofia Marchetti",
+    "industry": "healthcare",
+    "role": "Health Information Technician",
+    "seniority": "mid",
+    "contact": {
+      "email": "sofia.marchetti@example.test",
+      "phone": "555-0111",
+      "location": "Providence, RI"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "upload_new",
+      "resume_file": "resumes/HLT-02-sofia-marchetti.md",
+      "job_description_file": "job_descriptions/HLT-02-sofia-marchetti.md",
+      "resume_files": {
+        "md": "resumes/HLT-02-sofia-marchetti.md",
+        "pdf": "resumes/HLT-02-sofia-marchetti.pdf",
+        "docx": "resumes/HLT-02-sofia-marchetti.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/HLT-02-sofia-marchetti.md",
+        "pdf": "job_descriptions/HLT-02-sofia-marchetti.pdf",
+        "docx": "job_descriptions/HLT-02-sofia-marchetti.docx"
+      },
+      "role_display_name": "Health Information Technician"
+    },
+    "interview_focus": [
+      "Experience with inpatient coding versus primarily outpatient work",
+      "How audit accuracy was measured and what drove improvement",
+      "Handling physician queries and delinquent chart escalation"
+    ],
+    "accommodation": {
+      "key": "deaf_asl_text",
+      "label": "Deaf (ASL), captions on, answers by text",
+      "category": "hearing",
+      "simulates": "Deaf candidate who uses captions and replies by typing; cannot hear the 'your turn' chime."
+    },
+    "session_config": {
+      "interface": "both",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "accurate",
+        "interviewer_voice": "on",
+        "ambient_audio": false,
+        "ambient_volume": 0.0,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "hybrid",
+      "manual_note": "Caption accuracy and perceived timing should be judged by a human reader.",
+      "wcag_2_2": [
+        {
+          "sc": "1.2.4",
+          "name": "Captions (Live)",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.1",
+          "name": "Use of Color",
+          "level": "A"
+        },
+        {
+          "sc": "1.4.2",
+          "name": "Audio Control",
+          "level": "A"
+        },
+        {
+          "sc": "4.1.3",
+          "name": "Status Messages",
+          "level": "AA"
+        },
+        {
+          "sc": "2.2.1",
+          "name": "Timing Adjustable",
+          "level": "A"
+        },
+        {
+          "sc": "3.3.2",
+          "name": "Labels or Instructions",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        },
+        {
+          "id": "CUE-CAP-001/002",
+          "rule": "Captions have accurate and as_heard modes; a captions user is not penalised by degraded audio."
+        },
+        {
+          "id": "ORC-MOD-001",
+          "rule": "Switch between voice and text mid-session without losing history."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        }
+      ],
+      "control_events_to_exercise": [
+        "switch_voice_text",
+        "repeat"
+      ],
+      "tester_notes": [
+        "Turn captions on in one press from the Accessibility button and from the main screen.",
+        "Confirm every audio cue has a visual equivalent: 'Your turn', Thinking, Uninterruptible.",
+        "Reply by typing after the first question; the typed answers must be scored the same as spoken ones."
+      ]
+    }
+  },
+  {
+    "id": "HLT-03",
+    "synthetic": true,
+    "name": "Kenji Watanabe-Cruz",
+    "industry": "healthcare",
+    "role": "Medical Laboratory Technician",
+    "seniority": "mid",
+    "contact": {
+      "email": "kenji.cruz@example.test",
+      "phone": "555-0112",
+      "location": "Sacramento, CA"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "select_saved",
+      "resume_file": "resumes/HLT-03-kenji-watanabe-cruz.md",
+      "job_description_file": "job_descriptions/HLT-03-kenji-watanabe-cruz.md",
+      "resume_files": {
+        "md": "resumes/HLT-03-kenji-watanabe-cruz.md",
+        "pdf": "resumes/HLT-03-kenji-watanabe-cruz.pdf",
+        "docx": "resumes/HLT-03-kenji-watanabe-cruz.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/HLT-03-kenji-watanabe-cruz.md",
+        "pdf": "job_descriptions/HLT-03-kenji-watanabe-cruz.pdf",
+        "docx": "job_descriptions/HLT-03-kenji-watanabe-cruz.docx"
+      },
+      "role_display_name": "Medical Laboratory Technician"
+    },
+    "interview_focus": [
+      "Gaps in microbiology and coagulation exposure compared with the JD",
+      "How QC failures were investigated and resolved",
+      "Experience scaling from one site to a multi-hospital lab network"
+    ],
+    "accommodation": {
+      "key": "autism_sensory",
+      "label": "Autism: literal language, sensory sensitivity",
+      "category": "neurodivergent",
+      "simulates": "Candidate on the autism spectrum who interprets questions literally and is sensitive to sudden sounds and motion."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": false,
+        "ambient_volume": 0.0,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": true,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "hybrid",
+      "manual_note": "Sensory comfort is a human judgment.",
+      "wcag_2_2": [
+        {
+          "sc": "1.4.2",
+          "name": "Audio Control",
+          "level": "A"
+        },
+        {
+          "sc": "2.2.2",
+          "name": "Pause, Stop, Hide",
+          "level": "A"
+        },
+        {
+          "sc": "2.3.3",
+          "name": "Animation from Interactions",
+          "level": "AAA"
+        },
+        {
+          "sc": "3.2.1",
+          "name": "On Focus",
+          "level": "A"
+        },
+        {
+          "sc": "3.2.2",
+          "name": "On Input",
+          "level": "A"
+        },
+        {
+          "sc": "3.3.2",
+          "name": "Labels or Instructions",
+          "level": "A"
+        },
+        {
+          "sc": "3.2.6",
+          "name": "Consistent Help",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "CUE-AMB-001",
+          "rule": "Ambient sound has an independent volume and off switch."
+        },
+        {
+          "id": "SPEC 4.1",
+          "rule": "End interview is a separate control with a confirmation whose safe choice takes focus; Uninterruptible states show a text banner and a hold."
+        },
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        }
+      ],
+      "control_events_to_exercise": [
+        "repeat",
+        "hint",
+        "give_me_a_sec"
+      ],
+      "tester_notes": [
+        "Ask what an ambiguous question means ('tell me about yourself') and check the interviewer can rephrase concretely.",
+        "The chime and thinking sounds must be mutable and not startling; cues must be predictable and consistent.",
+        "The Uninterruptible notice and hold must be clearly explained; no surprise state changes."
+      ]
+    }
+  },
+  {
+    "id": "HLT-04",
+    "synthetic": true,
+    "name": "Ruth Okonkwo",
+    "industry": "healthcare",
+    "role": "Clinical Documentation Specialist",
+    "seniority": "senior",
+    "contact": {
+      "email": "ruth.okonkwo@example.test",
+      "phone": "555-0113",
+      "location": "Columbus, OH"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "upload_new",
+      "resume_file": "resumes/HLT-04-ruth-okonkwo.md",
+      "job_description_file": "job_descriptions/HLT-04-ruth-okonkwo.md",
+      "resume_files": {
+        "md": "resumes/HLT-04-ruth-okonkwo.md",
+        "pdf": "resumes/HLT-04-ruth-okonkwo.pdf",
+        "docx": "resumes/HLT-04-ruth-okonkwo.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/HLT-04-ruth-okonkwo.md",
+        "pdf": "job_descriptions/HLT-04-ruth-okonkwo.pdf",
+        "docx": "job_descriptions/HLT-04-ruth-okonkwo.docx"
+      },
+      "role_display_name": "Clinical Documentation Specialist"
+    },
+    "interview_focus": [
+      "Transition from individual contributor to managing a multi-site CDI team",
+      "Compliance boundaries in query practice and how they were enforced",
+      "How documented CMI gains were measured and attributed"
+    ],
+    "accommodation": {
+      "key": "low_vision_zoom_400",
+      "label": "Low vision, 400% zoom / reflow",
+      "category": "vision",
+      "simulates": "Candidate magnifying the page to 400% (320 CSS px wide) with large captions."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "accurate",
+        "interviewer_voice": "on",
+        "ambient_audio": true,
+        "ambient_volume": 0.3,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "x-large",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 1024
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 400,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "automated",
+      "manual_note": null,
+      "wcag_2_2": [
+        {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.4",
+          "name": "Resize Text",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.10",
+          "name": "Reflow",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.11",
+          "name": "Non-text Contrast",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.12",
+          "name": "Text Spacing",
+          "level": "AA"
+        },
+        {
+          "sc": "2.4.7",
+          "name": "Focus Visible",
+          "level": "AA"
+        },
+        {
+          "sc": "2.4.11",
+          "name": "Focus Not Obscured (Minimum)",
+          "level": "AA"
+        },
+        {
+          "sc": "1.3.4",
+          "name": "Orientation",
+          "level": "AA"
+        },
+        {
+          "sc": "2.5.8",
+          "name": "Target Size (Minimum)",
+          "level": "AA"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        },
+        {
+          "id": "CUE-CAP-001/002",
+          "rule": "Captions have accurate and as_heard modes; a captions user is not penalised by degraded audio."
+        },
+        {
+          "id": "SPEC 4.1",
+          "rule": "End interview is a separate control with a confirmation whose safe choice takes focus; Uninterruptible states show a text banner and a hold."
+        }
+      ],
+      "control_events_to_exercise": [
+        "pause",
+        "repeat"
+      ],
+      "tester_notes": [
+        "No horizontal scrolling at 320 CSS px; no clipped or overlapping controls.",
+        "Accessibility button must remain visible and first in focus order.",
+        "Check the End interview control and its confirmation at 400%."
+      ]
+    }
+  },
+  {
+    "id": "HLT-05",
+    "synthetic": true,
+    "name": "Bianca Delacroix",
+    "industry": "healthcare",
+    "role": "Registered Nurse, Medical-Surgical",
+    "seniority": "mid",
+    "contact": {
+      "email": "bianca.delacroix@example.test",
+      "phone": "555-0114",
+      "location": "Tampa, FL"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "upload_new",
+      "resume_file": "resumes/HLT-05-bianca-delacroix.md",
+      "job_description_file": "job_descriptions/HLT-05-bianca-delacroix.md",
+      "resume_files": {
+        "md": "resumes/HLT-05-bianca-delacroix.md",
+        "pdf": "resumes/HLT-05-bianca-delacroix.pdf",
+        "docx": "resumes/HLT-05-bianca-delacroix.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/HLT-05-bianca-delacroix.md",
+        "pdf": "job_descriptions/HLT-05-bianca-delacroix.pdf",
+        "docx": "job_descriptions/HLT-05-bianca-delacroix.docx"
+      },
+      "role_display_name": "Registered Nurse, Medical-Surgical"
+    },
+    "interview_focus": [
+      "Experience with telemetry and rhythm interpretation versus pure med-surg",
+      "A time she recognized deterioration in a patient and how she escalated",
+      "Her fall-prevention project: role, tactics, and results"
+    ],
+    "accommodation": {
+      "key": "adhd_dyslexia",
+      "label": "ADHD + dyslexia",
+      "category": "neurodivergent",
+      "simulates": "Candidate with both ADHD and dyslexia: needs captions, spacing, calm UI and repeats."
+    },
+    "session_config": {
+      "interface": "both",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "accurate",
+        "interviewer_voice": "on",
+        "ambient_audio": false,
+        "ambient_volume": 0.0,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "extended"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": true,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": "* { line-height: 1.5 !important; letter-spacing: 0.12em !important; word-spacing: 0.16em !important; } p { margin-bottom: 2em !important; }",
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "hybrid",
+      "manual_note": null,
+      "wcag_2_2": [
+        {
+          "sc": "1.4.12",
+          "name": "Text Spacing",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.4",
+          "name": "Resize Text",
+          "level": "AA"
+        },
+        {
+          "sc": "2.2.1",
+          "name": "Timing Adjustable",
+          "level": "A"
+        },
+        {
+          "sc": "2.2.2",
+          "name": "Pause, Stop, Hide",
+          "level": "A"
+        },
+        {
+          "sc": "2.3.3",
+          "name": "Animation from Interactions",
+          "level": "AAA"
+        },
+        {
+          "sc": "1.4.2",
+          "name": "Audio Control",
+          "level": "A"
+        },
+        {
+          "sc": "3.3.2",
+          "name": "Labels or Instructions",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "CUE-CAP-001/002",
+          "rule": "Captions have accurate and as_heard modes; a captions user is not penalised by degraded audio."
+        },
+        {
+          "id": "CUE-CTL-001",
+          "rule": "User can pause, resume, repeat, skip, ask for a hint, ask for a moment, and switch voice/text; push-to-talk available."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        }
+      ],
+      "control_events_to_exercise": [
+        "repeat",
+        "pause",
+        "hint",
+        "give_me_a_sec",
+        "switch_voice_text"
+      ],
+      "tester_notes": [
+        "Combine the dyslexia and ADHD behaviours: captions on, text spacing override, frequent repeats and a mid-session pause.",
+        "Check combined settings do not conflict (captions size vs spacing vs reduced motion)."
+      ]
+    }
+  },
+  {
+    "id": "LOG-01",
+    "synthetic": true,
+    "name": "Victor Szymanski",
+    "industry": "logistics",
+    "role": "Freight Dispatcher",
+    "seniority": "mid",
+    "contact": {
+      "email": "victor.szymanski@example.test",
+      "phone": "555-0115",
+      "location": "Joliet, IL"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "select_saved",
+      "resume_file": "resumes/LOG-01-victor-szymanski.md",
+      "job_description_file": "job_descriptions/LOG-01-victor-szymanski.md",
+      "resume_files": {
+        "md": "resumes/LOG-01-victor-szymanski.md",
+        "pdf": "resumes/LOG-01-victor-szymanski.pdf",
+        "docx": "resumes/LOG-01-victor-szymanski.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/LOG-01-victor-szymanski.md",
+        "pdf": "job_descriptions/LOG-01-victor-szymanski.pdf",
+        "docx": "job_descriptions/LOG-01-victor-szymanski.docx"
+      },
+      "role_display_name": "Freight Dispatcher"
+    },
+    "interview_focus": [
+      "Owner-operator management versus a company-driver-only fleet",
+      "Specifics behind the on-time delivery improvement",
+      "Readiness to coach or supervise other dispatchers"
+    ],
+    "accommodation": {
+      "key": "nt_rough_day",
+      "label": "Neurotypical, bad connection simulator",
+      "category": "neurotypical",
+      "simulates": "Candidate on a poor network, using the Conditions Simulator's hardest preset."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": true,
+        "ambient_volume": 0.3,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "rough_day",
+        "seed": 7
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "automated",
+      "manual_note": null,
+      "wcag_2_2": [
+        {
+          "sc": "4.1.3",
+          "name": "Status Messages",
+          "level": "AA"
+        },
+        {
+          "sc": "2.2.1",
+          "name": "Timing Adjustable",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        },
+        {
+          "id": "CUE-CTL-001",
+          "rule": "User can pause, resume, repeat, skip, ask for a hint, ask for a moment, and switch voice/text; push-to-talk available."
+        }
+      ],
+      "control_events_to_exercise": [
+        "repeat",
+        "give_me_a_sec"
+      ],
+      "tester_notes": [
+        "Ask for a repeat after any clipped question.",
+        "Check recovery moments: long silence, false cutoff, first-time simulator notice."
+      ]
+    }
+  },
+  {
+    "id": "LOG-02",
+    "synthetic": true,
+    "name": "Hannah Lindqvist",
+    "industry": "logistics",
+    "role": "Logistics Coordinator",
+    "seniority": "mid",
+    "contact": {
+      "email": "hannah.lindqvist@example.test",
+      "phone": "555-0116",
+      "location": "Minneapolis, MN"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "upload_new",
+      "resume_file": "resumes/LOG-02-hannah-lindqvist.md",
+      "job_description_file": "job_descriptions/LOG-02-hannah-lindqvist.md",
+      "resume_files": {
+        "md": "resumes/LOG-02-hannah-lindqvist.md",
+        "pdf": "resumes/LOG-02-hannah-lindqvist.pdf",
+        "docx": "resumes/LOG-02-hannah-lindqvist.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/LOG-02-hannah-lindqvist.md",
+        "pdf": "job_descriptions/LOG-02-hannah-lindqvist.pdf",
+        "docx": "job_descriptions/LOG-02-hannah-lindqvist.docx"
+      },
+      "role_display_name": "Logistics Coordinator"
+    },
+    "interview_focus": [
+      "Depth of ocean freight experience versus mostly domestic and drayage work",
+      "How the 6% freight savings were identified and verified",
+      "Handling a customer-facing shipment delay"
+    ],
+    "accommodation": {
+      "key": "motor_voice_control",
+      "label": "Motor: voice control (Dragon / OS voice control)",
+      "category": "motor",
+      "simulates": "Candidate operating the page by speaking commands, using push-to-talk to keep commands out of the interview."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": true,
+        "ambient_volume": 0.3,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": true,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "voice_control",
+      "assistive_tech": "Voice control software",
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "hybrid",
+      "manual_note": "Voice-control software needs a human run.",
+      "wcag_2_2": [
+        {
+          "sc": "2.5.3",
+          "name": "Label in Name",
+          "level": "A"
+        },
+        {
+          "sc": "4.1.2",
+          "name": "Name, Role, Value",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.1",
+          "name": "Keyboard",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.6",
+          "name": "Headings and Labels",
+          "level": "AA"
+        },
+        {
+          "sc": "2.5.8",
+          "name": "Target Size (Minimum)",
+          "level": "AA"
+        },
+        {
+          "sc": "3.3.2",
+          "name": "Labels or Instructions",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "CUE-CTL-001",
+          "rule": "User can pause, resume, repeat, skip, ask for a hint, ask for a moment, and switch voice/text; push-to-talk available."
+        },
+        {
+          "id": "SPEC 4.1",
+          "rule": "End interview is a separate control with a confirmation whose safe choice takes focus; Uninterruptible states show a text banner and a hold."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        }
+      ],
+      "control_events_to_exercise": [
+        "push_to_talk",
+        "pause",
+        "give_me_a_sec"
+      ],
+      "tester_notes": [
+        "Every control's spoken name must match its visible label (2.5.3).",
+        "Check that voice commands to the page are not captured as interview answers (use push-to-talk).",
+        "Icon-only buttons need visible or addressable names."
+      ]
+    }
+  },
+  {
+    "id": "LOG-03",
+    "synthetic": true,
+    "name": "Luis Fernando Ortega",
+    "industry": "logistics",
+    "role": "Warehouse Associate (forklift certified)",
+    "seniority": "entry",
+    "contact": {
+      "email": "luis.ortega@example.test",
+      "phone": "555-0117",
+      "location": "El Paso, TX"
+    },
+    "setup": {
+      "interview_type": "cold",
+      "resume_scenario": "n/a",
+      "resume_file": "resumes/LOG-03-luis-fernando-ortega.md",
+      "job_description_file": "job_descriptions/LOG-03-luis-fernando-ortega.md",
+      "resume_files": {
+        "md": "resumes/LOG-03-luis-fernando-ortega.md",
+        "pdf": "resumes/LOG-03-luis-fernando-ortega.pdf",
+        "docx": "resumes/LOG-03-luis-fernando-ortega.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/LOG-03-luis-fernando-ortega.md",
+        "pdf": "job_descriptions/LOG-03-luis-fernando-ortega.pdf",
+        "docx": "job_descriptions/LOG-03-luis-fernando-ortega.docx"
+      },
+      "role_display_name": "Warehouse Associate (forklift certified)"
+    },
+    "interview_focus": [
+      "Safety habits and how he handles equipment inspections",
+      "Comfort with higher productivity targets in e-commerce versus grocery picking",
+      "Experience with cycle counts and inventory accuracy"
+    ],
+    "accommodation": {
+      "key": "non_native_english",
+      "label": "Non-native English speaker (accent, captions on)",
+      "category": "language",
+      "simulates": "Candidate who speaks English as a second language with a strong accent; uses captions to follow fast speech. Not a disability accommodation, included for STT and turn-taking coverage."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "accurate",
+        "interviewer_voice": "on",
+        "ambient_audio": true,
+        "ambient_volume": 0.3,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "decent_call",
+        "seed": 21
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "hybrid",
+      "manual_note": "Accent realism needs a human or accented test audio.",
+      "wcag_2_2": [
+        {
+          "sc": "1.2.4",
+          "name": "Captions (Live)",
+          "level": "AA"
+        },
+        {
+          "sc": "3.3.2",
+          "name": "Labels or Instructions",
+          "level": "A"
+        },
+        {
+          "sc": "1.4.2",
+          "name": "Audio Control",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "CUE-CAP-001/002",
+          "rule": "Captions have accurate and as_heard modes; a captions user is not penalised by degraded audio."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        }
+      ],
+      "control_events_to_exercise": [
+        "repeat",
+        "give_me_a_sec"
+      ],
+      "tester_notes": [
+        "Speak at a natural pace with an accent; use brief pauses to find words.",
+        "Check transcription accuracy on accented speech and domain terms, and that captions remain accurate."
+      ]
+    }
+  },
+  {
+    "id": "LOG-04",
+    "synthetic": true,
+    "name": "Colleen Radcliffe",
+    "industry": "logistics",
+    "role": "Fleet Scheduler",
+    "seniority": "mid",
+    "contact": {
+      "email": "colleen.radcliffe@example.test",
+      "phone": "555-0118",
+      "location": "Louisville, KY"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "upload_new",
+      "resume_file": "resumes/LOG-04-colleen-radcliffe.md",
+      "job_description_file": "job_descriptions/LOG-04-colleen-radcliffe.md",
+      "resume_files": {
+        "md": "resumes/LOG-04-colleen-radcliffe.md",
+        "pdf": "resumes/LOG-04-colleen-radcliffe.pdf",
+        "docx": "resumes/LOG-04-colleen-radcliffe.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/LOG-04-colleen-radcliffe.md",
+        "pdf": "job_descriptions/LOG-04-colleen-radcliffe.pdf",
+        "docx": "job_descriptions/LOG-04-colleen-radcliffe.docx"
+      },
+      "role_display_name": "Fleet Scheduler"
+    },
+    "interview_focus": [
+      "Scale of a 120-vehicle fleet versus her current 55 vehicles",
+      "Experience with seasonal planning and union shift rules",
+      "How the overtime reduction was achieved and measured"
+    ],
+    "accommodation": {
+      "key": "tbi_memory_processing",
+      "label": "Cognitive: slower processing and memory (brain injury)",
+      "category": "cognitive",
+      "simulates": "Candidate with slower processing speed and short-term memory difficulty; needs time, repeats and a record of the conversation."
+    },
+    "session_config": {
+      "interface": "both",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "accurate",
+        "interviewer_voice": "on",
+        "ambient_audio": false,
+        "ambient_volume": 0.0,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.5,
+        "max_silence_secs": 6.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "extended"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "hybrid",
+      "manual_note": null,
+      "wcag_2_2": [
+        {
+          "sc": "2.2.1",
+          "name": "Timing Adjustable",
+          "level": "A"
+        },
+        {
+          "sc": "2.2.2",
+          "name": "Pause, Stop, Hide",
+          "level": "A"
+        },
+        {
+          "sc": "3.3.2",
+          "name": "Labels or Instructions",
+          "level": "A"
+        },
+        {
+          "sc": "3.3.7",
+          "name": "Redundant Entry",
+          "level": "A"
+        },
+        {
+          "sc": "3.2.6",
+          "name": "Consistent Help",
+          "level": "A"
+        },
+        {
+          "sc": "1.4.2",
+          "name": "Audio Control",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "CUE-CTL-001",
+          "rule": "User can pause, resume, repeat, skip, ask for a hint, ask for a moment, and switch voice/text; push-to-talk available."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        },
+        {
+          "id": "ORC-MOD-001",
+          "rule": "Switch between voice and text mid-session without losing history."
+        }
+      ],
+      "control_events_to_exercise": [
+        "repeat",
+        "hint",
+        "give_me_a_sec",
+        "pause",
+        "resume"
+      ],
+      "tester_notes": [
+        "Ask for each question to be repeated at least twice; ask for a hint on two questions.",
+        "Read earlier questions back from the transcript; check the history persists after a pause and resume.",
+        "Do not be asked to re-enter information already given (3.3.7)."
+      ]
+    }
+  },
+  {
+    "id": "LOG-05",
+    "synthetic": true,
+    "name": "Anil Deshpande",
+    "industry": "logistics",
+    "role": "Supply Chain Analyst",
+    "seniority": "mid",
+    "contact": {
+      "email": "anil.deshpande@example.test",
+      "phone": "555-0119",
+      "location": "Columbus, GA"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "upload_new",
+      "resume_file": "resumes/LOG-05-anil-deshpande.md",
+      "job_description_file": "job_descriptions/LOG-05-anil-deshpande.md",
+      "resume_files": {
+        "md": "resumes/LOG-05-anil-deshpande.md",
+        "pdf": "resumes/LOG-05-anil-deshpande.pdf",
+        "docx": "resumes/LOG-05-anil-deshpande.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/LOG-05-anil-deshpande.md",
+        "pdf": "job_descriptions/LOG-05-anil-deshpande.pdf",
+        "docx": "job_descriptions/LOG-05-anil-deshpande.docx"
+      },
+      "role_display_name": "Supply Chain Analyst"
+    },
+    "interview_focus": [
+      "Limited transportation analytics exposure compared with inventory focus",
+      "How the forecast accuracy improvement was validated",
+      "Experience building dashboards in a BI tool versus Excel"
+    ],
+    "accommodation": {
+      "key": "vestibular_photosensitive",
+      "label": "Vestibular / photosensitive: motion and flash safe",
+      "category": "neurological",
+      "simulates": "Candidate who gets ill from motion or is sensitive to flashing; reduced motion on."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": false,
+        "ambient_volume": 0.0,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": true,
+      "forced_colors": false,
+      "color_scheme": "dark",
+      "vision_deficiency": "none",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "automated",
+      "manual_note": null,
+      "wcag_2_2": [
+        {
+          "sc": "2.3.1",
+          "name": "Three Flashes or Below Threshold",
+          "level": "A"
+        },
+        {
+          "sc": "2.3.3",
+          "name": "Animation from Interactions",
+          "level": "AAA"
+        },
+        {
+          "sc": "2.2.2",
+          "name": "Pause, Stop, Hide",
+          "level": "A"
+        },
+        {
+          "sc": "1.4.2",
+          "name": "Audio Control",
+          "level": "A"
+        },
+        {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        },
+        {
+          "id": "SPEC 4.1",
+          "rule": "End interview is a separate control with a confirmation whose safe choice takes focus; Uninterruptible states show a text banner and a hold."
+        }
+      ],
+      "control_events_to_exercise": [
+        "pause"
+      ],
+      "tester_notes": [
+        "With prefers-reduced-motion on, confirm the ellipsis, thought bubble, progress bar and mic meter do not animate (or animate only gently).",
+        "Sample frames to confirm nothing flashes more than three times per second.",
+        "Check the indeterminate progress bar and the pause control."
+      ]
+    }
+  },
+  {
+    "id": "MFG-01",
+    "synthetic": true,
+    "name": "Teodor Petrescu",
+    "industry": "manufacturing",
+    "role": "CNC Machine Operator",
+    "seniority": "mid",
+    "contact": {
+      "email": "teodor.petrescu@example.test",
+      "phone": "555-0120",
+      "location": "Dayton, OH"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "upload_new",
+      "resume_file": "resumes/MFG-01-teodor-petrescu.md",
+      "job_description_file": "job_descriptions/MFG-01-teodor-petrescu.md",
+      "resume_files": {
+        "md": "resumes/MFG-01-teodor-petrescu.md",
+        "pdf": "resumes/MFG-01-teodor-petrescu.pdf",
+        "docx": "resumes/MFG-01-teodor-petrescu.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/MFG-01-teodor-petrescu.md",
+        "pdf": "job_descriptions/MFG-01-teodor-petrescu.pdf",
+        "docx": "job_descriptions/MFG-01-teodor-petrescu.docx"
+      },
+      "role_display_name": "CNC Machine Operator"
+    },
+    "interview_focus": [
+      "Depth of his setup and offset experience versus pure operation",
+      "How he approached the changeover reduction and what he measured",
+      "Gaps in GD&T and 5-axis exposure and how he would close them"
+    ],
+    "accommodation": {
+      "key": "colorblind_achromatopsia",
+      "label": "Color vision: achromatopsia, light-sensitive",
+      "category": "vision",
+      "simulates": "Candidate seeing in grayscale and sensitive to bright light; prefers dark mode."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": true,
+        "ambient_volume": 0.3,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "dark",
+      "vision_deficiency": "achromatopsia",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "automated",
+      "manual_note": null,
+      "wcag_2_2": [
+        {
+          "sc": "1.4.1",
+          "name": "Use of Color",
+          "level": "A"
+        },
+        {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.11",
+          "name": "Non-text Contrast",
+          "level": "AA"
+        },
+        {
+          "sc": "2.4.7",
+          "name": "Focus Visible",
+          "level": "AA"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        }
+      ],
+      "control_events_to_exercise": [
+        "pause"
+      ],
+      "tester_notes": [
+        "Run the full flow in grayscale and dark mode; every state still distinguishable by shape and text.",
+        "Check the contrast of cue icons on the dark theme."
+      ]
+    }
+  },
+  {
+    "id": "MFG-02",
+    "synthetic": true,
+    "name": "Naomi Achterberg",
+    "industry": "manufacturing",
+    "role": "Production Planner",
+    "seniority": "senior",
+    "contact": {
+      "email": "naomi.achterberg@example.test",
+      "phone": "555-0121",
+      "location": "Grand Rapids, MI"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "upload_new",
+      "resume_file": "resumes/MFG-02-naomi-achterberg.md",
+      "job_description_file": "job_descriptions/MFG-02-naomi-achterberg.md",
+      "resume_files": {
+        "md": "resumes/MFG-02-naomi-achterberg.md",
+        "pdf": "resumes/MFG-02-naomi-achterberg.pdf",
+        "docx": "resumes/MFG-02-naomi-achterberg.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/MFG-02-naomi-achterberg.md",
+        "pdf": "job_descriptions/MFG-02-naomi-achterberg.pdf",
+        "docx": "job_descriptions/MFG-02-naomi-achterberg.docx"
+      },
+      "role_display_name": "Production Planner"
+    },
+    "interview_focus": [
+      "How she managed a team without a formal title of manager so far",
+      "Multi-plant master scheduling versus her single-site experience",
+      "Concrete S&OP decisions where she pushed back on sales"
+    ],
+    "accommodation": {
+      "key": "motor_switch_scanning",
+      "label": "Motor: single-switch scanning, extended time",
+      "category": "motor",
+      "simulates": "Candidate using one switch with scanning; slow input and needs extra time."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": true,
+        "ambient_volume": 0.3,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": true,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 8.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "extended"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "switch_scanning",
+      "assistive_tech": "Switch access",
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "manual_required",
+      "manual_note": "Switch scanning needs a real or emulated switch.",
+      "wcag_2_2": [
+        {
+          "sc": "2.1.1",
+          "name": "Keyboard",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.2",
+          "name": "No Keyboard Trap",
+          "level": "A"
+        },
+        {
+          "sc": "2.2.1",
+          "name": "Timing Adjustable",
+          "level": "A"
+        },
+        {
+          "sc": "2.2.2",
+          "name": "Pause, Stop, Hide",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.3",
+          "name": "Focus Order",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.7",
+          "name": "Focus Visible",
+          "level": "AA"
+        },
+        {
+          "sc": "2.5.1",
+          "name": "Pointer Gestures",
+          "level": "A"
+        },
+        {
+          "sc": "2.5.7",
+          "name": "Dragging Movements",
+          "level": "AA"
+        },
+        {
+          "sc": "3.2.1",
+          "name": "On Focus",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "CUE-CTL-001",
+          "rule": "User can pause, resume, repeat, skip, ask for a hint, ask for a moment, and switch voice/text; push-to-talk available."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        },
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        }
+      ],
+      "control_events_to_exercise": [
+        "push_to_talk",
+        "pause",
+        "give_me_a_sec",
+        "repeat"
+      ],
+      "tester_notes": [
+        "Focus order must be linear and logical for scanning; no keyboard traps.",
+        "Long gaps between actions must not end the session or lower the score.",
+        "No dragging or path gestures anywhere in the flow."
+      ]
+    }
+  },
+  {
+    "id": "MFG-03",
+    "synthetic": true,
+    "name": "Darnell Whitfield",
+    "industry": "manufacturing",
+    "role": "ERP Data Analyst (manufacturing)",
+    "seniority": "mid",
+    "contact": {
+      "email": "darnell.whitfield@example.test",
+      "phone": "555-0122",
+      "location": "Greenville, SC"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "select_saved",
+      "resume_file": "resumes/MFG-03-darnell-whitfield.md",
+      "job_description_file": "job_descriptions/MFG-03-darnell-whitfield.md",
+      "resume_files": {
+        "md": "resumes/MFG-03-darnell-whitfield.md",
+        "pdf": "resumes/MFG-03-darnell-whitfield.pdf",
+        "docx": "resumes/MFG-03-darnell-whitfield.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/MFG-03-darnell-whitfield.md",
+        "pdf": "job_descriptions/MFG-03-darnell-whitfield.pdf",
+        "docx": "job_descriptions/MFG-03-darnell-whitfield.docx"
+      },
+      "role_display_name": "ERP Data Analyst (manufacturing)"
+    },
+    "interview_focus": [
+      "Specific upgrade validation approach and how he prioritized discrepancies",
+      "His BI and dashboard exposure compared with his SQL strength",
+      "Understanding of cost accounting beyond standard cost roll-ups"
+    ],
+    "accommodation": {
+      "key": "blind_braille_display",
+      "label": "Blind, JAWS + refreshable braille display",
+      "category": "vision",
+      "simulates": "Blind candidate who reads output on a braille display; speech may be off."
+    },
+    "session_config": {
+      "interface": "both",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "accurate",
+        "interviewer_voice": "on",
+        "ambient_audio": false,
+        "ambient_volume": 0.0,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": true,
+        "sr_profile": "JAWS",
+        "announcements": "off",
+        "announce_talking": false,
+        "reader_rate_wpm": 300,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "keyboard_only",
+      "assistive_tech": "JAWS",
+      "braille_display": true,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "manual_required",
+      "manual_note": "Real screen reader pass required; automated tools (axe-core etc.) catch only part of the issues (docs/research/ui-testing-tools.md). Needs a physical or emulated braille display.",
+      "wcag_2_2": [
+        {
+          "sc": "1.3.1",
+          "name": "Info and Relationships",
+          "level": "A"
+        },
+        {
+          "sc": "1.3.2",
+          "name": "Meaningful Sequence",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.3",
+          "name": "Focus Order",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.6",
+          "name": "Headings and Labels",
+          "level": "AA"
+        },
+        {
+          "sc": "4.1.2",
+          "name": "Name, Role, Value",
+          "level": "A"
+        },
+        {
+          "sc": "4.1.3",
+          "name": "Status Messages",
+          "level": "AA"
+        },
+        {
+          "sc": "2.1.1",
+          "name": "Keyboard",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.2",
+          "name": "No Keyboard Trap",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.4",
+          "name": "Character Key Shortcuts",
+          "level": "A"
+        },
+        {
+          "sc": "1.4.2",
+          "name": "Audio Control",
+          "level": "A"
+        },
+        {
+          "sc": "1.2.4",
+          "name": "Captions (Live)",
+          "level": "AA"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        },
+        {
+          "id": "SPEC 4.3",
+          "rule": "Screen reader mode: one speaker at a time, gate on played audio, coalesced announcements, navigable transcript (role=log)."
+        },
+        {
+          "id": "SPEC 4.5",
+          "rule": "Advanced Accessibility: screen reader profiles (Generic, NVDA, JAWS, Narrator, VoiceOver macOS/iOS, TalkBack, Orca); untested profiles behave like Generic."
+        },
+        {
+          "id": "SPEC 4.1",
+          "rule": "End interview is a separate control with a confirmation whose safe choice takes focus; Uninterruptible states show a text banner and a hold."
+        },
+        {
+          "id": "CUE-AMB-001",
+          "rule": "Ambient sound has an independent volume and off switch."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        },
+        {
+          "id": "CUE-CAP-001/002",
+          "rule": "Captions have accurate and as_heard modes; a captions user is not penalised by degraded audio."
+        }
+      ],
+      "control_events_to_exercise": [
+        "pause",
+        "repeat",
+        "switch_voice_text"
+      ],
+      "tester_notes": [
+        "Spec says live regions may not reach a braille display; rely on the navigable transcript.",
+        "Turn announcements off (chime and transcript only) and confirm the session is still usable.",
+        "Confirm the Uninterruptible notice is on screen as text, not only announced."
+      ]
+    }
+  },
+  {
+    "id": "MFG-04",
+    "synthetic": true,
+    "name": "Yuki Hasegawa",
+    "industry": "manufacturing",
+    "role": "Procurement Specialist",
+    "seniority": "mid",
+    "contact": {
+      "email": "yuki.hasegawa@example.test",
+      "phone": "555-0123",
+      "location": "Portland, OR"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "skip_fallback_cold",
+      "resume_file": "resumes/MFG-04-yuki-hasegawa.md",
+      "job_description_file": "job_descriptions/MFG-04-yuki-hasegawa.md",
+      "resume_files": {
+        "md": "resumes/MFG-04-yuki-hasegawa.md",
+        "pdf": "resumes/MFG-04-yuki-hasegawa.pdf",
+        "docx": "resumes/MFG-04-yuki-hasegawa.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/MFG-04-yuki-hasegawa.md",
+        "pdf": "job_descriptions/MFG-04-yuki-hasegawa.pdf",
+        "docx": "job_descriptions/MFG-04-yuki-hasegawa.docx"
+      },
+      "role_display_name": "Procurement Specialist"
+    },
+    "interview_focus": [
+      "How the vendor consolidation was executed and what risks she weighed",
+      "Her limited experience with long-term contracts and regulated suppliers",
+      "Approach to total cost of ownership versus unit price"
+    ],
+    "accommodation": {
+      "key": "blind_narrator_edge",
+      "label": "Blind, Narrator + Edge (Windows)",
+      "category": "vision",
+      "simulates": "Blind candidate using Windows Narrator with Edge."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": false,
+        "ambient_volume": 0.0,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": true,
+        "sr_profile": "Narrator",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": 240,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "keyboard_only",
+      "assistive_tech": "Narrator",
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0,
+      "browser_channel": "msedge"
+    },
+    "tests": {
+      "automation": "hybrid",
+      "manual_note": "Real screen reader pass required; automated tools (axe-core etc.) catch only part of the issues (docs/research/ui-testing-tools.md).",
+      "wcag_2_2": [
+        {
+          "sc": "1.3.1",
+          "name": "Info and Relationships",
+          "level": "A"
+        },
+        {
+          "sc": "1.3.2",
+          "name": "Meaningful Sequence",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.3",
+          "name": "Focus Order",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.6",
+          "name": "Headings and Labels",
+          "level": "AA"
+        },
+        {
+          "sc": "4.1.2",
+          "name": "Name, Role, Value",
+          "level": "A"
+        },
+        {
+          "sc": "4.1.3",
+          "name": "Status Messages",
+          "level": "AA"
+        },
+        {
+          "sc": "2.1.1",
+          "name": "Keyboard",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.2",
+          "name": "No Keyboard Trap",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.4",
+          "name": "Character Key Shortcuts",
+          "level": "A"
+        },
+        {
+          "sc": "1.4.2",
+          "name": "Audio Control",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        },
+        {
+          "id": "SPEC 4.3",
+          "rule": "Screen reader mode: one speaker at a time, gate on played audio, coalesced announcements, navigable transcript (role=log)."
+        },
+        {
+          "id": "SPEC 4.5",
+          "rule": "Advanced Accessibility: screen reader profiles (Generic, NVDA, JAWS, Narrator, VoiceOver macOS/iOS, TalkBack, Orca); untested profiles behave like Generic."
+        },
+        {
+          "id": "SPEC 4.1",
+          "rule": "End interview is a separate control with a confirmation whose safe choice takes focus; Uninterruptible states show a text banner and a hold."
+        },
+        {
+          "id": "CUE-AMB-001",
+          "rule": "Ambient sound has an independent volume and off switch."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        }
+      ],
+      "control_events_to_exercise": [
+        "pause",
+        "repeat"
+      ],
+      "tester_notes": [
+        "Wear headphones; speaker playback can leak into the mic (SPEC 4.1 echo trap).",
+        "Listen for screen reader speech colliding with the interviewer's voice, and for any state announced twice.",
+        "Confirm 'Your turn' is announced only after the interviewer's last audio has played.",
+        "Confirm the transcript (role=log) can be navigated by reading commands."
+      ]
+    }
+  },
+  {
+    "id": "FIN-01",
+    "synthetic": true,
+    "name": "Carolyn Beaumont",
+    "industry": "finance",
+    "role": "Bank Teller",
+    "seniority": "entry",
+    "contact": {
+      "email": "carolyn.beaumont@example.test",
+      "phone": "555-0124",
+      "location": "Omaha, NE"
+    },
+    "setup": {
+      "interview_type": "cold",
+      "resume_scenario": "n/a",
+      "resume_file": "resumes/FIN-01-carolyn-beaumont.md",
+      "job_description_file": "job_descriptions/FIN-01-carolyn-beaumont.md",
+      "resume_files": {
+        "md": "resumes/FIN-01-carolyn-beaumont.md",
+        "pdf": "resumes/FIN-01-carolyn-beaumont.pdf",
+        "docx": "resumes/FIN-01-carolyn-beaumont.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/FIN-01-carolyn-beaumont.md",
+        "pdf": "job_descriptions/FIN-01-carolyn-beaumont.pdf",
+        "docx": "job_descriptions/FIN-01-carolyn-beaumont.docx"
+      },
+      "role_display_name": "Bank Teller"
+    },
+    "interview_focus": [
+      "Examples of handling a difficult customer or a drawer discrepancy",
+      "How she spotted suspected check fraud and what she did next",
+      "Comfort moving from transactions toward consultative selling"
+    ],
+    "accommodation": {
+      "key": "nt_voice",
+      "label": "Neurotypical, voice, defaults",
+      "category": "neurotypical",
+      "simulates": "Candidate using voice with all defaults and no assistive technology."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": true,
+        "ambient_volume": 0.3,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "automated",
+      "manual_note": null,
+      "wcag_2_2": [
+        {
+          "sc": "2.1.1",
+          "name": "Keyboard",
+          "level": "A"
+        },
+        {
+          "sc": "4.1.2",
+          "name": "Name, Role, Value",
+          "level": "A"
+        },
+        {
+          "sc": "3.3.2",
+          "name": "Labels or Instructions",
+          "level": "A"
+        },
+        {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        },
+        {
+          "id": "CUE-CTL-001",
+          "rule": "User can pause, resume, repeat, skip, ask for a hint, ask for a moment, and switch voice/text; push-to-talk available."
+        },
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        }
+      ],
+      "control_events_to_exercise": [
+        "give_me_a_sec"
+      ],
+      "tester_notes": [
+        "Control run: answer naturally in turns; no accommodations.",
+        "Use this persona to establish baseline scores and latency to compare every other persona against."
+      ]
+    }
+  },
+  {
+    "id": "FIN-02",
+    "synthetic": true,
+    "name": "Ibrahim Haddad",
+    "industry": "finance",
+    "role": "Loan Processor",
+    "seniority": "mid",
+    "contact": {
+      "email": "ibrahim.haddad@example.test",
+      "phone": "555-0125",
+      "location": "Charlotte, NC"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "upload_new",
+      "resume_file": "resumes/FIN-02-ibrahim-haddad.md",
+      "job_description_file": "job_descriptions/FIN-02-ibrahim-haddad.md",
+      "resume_files": {
+        "md": "resumes/FIN-02-ibrahim-haddad.md",
+        "pdf": "resumes/FIN-02-ibrahim-haddad.pdf",
+        "docx": "resumes/FIN-02-ibrahim-haddad.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/FIN-02-ibrahim-haddad.md",
+        "pdf": "job_descriptions/FIN-02-ibrahim-haddad.pdf",
+        "docx": "job_descriptions/FIN-02-ibrahim-haddad.docx"
+      },
+      "role_display_name": "Loan Processor"
+    },
+    "interview_focus": [
+      "How he keeps a 50-file pipeline moving and prioritizes conditions",
+      "Government loan guideline depth versus conventional experience",
+      "What he did to lift the first-submission approval rate"
+    ],
+    "accommodation": {
+      "key": "blind_jaws_chrome",
+      "label": "Blind, JAWS + Chrome (Windows)",
+      "category": "vision",
+      "simulates": "Blind candidate using JAWS at a fast speech rate."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": false,
+        "ambient_volume": 0.0,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": true,
+        "sr_profile": "JAWS",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": 350,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "keyboard_only",
+      "assistive_tech": "JAWS",
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "hybrid",
+      "manual_note": "Real screen reader pass required; automated tools (axe-core etc.) catch only part of the issues (docs/research/ui-testing-tools.md).",
+      "wcag_2_2": [
+        {
+          "sc": "1.3.1",
+          "name": "Info and Relationships",
+          "level": "A"
+        },
+        {
+          "sc": "1.3.2",
+          "name": "Meaningful Sequence",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.3",
+          "name": "Focus Order",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.6",
+          "name": "Headings and Labels",
+          "level": "AA"
+        },
+        {
+          "sc": "4.1.2",
+          "name": "Name, Role, Value",
+          "level": "A"
+        },
+        {
+          "sc": "4.1.3",
+          "name": "Status Messages",
+          "level": "AA"
+        },
+        {
+          "sc": "2.1.1",
+          "name": "Keyboard",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.2",
+          "name": "No Keyboard Trap",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.4",
+          "name": "Character Key Shortcuts",
+          "level": "A"
+        },
+        {
+          "sc": "1.4.2",
+          "name": "Audio Control",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        },
+        {
+          "id": "SPEC 4.3",
+          "rule": "Screen reader mode: one speaker at a time, gate on played audio, coalesced announcements, navigable transcript (role=log)."
+        },
+        {
+          "id": "SPEC 4.5",
+          "rule": "Advanced Accessibility: screen reader profiles (Generic, NVDA, JAWS, Narrator, VoiceOver macOS/iOS, TalkBack, Orca); untested profiles behave like Generic."
+        },
+        {
+          "id": "SPEC 4.1",
+          "rule": "End interview is a separate control with a confirmation whose safe choice takes focus; Uninterruptible states show a text banner and a hold."
+        },
+        {
+          "id": "CUE-AMB-001",
+          "rule": "Ambient sound has an independent volume and off switch."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        }
+      ],
+      "control_events_to_exercise": [
+        "pause",
+        "repeat",
+        "hint"
+      ],
+      "tester_notes": [
+        "Wear headphones; speaker playback can leak into the mic (SPEC 4.1 echo trap).",
+        "Listen for screen reader speech colliding with the interviewer's voice, and for any state announced twice.",
+        "Confirm 'Your turn' is announced only after the interviewer's last audio has played.",
+        "Confirm the transcript (role=log) can be navigated by reading commands.",
+        "Spec notes JAWS+Chrome may speak polite regions at the first break; watch for late announcements."
+      ]
+    }
+  },
+  {
+    "id": "FIN-03",
+    "synthetic": true,
+    "name": "Meredith Sato",
+    "industry": "finance",
+    "role": "Financial Analyst",
+    "seniority": "mid",
+    "contact": {
+      "email": "meredith.sato@example.test",
+      "phone": "555-0126",
+      "location": "Minneapolis, MN"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "upload_new",
+      "resume_file": "resumes/FIN-03-meredith-sato.md",
+      "job_description_file": "job_descriptions/FIN-03-meredith-sato.md",
+      "resume_files": {
+        "md": "resumes/FIN-03-meredith-sato.md",
+        "pdf": "resumes/FIN-03-meredith-sato.pdf",
+        "docx": "resumes/FIN-03-meredith-sato.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/FIN-03-meredith-sato.md",
+        "pdf": "job_descriptions/FIN-03-meredith-sato.pdf",
+        "docx": "job_descriptions/FIN-03-meredith-sato.docx"
+      },
+      "role_display_name": "Financial Analyst"
+    },
+    "interview_focus": [
+      "How the driver-based model was built and validated",
+      "Transition from public accounting to FP&A and gaps in insurance knowledge",
+      "Handling disagreement with business leaders over forecast assumptions"
+    ],
+    "accommodation": {
+      "key": "colorblind_tritanopia",
+      "label": "Color vision: tritanopia",
+      "category": "vision",
+      "simulates": "Candidate with tritanopia (blue-yellow)."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": true,
+        "ambient_volume": 0.3,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "tritanopia",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "automated",
+      "manual_note": null,
+      "wcag_2_2": [
+        {
+          "sc": "1.4.1",
+          "name": "Use of Color",
+          "level": "A"
+        },
+        {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.11",
+          "name": "Non-text Contrast",
+          "level": "AA"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        }
+      ],
+      "control_events_to_exercise": [
+        "pause"
+      ],
+      "tester_notes": [
+        "Check blue/yellow state pairs, charts or meters in the report view, and link versus text color."
+      ]
+    }
+  },
+  {
+    "id": "FIN-04",
+    "synthetic": true,
+    "name": "Noor Al-Rashid",
+    "industry": "finance",
+    "role": "Compliance Analyst",
+    "seniority": "senior",
+    "contact": {
+      "email": "noor.rashid@example.test",
+      "phone": "555-0127",
+      "location": "Jersey City, NJ"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "upload_new",
+      "resume_file": "resumes/FIN-04-noor-al-rashid.md",
+      "job_description_file": "job_descriptions/FIN-04-noor-al-rashid.md",
+      "resume_files": {
+        "md": "resumes/FIN-04-noor-al-rashid.md",
+        "pdf": "resumes/FIN-04-noor-al-rashid.pdf",
+        "docx": "resumes/FIN-04-noor-al-rashid.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/FIN-04-noor-al-rashid.md",
+        "pdf": "job_descriptions/FIN-04-noor-al-rashid.pdf",
+        "docx": "job_descriptions/FIN-04-noor-al-rashid.docx"
+      },
+      "role_display_name": "Compliance Analyst"
+    },
+    "interview_focus": [
+      "Tuning decisions behind the false-positive reduction and exam defensibility",
+      "Her exposure to payments and fintech partner risk",
+      "Moving from analyst work to overseeing a team and board reporting"
+    ],
+    "accommodation": {
+      "key": "deafblind_braille_text",
+      "label": "Deafblind, braille display, text interview",
+      "category": "multiple",
+      "simulates": "Candidate who cannot rely on audio or sight: text interface, braille display, live captions to the screen reader."
+    },
+    "session_config": {
+      "interface": "text",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "accurate",
+        "interviewer_voice": "off",
+        "ambient_audio": false,
+        "ambient_volume": 0.0,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": true,
+        "sr_profile": "NVDA",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": 150,
+        "live_captions_to_sr": true,
+        "caption_size": "default",
+        "pause_timing": "extended"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "keyboard_only",
+      "assistive_tech": "NVDA",
+      "braille_display": true,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "manual_required",
+      "manual_note": "Real screen reader pass required; automated tools (axe-core etc.) catch only part of the issues (docs/research/ui-testing-tools.md). Needs a braille display.",
+      "wcag_2_2": [
+        {
+          "sc": "1.3.1",
+          "name": "Info and Relationships",
+          "level": "A"
+        },
+        {
+          "sc": "1.3.2",
+          "name": "Meaningful Sequence",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.3",
+          "name": "Focus Order",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.6",
+          "name": "Headings and Labels",
+          "level": "AA"
+        },
+        {
+          "sc": "4.1.2",
+          "name": "Name, Role, Value",
+          "level": "A"
+        },
+        {
+          "sc": "4.1.3",
+          "name": "Status Messages",
+          "level": "AA"
+        },
+        {
+          "sc": "2.1.1",
+          "name": "Keyboard",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.2",
+          "name": "No Keyboard Trap",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.4",
+          "name": "Character Key Shortcuts",
+          "level": "A"
+        },
+        {
+          "sc": "1.4.2",
+          "name": "Audio Control",
+          "level": "A"
+        },
+        {
+          "sc": "1.2.4",
+          "name": "Captions (Live)",
+          "level": "AA"
+        },
+        {
+          "sc": "2.2.1",
+          "name": "Timing Adjustable",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        },
+        {
+          "id": "SPEC 4.3",
+          "rule": "Screen reader mode: one speaker at a time, gate on played audio, coalesced announcements, navigable transcript (role=log)."
+        },
+        {
+          "id": "SPEC 4.5",
+          "rule": "Advanced Accessibility: screen reader profiles (Generic, NVDA, JAWS, Narrator, VoiceOver macOS/iOS, TalkBack, Orca); untested profiles behave like Generic."
+        },
+        {
+          "id": "SPEC 4.1",
+          "rule": "End interview is a separate control with a confirmation whose safe choice takes focus; Uninterruptible states show a text banner and a hold."
+        },
+        {
+          "id": "CUE-AMB-001",
+          "rule": "Ambient sound has an independent volume and off switch."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        },
+        {
+          "id": "CUE-CAP-001/002",
+          "rule": "Captions have accurate and as_heard modes; a captions user is not penalised by degraded audio."
+        },
+        {
+          "id": "ORC-MOD-001",
+          "rule": "Switch between voice and text mid-session without losing history."
+        }
+      ],
+      "control_events_to_exercise": [
+        "pause",
+        "repeat",
+        "give_me_a_sec"
+      ],
+      "tester_notes": [
+        "Live captions append one final sentence at a time, never word by word.",
+        "No cue may depend on sound; check every audio cue has a text/visual twin.",
+        "Take extra time on every turn; the session must not time out."
+      ]
+    }
+  },
+  {
+    "id": "FIN-05",
+    "synthetic": true,
+    "name": "Walter Dubois",
+    "industry": "finance",
+    "role": "Insurance Underwriter",
+    "seniority": "senior",
+    "contact": {
+      "email": "walter.dubois@example.test",
+      "phone": "555-0128",
+      "location": "Hartford, CT"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "select_saved",
+      "resume_file": "resumes/FIN-05-walter-dubois.md",
+      "job_description_file": "job_descriptions/FIN-05-walter-dubois.md",
+      "resume_files": {
+        "md": "resumes/FIN-05-walter-dubois.md",
+        "pdf": "resumes/FIN-05-walter-dubois.pdf",
+        "docx": "resumes/FIN-05-walter-dubois.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/FIN-05-walter-dubois.md",
+        "pdf": "job_descriptions/FIN-05-walter-dubois.pdf",
+        "docx": "job_descriptions/FIN-05-walter-dubois.docx"
+      },
+      "role_display_name": "Insurance Underwriter"
+    },
+    "interview_focus": [
+      "Experience with larger limits and catastrophe-exposed accounts",
+      "A time he declined business and how he handled the broker",
+      "Building guidelines for a new unit versus working within an existing book"
+    ],
+    "accommodation": {
+      "key": "older_adult_multi",
+      "label": "Older adult: reduced vision, hearing and dexterity",
+      "category": "multiple",
+      "simulates": "Candidate with several mild age-related changes: needs larger text, captions, louder voice, bigger targets and more time."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "accurate",
+        "interviewer_voice": "on",
+        "ambient_audio": false,
+        "ambient_volume": 0.0,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "large",
+        "pause_timing": "extended"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 200,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 5
+    },
+    "tests": {
+      "automation": "hybrid",
+      "manual_note": null,
+      "wcag_2_2": [
+        {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.4",
+          "name": "Resize Text",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.10",
+          "name": "Reflow",
+          "level": "AA"
+        },
+        {
+          "sc": "2.2.1",
+          "name": "Timing Adjustable",
+          "level": "A"
+        },
+        {
+          "sc": "2.5.8",
+          "name": "Target Size (Minimum)",
+          "level": "AA"
+        },
+        {
+          "sc": "2.5.2",
+          "name": "Pointer Cancellation",
+          "level": "A"
+        },
+        {
+          "sc": "1.2.4",
+          "name": "Captions (Live)",
+          "level": "AA"
+        },
+        {
+          "sc": "2.4.7",
+          "name": "Focus Visible",
+          "level": "AA"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        },
+        {
+          "id": "CUE-CAP-001/002",
+          "rule": "Captions have accurate and as_heard modes; a captions user is not penalised by degraded audio."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        }
+      ],
+      "control_events_to_exercise": [
+        "repeat",
+        "pause",
+        "give_me_a_sec"
+      ],
+      "tester_notes": [
+        "Run at 200% zoom with larger captions and the interviewer voice louder.",
+        "Take longer to start each answer; the session must wait.",
+        "Check controls are easy to hit and the End interview confirmation is clear."
+      ]
+    }
+  },
+  {
+    "id": "TEC-01",
+    "synthetic": true,
+    "name": "Fiona MacAllister",
+    "industry": "tech",
+    "role": "Linux Systems Administrator",
+    "seniority": "senior",
+    "contact": {
+      "email": "fiona.macallister@example.test",
+      "phone": "555-0129",
+      "location": "Portland, OR"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "upload_new",
+      "resume_file": "resumes/TEC-01-fiona-macallister.md",
+      "job_description_file": "job_descriptions/TEC-01-fiona-macallister.md",
+      "resume_files": {
+        "md": "resumes/TEC-01-fiona-macallister.md",
+        "pdf": "resumes/TEC-01-fiona-macallister.pdf",
+        "docx": "resumes/TEC-01-fiona-macallister.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/TEC-01-fiona-macallister.md",
+        "pdf": "job_descriptions/TEC-01-fiona-macallister.pdf",
+        "docx": "job_descriptions/TEC-01-fiona-macallister.docx"
+      },
+      "role_display_name": "Linux Systems Administrator"
+    },
+    "interview_focus": [
+      "Depth of cloud and infrastructure-as-code experience versus on-premises background",
+      "How the patching automation was designed and what went wrong along the way",
+      "Incident leadership and post-incident review practices"
+    ],
+    "accommodation": {
+      "key": "blind_orca_firefox",
+      "label": "Blind, Orca + Firefox (Linux)",
+      "category": "vision",
+      "simulates": "Blind candidate on Linux using Orca with Firefox."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": false,
+        "ambient_volume": 0.0,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": true,
+        "sr_profile": "Orca",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": 280,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "firefox",
+      "os": "Linux",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "keyboard_only",
+      "assistive_tech": "Orca",
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "manual_required",
+      "manual_note": "Real screen reader pass required; automated tools (axe-core etc.) catch only part of the issues (docs/research/ui-testing-tools.md).",
+      "wcag_2_2": [
+        {
+          "sc": "1.3.1",
+          "name": "Info and Relationships",
+          "level": "A"
+        },
+        {
+          "sc": "1.3.2",
+          "name": "Meaningful Sequence",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.3",
+          "name": "Focus Order",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.6",
+          "name": "Headings and Labels",
+          "level": "AA"
+        },
+        {
+          "sc": "4.1.2",
+          "name": "Name, Role, Value",
+          "level": "A"
+        },
+        {
+          "sc": "4.1.3",
+          "name": "Status Messages",
+          "level": "AA"
+        },
+        {
+          "sc": "2.1.1",
+          "name": "Keyboard",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.2",
+          "name": "No Keyboard Trap",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.4",
+          "name": "Character Key Shortcuts",
+          "level": "A"
+        },
+        {
+          "sc": "1.4.2",
+          "name": "Audio Control",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        },
+        {
+          "id": "SPEC 4.3",
+          "rule": "Screen reader mode: one speaker at a time, gate on played audio, coalesced announcements, navigable transcript (role=log)."
+        },
+        {
+          "id": "SPEC 4.5",
+          "rule": "Advanced Accessibility: screen reader profiles (Generic, NVDA, JAWS, Narrator, VoiceOver macOS/iOS, TalkBack, Orca); untested profiles behave like Generic."
+        },
+        {
+          "id": "SPEC 4.1",
+          "rule": "End interview is a separate control with a confirmation whose safe choice takes focus; Uninterruptible states show a text banner and a hold."
+        },
+        {
+          "id": "CUE-AMB-001",
+          "rule": "Ambient sound has an independent volume and off switch."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        }
+      ],
+      "control_events_to_exercise": [
+        "pause",
+        "repeat",
+        "hint"
+      ],
+      "tester_notes": [
+        "Wear headphones; speaker playback can leak into the mic (SPEC 4.1 echo trap).",
+        "Listen for screen reader speech colliding with the interviewer's voice, and for any state announced twice.",
+        "Confirm 'Your turn' is announced only after the interviewer's last audio has played.",
+        "Confirm the transcript (role=log) can be navigated by reading commands."
+      ]
+    }
+  },
+  {
+    "id": "TEC-02",
+    "synthetic": true,
+    "name": "Jamal Thibodeaux",
+    "industry": "tech",
+    "role": "Software Engineer",
+    "seniority": "mid",
+    "contact": {
+      "email": "jamal.thibodeaux@example.test",
+      "phone": "555-0130",
+      "location": "Austin, TX"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "upload_new",
+      "resume_file": "resumes/TEC-02-jamal-thibodeaux.md",
+      "job_description_file": "job_descriptions/TEC-02-jamal-thibodeaux.md",
+      "resume_files": {
+        "md": "resumes/TEC-02-jamal-thibodeaux.md",
+        "pdf": "resumes/TEC-02-jamal-thibodeaux.pdf",
+        "docx": "resumes/TEC-02-jamal-thibodeaux.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/TEC-02-jamal-thibodeaux.md",
+        "pdf": "job_descriptions/TEC-02-jamal-thibodeaux.pdf",
+        "docx": "job_descriptions/TEC-02-jamal-thibodeaux.docx"
+      },
+      "role_display_name": "Software Engineer"
+    },
+    "interview_focus": [
+      "Trade-offs behind the batch-to-event-driven migration",
+      "Cloud deployment and monitoring experience, which looks lighter on the resume",
+      "How he handles disagreements in code review"
+    ],
+    "accommodation": {
+      "key": "blind_voiceover_macos_safari",
+      "label": "Blind, VoiceOver + Safari (macOS)",
+      "category": "vision",
+      "simulates": "Blind candidate on a Mac using VoiceOver; announcements always on (ducking user)."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": false,
+        "ambient_volume": 0.0,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": true,
+        "sr_profile": "VoiceOver on macOS",
+        "announcements": "always",
+        "announce_talking": false,
+        "reader_rate_wpm": 220,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "webkit",
+      "os": "macOS",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "keyboard_only",
+      "assistive_tech": "VoiceOver (macOS)",
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "hybrid",
+      "manual_note": "Real screen reader pass required; automated tools (axe-core etc.) catch only part of the issues (docs/research/ui-testing-tools.md).",
+      "wcag_2_2": [
+        {
+          "sc": "1.3.1",
+          "name": "Info and Relationships",
+          "level": "A"
+        },
+        {
+          "sc": "1.3.2",
+          "name": "Meaningful Sequence",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.3",
+          "name": "Focus Order",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.6",
+          "name": "Headings and Labels",
+          "level": "AA"
+        },
+        {
+          "sc": "4.1.2",
+          "name": "Name, Role, Value",
+          "level": "A"
+        },
+        {
+          "sc": "4.1.3",
+          "name": "Status Messages",
+          "level": "AA"
+        },
+        {
+          "sc": "2.1.1",
+          "name": "Keyboard",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.2",
+          "name": "No Keyboard Trap",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.4",
+          "name": "Character Key Shortcuts",
+          "level": "A"
+        },
+        {
+          "sc": "1.4.2",
+          "name": "Audio Control",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        },
+        {
+          "id": "SPEC 4.3",
+          "rule": "Screen reader mode: one speaker at a time, gate on played audio, coalesced announcements, navigable transcript (role=log)."
+        },
+        {
+          "id": "SPEC 4.5",
+          "rule": "Advanced Accessibility: screen reader profiles (Generic, NVDA, JAWS, Narrator, VoiceOver macOS/iOS, TalkBack, Orca); untested profiles behave like Generic."
+        },
+        {
+          "id": "SPEC 4.1",
+          "rule": "End interview is a separate control with a confirmation whose safe choice takes focus; Uninterruptible states show a text banner and a hold."
+        },
+        {
+          "id": "CUE-AMB-001",
+          "rule": "Ambient sound has an independent volume and off switch."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        }
+      ],
+      "control_events_to_exercise": [
+        "pause",
+        "repeat"
+      ],
+      "tester_notes": [
+        "Wear headphones; speaker playback can leak into the mic (SPEC 4.1 echo trap).",
+        "Listen for screen reader speech colliding with the interviewer's voice, and for any state announced twice.",
+        "Confirm 'Your turn' is announced only after the interviewer's last audio has played.",
+        "Confirm the transcript (role=log) can be navigated by reading commands.",
+        "Try the 'always announce' setting and note collisions with the voice."
+      ]
+    }
+  },
+  {
+    "id": "TEC-03",
+    "synthetic": true,
+    "name": "Oksana Bondarenko",
+    "industry": "tech",
+    "role": "Front-End Developer",
+    "seniority": "mid",
+    "contact": {
+      "email": "oksana.bondarenko@example.test",
+      "phone": "555-0131",
+      "location": "Columbus, OH"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "select_saved",
+      "resume_file": "resumes/TEC-03-oksana-bondarenko.md",
+      "job_description_file": "job_descriptions/TEC-03-oksana-bondarenko.md",
+      "resume_files": {
+        "md": "resumes/TEC-03-oksana-bondarenko.md",
+        "pdf": "resumes/TEC-03-oksana-bondarenko.pdf",
+        "docx": "resumes/TEC-03-oksana-bondarenko.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/TEC-03-oksana-bondarenko.md",
+        "pdf": "job_descriptions/TEC-03-oksana-bondarenko.pdf",
+        "docx": "job_descriptions/TEC-03-oksana-bondarenko.docx"
+      },
+      "role_display_name": "Front-End Developer"
+    },
+    "interview_focus": [
+      "Automated testing experience, which is less prominent than component work",
+      "How the shared component library was rolled out and adopted",
+      "Approach to accessibility in complex forms such as enrollment flows"
+    ],
+    "accommodation": {
+      "key": "colorblind_protanopia",
+      "label": "Color vision: protanopia",
+      "category": "vision",
+      "simulates": "Candidate with protanopia (red-weak/blind)."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": true,
+        "ambient_volume": 0.3,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "protanopia",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "automated",
+      "manual_note": null,
+      "wcag_2_2": [
+        {
+          "sc": "1.4.1",
+          "name": "Use of Color",
+          "level": "A"
+        },
+        {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.11",
+          "name": "Non-text Contrast",
+          "level": "AA"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        }
+      ],
+      "control_events_to_exercise": [
+        "pause"
+      ],
+      "tester_notes": [
+        "Red 'recording / error' versus green 'ok' cues need shape or text twins.",
+        "Check captions on/off switch state."
+      ]
+    }
+  },
+  {
+    "id": "TEC-04",
+    "synthetic": true,
+    "name": "Isaac Lindgren-Moyo",
+    "industry": "tech",
+    "role": "Data Analyst",
+    "seniority": "mid",
+    "contact": {
+      "email": "isaac.moyo@example.test",
+      "phone": "555-0132",
+      "location": "Minneapolis, MN"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "upload_new",
+      "resume_file": "resumes/TEC-04-isaac-lindgren-moyo.md",
+      "job_description_file": "job_descriptions/TEC-04-isaac-lindgren-moyo.md",
+      "resume_files": {
+        "md": "resumes/TEC-04-isaac-lindgren-moyo.md",
+        "pdf": "resumes/TEC-04-isaac-lindgren-moyo.pdf",
+        "docx": "resumes/TEC-04-isaac-lindgren-moyo.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/TEC-04-isaac-lindgren-moyo.md",
+        "pdf": "job_descriptions/TEC-04-isaac-lindgren-moyo.pdf",
+        "docx": "job_descriptions/TEC-04-isaac-lindgren-moyo.docx"
+      },
+      "role_display_name": "Data Analyst"
+    },
+    "interview_focus": [
+      "Moving from subscription analytics to retail inventory and merchandising problems",
+      "Details of the billing-issue cohort analysis and how it was validated",
+      "Depth of experimentation experience beyond analyzing results"
+    ],
+    "accommodation": {
+      "key": "deaf_low_vision_usher",
+      "label": "Deaf + low vision, text interface, magnified high contrast",
+      "category": "multiple",
+      "simulates": "Candidate with combined hearing and vision loss using magnification, large captions and a text interview."
+    },
+    "session_config": {
+      "interface": "text",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "accurate",
+        "interviewer_voice": "off",
+        "ambient_audio": false,
+        "ambient_volume": 0.0,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "x-large",
+        "pause_timing": "extended"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 300,
+      "prefers_reduced_motion": false,
+      "forced_colors": true,
+      "color_scheme": "dark",
+      "vision_deficiency": "none",
+      "input": "mouse+keyboard",
+      "assistive_tech": "Screen magnifier (OS)",
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "hybrid",
+      "manual_note": "Magnifier tracking behaviour needs a human.",
+      "wcag_2_2": [
+        {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.4",
+          "name": "Resize Text",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.10",
+          "name": "Reflow",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.11",
+          "name": "Non-text Contrast",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.12",
+          "name": "Text Spacing",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.13",
+          "name": "Content on Hover or Focus",
+          "level": "AA"
+        },
+        {
+          "sc": "2.4.7",
+          "name": "Focus Visible",
+          "level": "AA"
+        },
+        {
+          "sc": "2.4.11",
+          "name": "Focus Not Obscured (Minimum)",
+          "level": "AA"
+        },
+        {
+          "sc": "1.2.4",
+          "name": "Captions (Live)",
+          "level": "AA"
+        },
+        {
+          "sc": "2.2.1",
+          "name": "Timing Adjustable",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        },
+        {
+          "id": "CUE-CAP-001/002",
+          "rule": "Captions have accurate and as_heard modes; a captions user is not penalised by degraded audio."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        }
+      ],
+      "control_events_to_exercise": [
+        "pause",
+        "give_me_a_sec"
+      ],
+      "tester_notes": [
+        "At 300% zoom nothing may need two-dimensional scrolling and the focus ring must stay visible and unobscured.",
+        "Check large captions do not push controls off screen.",
+        "Forced-colors mode must keep icons, state cues and the End interview control distinguishable."
+      ]
+    }
+  },
+  {
+    "id": "TEC-05",
+    "synthetic": true,
+    "name": "Mei-Ling Tran",
+    "industry": "tech",
+    "role": "IT Help Desk Technician",
+    "seniority": "entry",
+    "contact": {
+      "email": "mei.tran@example.test",
+      "phone": "555-0133",
+      "location": "San Jose, CA"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "skip_fallback_cold",
+      "resume_file": "resumes/TEC-05-mei-ling-tran.md",
+      "job_description_file": "job_descriptions/TEC-05-mei-ling-tran.md",
+      "resume_files": {
+        "md": "resumes/TEC-05-mei-ling-tran.md",
+        "pdf": "resumes/TEC-05-mei-ling-tran.pdf",
+        "docx": "resumes/TEC-05-mei-ling-tran.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/TEC-05-mei-ling-tran.md",
+        "pdf": "job_descriptions/TEC-05-mei-ling-tran.pdf",
+        "docx": "job_descriptions/TEC-05-mei-ling-tran.docx"
+      },
+      "role_display_name": "IT Help Desk Technician"
+    },
+    "interview_focus": [
+      "Handling an upset user when the fix is not immediate",
+      "Experience with account management in a larger directory-based environment",
+      "Approach to deciding when to escalate a ticket"
+    ],
+    "accommodation": {
+      "key": "motor_keyboard_only",
+      "label": "Motor: keyboard only",
+      "category": "motor",
+      "simulates": "Candidate who cannot use a pointing device and navigates by keyboard alone."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": true,
+        "ambient_volume": 0.3,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "keyboard_only",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "automated",
+      "manual_note": null,
+      "wcag_2_2": [
+        {
+          "sc": "2.1.1",
+          "name": "Keyboard",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.2",
+          "name": "No Keyboard Trap",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.4",
+          "name": "Character Key Shortcuts",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.3",
+          "name": "Focus Order",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.7",
+          "name": "Focus Visible",
+          "level": "AA"
+        },
+        {
+          "sc": "2.4.11",
+          "name": "Focus Not Obscured (Minimum)",
+          "level": "AA"
+        },
+        {
+          "sc": "3.2.1",
+          "name": "On Focus",
+          "level": "A"
+        },
+        {
+          "sc": "4.1.2",
+          "name": "Name, Role, Value",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        },
+        {
+          "id": "SPEC 4.1",
+          "rule": "End interview is a separate control with a confirmation whose safe choice takes focus; Uninterruptible states show a text banner and a hold."
+        },
+        {
+          "id": "CUE-CTL-001",
+          "rule": "User can pause, resume, repeat, skip, ask for a hint, ask for a moment, and switch voice/text; push-to-talk available."
+        }
+      ],
+      "control_events_to_exercise": [
+        "pause",
+        "repeat",
+        "skip",
+        "hint",
+        "give_me_a_sec"
+      ],
+      "tester_notes": [
+        "Complete Setup, Hardware check, the interview and End interview using Tab, Shift+Tab, Enter, Space and Esc only.",
+        "After load, focus must land on the Accessibility button first.",
+        "Confirm single-character shortcuts can be turned off or remapped."
+      ]
+    }
+  },
+  {
+    "id": "MED-01",
+    "synthetic": true,
+    "name": "Rafael Quintero",
+    "industry": "media",
+    "role": "Podcast Producer / Audio Editor",
+    "seniority": "mid",
+    "contact": {
+      "email": "rafael.quintero@example.test",
+      "phone": "555-0134",
+      "location": "Nashville, TN"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "upload_new",
+      "resume_file": "resumes/MED-01-rafael-quintero.md",
+      "job_description_file": "job_descriptions/MED-01-rafael-quintero.md",
+      "resume_files": {
+        "md": "resumes/MED-01-rafael-quintero.md",
+        "pdf": "resumes/MED-01-rafael-quintero.pdf",
+        "docx": "resumes/MED-01-rafael-quintero.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/MED-01-rafael-quintero.md",
+        "pdf": "job_descriptions/MED-01-rafael-quintero.pdf",
+        "docx": "job_descriptions/MED-01-rafael-quintero.docx"
+      },
+      "role_display_name": "Podcast Producer / Audio Editor"
+    },
+    "interview_focus": [
+      "Experience managing freelancers and a team versus individual production work",
+      "Use of analytics to shape editorial decisions",
+      "Process for maintaining quality on a 48-hour turnaround"
+    ],
+    "accommodation": {
+      "key": "blind_talkback_android_chrome",
+      "label": "Blind, TalkBack + Chrome (Android)",
+      "category": "vision",
+      "simulates": "Blind candidate on Android using TalkBack."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": false,
+        "ambient_volume": 0.0,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": true,
+        "sr_profile": "TalkBack",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": 230,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Android",
+      "viewport": {
+        "w": 412,
+        "h": 915
+      },
+      "device_scale_factor": 2.6,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "touch",
+      "assistive_tech": "TalkBack",
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "manual_required",
+      "manual_note": "Real screen reader pass required; automated tools (axe-core etc.) catch only part of the issues (docs/research/ui-testing-tools.md).",
+      "wcag_2_2": [
+        {
+          "sc": "1.3.1",
+          "name": "Info and Relationships",
+          "level": "A"
+        },
+        {
+          "sc": "1.3.2",
+          "name": "Meaningful Sequence",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.3",
+          "name": "Focus Order",
+          "level": "A"
+        },
+        {
+          "sc": "2.4.6",
+          "name": "Headings and Labels",
+          "level": "AA"
+        },
+        {
+          "sc": "4.1.2",
+          "name": "Name, Role, Value",
+          "level": "A"
+        },
+        {
+          "sc": "4.1.3",
+          "name": "Status Messages",
+          "level": "AA"
+        },
+        {
+          "sc": "2.1.1",
+          "name": "Keyboard",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.2",
+          "name": "No Keyboard Trap",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.4",
+          "name": "Character Key Shortcuts",
+          "level": "A"
+        },
+        {
+          "sc": "1.4.2",
+          "name": "Audio Control",
+          "level": "A"
+        },
+        {
+          "sc": "1.3.4",
+          "name": "Orientation",
+          "level": "AA"
+        },
+        {
+          "sc": "2.5.1",
+          "name": "Pointer Gestures",
+          "level": "A"
+        },
+        {
+          "sc": "2.5.8",
+          "name": "Target Size (Minimum)",
+          "level": "AA"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        },
+        {
+          "id": "SPEC 4.3",
+          "rule": "Screen reader mode: one speaker at a time, gate on played audio, coalesced announcements, navigable transcript (role=log)."
+        },
+        {
+          "id": "SPEC 4.5",
+          "rule": "Advanced Accessibility: screen reader profiles (Generic, NVDA, JAWS, Narrator, VoiceOver macOS/iOS, TalkBack, Orca); untested profiles behave like Generic."
+        },
+        {
+          "id": "SPEC 4.1",
+          "rule": "End interview is a separate control with a confirmation whose safe choice takes focus; Uninterruptible states show a text banner and a hold."
+        },
+        {
+          "id": "CUE-AMB-001",
+          "rule": "Ambient sound has an independent volume and off switch."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        }
+      ],
+      "control_events_to_exercise": [
+        "pause",
+        "repeat"
+      ],
+      "tester_notes": [
+        "Wear headphones; speaker playback can leak into the mic (SPEC 4.1 echo trap).",
+        "Listen for screen reader speech colliding with the interviewer's voice, and for any state announced twice.",
+        "Confirm 'Your turn' is announced only after the interviewer's last audio has played.",
+        "Confirm the transcript (role=log) can be navigated by reading commands.",
+        "Spec notes TalkBack treats every live region as assertive; confirm no state is announced twice."
+      ]
+    }
+  },
+  {
+    "id": "MED-02",
+    "synthetic": true,
+    "name": "Shauna Beckett",
+    "industry": "media",
+    "role": "Content Writer",
+    "seniority": "mid",
+    "contact": {
+      "email": "shauna.beckett@example.test",
+      "phone": "555-0135",
+      "location": "Raleigh, NC"
+    },
+    "setup": {
+      "interview_type": "hot",
+      "resume_scenario": "upload_new",
+      "resume_file": "resumes/MED-02-shauna-beckett.md",
+      "job_description_file": "job_descriptions/MED-02-shauna-beckett.md",
+      "resume_files": {
+        "md": "resumes/MED-02-shauna-beckett.md",
+        "pdf": "resumes/MED-02-shauna-beckett.pdf",
+        "docx": "resumes/MED-02-shauna-beckett.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/MED-02-shauna-beckett.md",
+        "pdf": "job_descriptions/MED-02-shauna-beckett.pdf",
+        "docx": "job_descriptions/MED-02-shauna-beckett.docx"
+      },
+      "role_display_name": "Content Writer"
+    },
+    "interview_focus": [
+      "Ability to handle technical financial subject matter and expert review",
+      "How the 55% organic traffic growth was measured and attributed",
+      "Approach to accuracy and sourcing under deadline"
+    ],
+    "accommodation": {
+      "key": "speech_aac_text",
+      "label": "Speech: AAC / dysarthria, answers by text",
+      "category": "speech",
+      "simulates": "Candidate who communicates with an AAC device or typed text; long gaps before answers."
+    },
+    "session_config": {
+      "interface": "both",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": true,
+        "ambient_volume": 0.3,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": true,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 20.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "extended"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 100,
+      "prefers_reduced_motion": false,
+      "forced_colors": false,
+      "color_scheme": "light",
+      "vision_deficiency": "none",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "automated",
+      "manual_note": null,
+      "wcag_2_2": [
+        {
+          "sc": "2.2.1",
+          "name": "Timing Adjustable",
+          "level": "A"
+        },
+        {
+          "sc": "2.2.2",
+          "name": "Pause, Stop, Hide",
+          "level": "A"
+        },
+        {
+          "sc": "3.3.2",
+          "name": "Labels or Instructions",
+          "level": "A"
+        },
+        {
+          "sc": "3.3.7",
+          "name": "Redundant Entry",
+          "level": "A"
+        },
+        {
+          "sc": "2.1.1",
+          "name": "Keyboard",
+          "level": "A"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "ORC-MOD-001",
+          "rule": "Switch between voice and text mid-session without losing history."
+        },
+        {
+          "id": "CUE-CTL-001",
+          "rule": "User can pause, resume, repeat, skip, ask for a hint, ask for a moment, and switch voice/text; push-to-talk available."
+        },
+        {
+          "id": "EVL-FAI-001",
+          "rule": "Evaluator must not lower a score because an accommodation was used (captions, push-to-talk, a hold, switch to text)."
+        }
+      ],
+      "control_events_to_exercise": [
+        "switch_voice_text",
+        "give_me_a_sec",
+        "push_to_talk"
+      ],
+      "tester_notes": [
+        "Answer with pre-composed pasted text after a 30-60 second gap.",
+        "The session must not time out or move on without the candidate.",
+        "Typed answers must score the same as spoken ones."
+      ]
+    }
+  },
+  {
+    "id": "MED-03",
+    "synthetic": true,
+    "name": "Adaeze Obi",
+    "industry": "media",
+    "role": "Copy Editor",
+    "seniority": "senior",
+    "contact": {
+      "email": "adaeze.obi@example.test",
+      "phone": "555-0136",
+      "location": "Baltimore, MD"
+    },
+    "setup": {
+      "interview_type": "cold",
+      "resume_scenario": "n/a",
+      "resume_file": "resumes/MED-03-adaeze-obi.md",
+      "job_description_file": "job_descriptions/MED-03-adaeze-obi.md",
+      "resume_files": {
+        "md": "resumes/MED-03-adaeze-obi.md",
+        "pdf": "resumes/MED-03-adaeze-obi.pdf",
+        "docx": "resumes/MED-03-adaeze-obi.docx"
+      },
+      "job_description_files": {
+        "md": "job_descriptions/MED-03-adaeze-obi.md",
+        "pdf": "job_descriptions/MED-03-adaeze-obi.pdf",
+        "docx": "job_descriptions/MED-03-adaeze-obi.docx"
+      },
+      "role_display_name": "Copy Editor"
+    },
+    "interview_focus": [
+      "Moving from magazine and newspaper work to a book-publishing production schedule",
+      "How the two-pass proofing checklist was designed and its measured results",
+      "Handling author pushback on edits"
+    ],
+    "accommodation": {
+      "key": "low_vision_forced_colors",
+      "label": "Low vision, Windows high contrast (forced colors)",
+      "category": "vision",
+      "simulates": "Candidate using an OS high-contrast theme."
+    },
+    "session_config": {
+      "interface": "voice",
+      "ux": {
+        "cue_mode": "perceived",
+        "captions": "off",
+        "interviewer_voice": "on",
+        "ambient_audio": true,
+        "ambient_volume": 0.3,
+        "reduced_motion": "auto"
+      },
+      "turn_detector": {
+        "push_to_talk": false,
+        "vad_stop_secs": 0.2,
+        "max_silence_secs": 2.0
+      },
+      "simulator": {
+        "preset": "clean",
+        "seed": 42
+      },
+      "accessibility_panel": {
+        "screen_reader_mode": false,
+        "sr_profile": "Generic",
+        "announcements": "quiet_while_speaking",
+        "announce_talking": false,
+        "reader_rate_wpm": null,
+        "live_captions_to_sr": false,
+        "caption_size": "default",
+        "pause_timing": "default"
+      }
+    },
+    "environment": {
+      "browser": "chromium",
+      "os": "Windows 11",
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "device_scale_factor": 1,
+      "browser_zoom_pct": 150,
+      "prefers_reduced_motion": false,
+      "forced_colors": true,
+      "color_scheme": "dark",
+      "vision_deficiency": "none",
+      "input": "mouse+keyboard",
+      "assistive_tech": null,
+      "braille_display": false,
+      "user_css": null,
+      "pointer_jitter_px": 0
+    },
+    "tests": {
+      "automation": "automated",
+      "manual_note": null,
+      "wcag_2_2": [
+        {
+          "sc": "1.4.1",
+          "name": "Use of Color",
+          "level": "A"
+        },
+        {
+          "sc": "1.4.3",
+          "name": "Contrast (Minimum)",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.11",
+          "name": "Non-text Contrast",
+          "level": "AA"
+        },
+        {
+          "sc": "2.4.7",
+          "name": "Focus Visible",
+          "level": "AA"
+        },
+        {
+          "sc": "1.4.4",
+          "name": "Resize Text",
+          "level": "AA"
+        }
+      ],
+      "spec_checks": [
+        {
+          "id": "SPEC 4.2",
+          "rule": "Accessibility button visible on every screen, first focus on load, every audio cue has a visual equivalent and vice versa."
+        },
+        {
+          "id": "SPEC 4.1",
+          "rule": "End interview is a separate control with a confirmation whose safe choice takes focus; Uninterruptible states show a text banner and a hold."
+        }
+      ],
+      "control_events_to_exercise": [
+        "pause"
+      ],
+      "tester_notes": [
+        "State cues (ear, thought bubble, ellipsis, ear with slash) must survive forced colors and still carry text labels.",
+        "Focus ring and the captions switch state must be visible without author colors."
+      ]
+    }
+  }
+]

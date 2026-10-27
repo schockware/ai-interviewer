@@ -10,7 +10,7 @@ C# .NET 10 hexagonal Web API. **Prototype zone: nothing here is verified.** It f
 AiInterviewer.slnx
 src/
   AiInterviewer.Business/   the hexagon: contract types, ports, use cases. References nothing.
-  AiInterviewer.Adapters/   tier 3: SQLite stores (Sqlite/), in-memory stores and stub AI layers. References Business.
+  AiInterviewer.Adapters/   tier 3: SQLite stores (Sqlite/), in-memory stores, stub AI layers and the sample persona loader (Samples/). References Business.
   AiInterviewer.Api/        tier 1: endpoints, wire DTOs, JSON, composition root (Program.cs, Storage.cs). References both.
 tests/
   AiInterviewer.Business.Tests/   unit tests against hand-written fakes, plus an architecture guard
@@ -56,14 +56,24 @@ Header names are case-insensitive, as HTTP headers are. A header starting with `
 
 ## Storage
 
-Resumes, roles and sessions are kept in SQLite by default and survive a restart. The `Storage` section of `appsettings.json` picks the adapter; a value it does not know stops the app from starting instead of falling back.
+Resumes, roles, their questions and sessions are kept in SQLite by default and survive a restart. The `Storage` section of `appsettings.json` picks the adapter; a value it does not know stops the app from starting instead of falling back.
 
 | Setting | Values | Default |
 |---|---|---|
 | `Storage:Provider` | `Sqlite` persists. `InMemory` is for mock and test mode and forgets everything on restart (decision 0004, mocks in production, point 5) | `Sqlite` |
 | `Storage:Sqlite:Path` | A file path, relative to the project folder, or `:memory:` for a private database that lives as long as the process | `data/ai-interviewer.sqlite` |
 
-Under `dotnet run` the file lands at `src/AiInterviewer.Api/data/ai-interviewer.sqlite`, which is gitignored. Delete the folder to start over. The schema is created on open; there is no migration step yet, so a schema change means deleting the file. The HTTP tests use `:memory:`, so they run through the SQLite adapter and never touch that file. Steven decided 2026-10-26: SQLite is the local-development store, and the persistence ports stay completely agnostic of the engine. The `Sqlite/` folder is the only place that knows SQLite; adapters for MSSQL, MySQL, PostgreSQL, MongoDB and CosmosDB are a task (`TASKS.MD`), each to pass the same store contract suite.
+Under `dotnet run` the file lands at `src/AiInterviewer.Api/data/ai-interviewer.sqlite`, which is gitignored. Delete the folder to start over. The schema is created on open. The only migration is a list of columns added since a table first shipped (`SqliteDatabase.AddedColumns`: `source` on resumes and roles, 2026-10-27), which an older file gains on open; any other schema change still means deleting the file. A session saved before 2026-10-27 has no question plan and is reported as unreadable, so delete the file after pulling this change. The HTTP tests use `:memory:`, so they run through the SQLite adapter and never touch that file. Steven decided 2026-10-26: SQLite is the local-development store, and the persistence ports stay completely agnostic of the engine. The `Sqlite/` folder is the only place that knows SQLite; adapters for MSSQL, MySQL, PostgreSQL, MongoDB and CosmosDB are a task (`TASKS.MD`), each to pass the same store contract suite.
+
+## Samples
+
+Steven's call (2026-10-27): the sample personas in [`mocked-samples/ai-interviewer-test-personas/output`](../../../mocked-samples/README.MD) are loaded for the interview. `Adapters/Samples/PersonaSamples.cs` reads `profiles.json` and `questions/question_bank.json` and adds, per persona, a role (the role title, with the job description as its description), the bank's five core questions as that role's questions, and the resume as a saved resume. Loading is keyed by persona id (`DocumentSource` on each document), so a restart adds nothing.
+
+| Setting | Meaning | Default |
+|---|---|---|
+| `Samples:Path` | The `output/` folder, relative to the project folder. Empty: nothing is loaded. A path that does not exist stops the app at startup | empty; `appsettings.Development.json` points at the repo folder |
+
+The HTTP tests set it empty so every server starts with no roles; `SampleLoaderTests` in the adapters tests load the real folder.
 
 ## Endpoints
 
@@ -73,7 +83,10 @@ Under `dotnet run` the file lands at `src/AiInterviewer.Api/data/ai-interviewer.
 | `POST /resumes` | `UploadResume` -> `ResumeProcessed` | 200 | 422 unreadable file |
 | `POST /job-descriptions/uploads` | `JobDescriptionUpload` -> `JobDescriptionProcessed` | 200 | 422 |
 | `POST /job-descriptions/pastes` | `JobDescriptionPaste` -> `JobDescriptionProcessed` | 200 | 422 empty text |
-| `POST /interviews/prepare` | `PrepareInterview` | 202 | 422 form not ready |
+| `GET /roles/{roleId}` | -> `RoleDetail` (PROPOSAL): the description and the saved questions | 200 | 404 unknown role |
+| `POST /roles/{roleId}/question-uploads` | `UploadQuestions` -> `QuestionsProcessed` (PROPOSAL): stored for the role, not yet its questions | 200 | 404 unknown role, 422 unreadable or no questions found |
+| `POST /roles/{roleId}/question-pastes` | `PasteQuestions` -> `QuestionsProcessed` (PROPOSAL) | 200 | 404, 422 |
+| `POST /interviews/prepare` | `PrepareInterview`, now with `form.questions` (PROPOSAL) | 202 | 422 form not ready |
 | `POST /interviews/error-checks` | `CheckErroredInterview` -> `Error` | 200 | 404, 409 nothing failed |
 | `POST /interviews/start` | `StartInterview` -> `CueSettings` | 200 | 404 not prepared, 409 not ready |
 
@@ -134,13 +147,16 @@ Any malformed body (missing or null field, unknown property, unknown discriminat
 - **`hot-incomplete=>cold`** is accepted and stored as a cold interview, so the preparer sees what it will build.
 - **Preparing the same `sessionId` again replaces the session** (treated as a retry).
 - **The error-checks response** reuses `Error` as a diagnosis message, as the OpenAPI draft does.
-- **Roles** are only those the user adds. The "industry-standard titles" list from the spec is not built.
+- **Roles** are those the user adds plus the sample personas' (Samples above). The "industry-standard titles" list from the spec is not built beyond that.
+- **Role set up and the questions** (specs/page-flow.md, section 2; `Business/Setup/Questions.cs`). `form.questions` is `{ "type": "keep" }`, `{ "type": "generate" }` (the default) or `{ "type": "uploaded", "questionSetId": ... }`. A questions upload or paste is stored as a set and answered at once with its count; it becomes the role's questions only when the interview is prepared with it, which is when the spec says saved questions are purged. `keep` is refused for a role without questions; `generate` purges and writes new ones. A questions document is plain text, one question per line (blank lines and markdown headings skipped, list markers dropped), or JSON: an array of strings, `{ "questions": [...] }`, or one role from the sample bank (`{ "core": [{ "text": ... }] }`). A whole bank is refused. Follow-ups and triggers are not read.
+- **Generated questions come from a template stub, synchronously, inside Prepare.** `TemplateQuestionWriter` fills five templates with the role title. The real interviewer model would write them from the description in the preparer's "Writing the questions" step, so this will move once a model is connected.
 - **Mock resume processing.** `RandomStepsResumeUploader` invents three to six steps from a fixed pool, pauses 3 to 8 seconds between them by default (Steven set the pace so the UI can be designed against it; test mode changes it per request), and reads no file. A display name containing `fail` fails at a random step (a harness hook).
 
 ## Stubs and gaps
 
 - `PlainTextDocumentReader` reads `.txt` and `.md` only. PDF and Word are refused with a message, not guessed at.
 - `RandomStepsResumeUploader` stands in for resume processing (see Proposals). A reporter failure ends its run silently; a real pipeline would record its outcome.
+- `TemplateQuestionWriter` stands in for the AI writing a role's questions (see Proposals). Seeded resumes are stored as processed without the mock uploader's steps.
 - `InstantInterviewPreparer` marks every session `Ok` immediately, so the `Error` path and `InterviewPrepared` delivery are only reachable in tests. How `InterviewPrepared` reaches the client (push or poll) is undecided.
 - `ServerCue`, `ClientCue`, `VerifyHardware`, `HardwareVerified` and the audio stream need the WebSocket channel, which is not built. The audio frame format is an open item in decision 0003.
 - Storage is a single SQLite file with no migrations (see Storage above). Media files and transcripts land under `data/media` with no index. The transcription worker is the first Python process; C# does not start or supervise it yet (decision 0003, open item 4), and no LLM runtime is connected.

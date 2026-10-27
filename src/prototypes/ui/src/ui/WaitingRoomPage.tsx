@@ -113,7 +113,7 @@ export function WaitingRoomPage({
 
   return (
     <div className="page page-with-dock">
-      <PageHeader title="Waiting room" subtitle="Step 3 of 3 · Getting your interview ready" onOpenAccessibility={onOpenAccessibility}>
+      <PageHeader title="Waiting room" subtitle="Step 4 of 4 · Getting your interview ready" onOpenAccessibility={onOpenAccessibility}>
         <button type="button" className="link-btn" onClick={onLeave}>
           Leave the waiting room
         </button>

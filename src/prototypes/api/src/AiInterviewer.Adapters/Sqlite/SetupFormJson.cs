@@ -41,6 +41,13 @@ public static class SetupFormJson
             AnsweredRole answered => new JsonObject { ["type"] = "role", ["roleId"] = answered.RoleId.Value },
             _ => throw new InvalidOperationException("Unknown role focus."),
         },
+        ["questions"] = form.Questions switch
+        {
+            KeepQuestions => new JsonObject { ["type"] = "keep" },
+            GenerateQuestions => new JsonObject { ["type"] = "generate" },
+            UploadedQuestions uploaded => new JsonObject { ["type"] = "uploaded", ["setId"] = uploaded.SetId.Value },
+            _ => throw new InvalidOperationException("Unknown question plan."),
+        },
     }.ToJsonString();
 
     public static Outcome<ApplicationSetupFormHolder> Read(string json)
@@ -58,7 +65,8 @@ public static class SetupFormJson
                     Evaluator: ReadChoice(ai, "evaluator"),
                     Speaker: ReadChoice(ai, "speaker")),
                 ReadInterviewType(Object(root["interviewType"], "interviewType")),
-                ReadRoleFocus(Object(root["roleFocus"], "roleFocus")));
+                ReadRoleFocus(Object(root["roleFocus"], "roleFocus")),
+                ReadQuestions(Object(root["questions"], "questions")));
             return Outcome.Success(new ApplicationSetupFormHolder(form));
         }
         catch (Exception e) when (e is JsonException or InvalidDataException)
@@ -104,6 +112,16 @@ public static class SetupFormJson
             ? new AnsweredRole(ok.Value)
             : throw new InvalidDataException("roleFocus: blank roleId."),
         var other => throw new InvalidDataException($"roleFocus: unknown type \"{other}\"."),
+    };
+
+    private static QuestionPlan ReadQuestions(JsonObject node) => Text(node, "type") switch
+    {
+        "keep" => new KeepQuestions(),
+        "generate" => new GenerateQuestions(),
+        "uploaded" => QuestionSetId.From(Text(node, "setId")) is Succeeded<QuestionSetId> ok
+            ? new UploadedQuestions(ok.Value)
+            : throw new InvalidDataException("questions: blank setId."),
+        var other => throw new InvalidDataException($"questions: unknown type \"{other}\"."),
     };
 
     private static JsonObject Object(JsonNode? node, string name) =>

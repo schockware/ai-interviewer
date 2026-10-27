@@ -18,6 +18,8 @@ public class ApiFactory : WebApplicationFactory<Program>
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseSetting(Storage.SqlitePathKey, SqliteDatabase.InMemoryPath);
+        // No sample personas: every server starts with no roles, and the samples have their own test.
+        builder.UseSetting(Samples.PathKey, "");
         builder.UseSetting(MediaStreams.RootKey, Path.Combine(Path.GetTempPath(), "ai-interviewer-tests", "media", Guid.NewGuid().ToString("N")));
         // No Python worker runs under the tests: the counting stand-in takes the audio.
         builder.UseSetting(Transcription.ProviderKey, Transcription.Counting);

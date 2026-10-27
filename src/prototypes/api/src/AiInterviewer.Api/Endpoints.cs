@@ -46,6 +46,39 @@ public static class Endpoints
             };
         });
 
+        // Role set up (specs/page-flow.md, section 2). PROPOSAL: these three paths are not in the contract yet.
+        app.MapGet("/roles/{roleId}", async (string roleId, ApplicationSetupService setup, CancellationToken ct) =>
+        {
+            if (RoleId.From(roleId) is not Succeeded<RoleId> id) return Failure(400, "roleId must not be empty.");
+            return await setup.LoadRoleAsync(id.Value, ct) switch
+            {
+                Succeeded<RoleDetail> ok => Results.Ok(ok.Value.ToDto()),
+                Failed<RoleDetail> bad => Failure(404, bad.Message),
+                _ => throw new InvalidOperationException(),
+            };
+        });
+
+        app.MapPost("/roles/{roleId}/question-uploads", async (string roleId, QuestionsUploadRequest request, ApplicationSetupService setup, CancellationToken ct) =>
+        {
+            if (RoleId.From(roleId) is not Succeeded<RoleId> id) return Failure(400, "roleId must not be empty.");
+            if (await setup.LoadRoleAsync(id.Value, ct) is Failed<RoleDetail> missing) return Failure(404, missing.Message);
+            return await Upload(request.DisplayName, request.FileName, request.Payload,
+                (name, file, token) => setup.UploadQuestionsAsync(id.Value, name, file, token), QuestionsDto, ct);
+        });
+
+        app.MapPost("/roles/{roleId}/question-pastes", async (string roleId, QuestionsPasteRequest request, ApplicationSetupService setup, CancellationToken ct) =>
+        {
+            if (RoleId.From(roleId) is not Succeeded<RoleId> id) return Failure(400, "roleId must not be empty.");
+            if (DisplayName.From(request.DisplayName) is not Succeeded<DisplayName> name) return Failure(400, "displayName must not be empty.");
+            if (await setup.LoadRoleAsync(id.Value, ct) is Failed<RoleDetail> missing) return Failure(404, missing.Message);
+            return await setup.PasteQuestionsAsync(id.Value, name.Value, request.Text, ct) switch
+            {
+                Succeeded<QuestionsProcessed> ok => Results.Ok(QuestionsDto(ok.Value)),
+                Failed<QuestionsProcessed> bad => Failure(422, bad.Message),
+                _ => throw new InvalidOperationException(),
+            };
+        });
+
         app.MapPost("/interviews/prepare", async (PrepareInterviewRequest request, ApplicationSetupService setup, CancellationToken ct) =>
         {
             var parsed = request.Form.ToBusiness().Then(form => SessionId.From(request.SessionId).Select(id => (form, id)));
@@ -91,6 +124,9 @@ public static class Endpoints
     }
 
     private static IResult Failure(int status, string message) => Results.Json(new ErrorDto(message), statusCode: status);
+
+    private static QuestionsProcessedDto QuestionsDto(QuestionsProcessed processed) =>
+        new(processed.SetId.Value, processed.DisplayName.Value, processed.Count);
 
     private static async Task<IResult> Upload<TResult>(
         string displayName,

@@ -45,8 +45,43 @@ public sealed record HotIncompleteToColdDto : InterviewTypeDto;
 
 public sealed record HotInterviewDto(string ResumeId) : InterviewTypeDto;
 
+// ---- Questions (Role set up). PROPOSAL: the contract has no shape for these yet ----
+
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
+[JsonDerivedType(typeof(KeepQuestionsDto), "keep")]
+[JsonDerivedType(typeof(GenerateQuestionsDto), "generate")]
+[JsonDerivedType(typeof(UploadedQuestionsDto), "uploaded")]
+public abstract record QuestionPlanDto;
+
+public sealed record KeepQuestionsDto : QuestionPlanDto;
+
+public sealed record GenerateQuestionsDto : QuestionPlanDto;
+
+public sealed record UploadedQuestionsDto(string QuestionSetId) : QuestionPlanDto;
+
 /// <param name="RoleFocus">"unanswered", or a RoleId. A RoleId spelled "unanswered" is therefore not possible.</param>
-public sealed record ApplicationSetupFormDto(AiSlotsDto Ai, InterviewTypeDto InterviewType, string RoleFocus);
+/// <param name="Questions">What happens to the role's questions when the interview is prepared.</param>
+public sealed record ApplicationSetupFormDto(AiSlotsDto Ai, InterviewTypeDto InterviewType, string RoleFocus, QuestionPlanDto Questions);
+
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
+[JsonDerivedType(typeof(NoQuestionsDto), "none")]
+[JsonDerivedType(typeof(ReadyQuestionsDto), "ready")]
+public abstract record LoadedQuestionsDto;
+
+public sealed record NoQuestionsDto : LoadedQuestionsDto;
+
+/// <param name="All">Each entry is [questionId, text], in the order they are asked.</param>
+public sealed record ReadyQuestionsDto(List<string[]> All) : LoadedQuestionsDto;
+
+/// <summary>GET /roles/{roleId}: the role's description (its job description as uploaded) and its saved questions.</summary>
+public sealed record RoleDetailDto(string RoleId, string DisplayName, string Description, LoadedQuestionsDto Questions);
+
+public sealed record QuestionsUploadRequest(string DisplayName, string FileName, byte[] Payload);
+
+public sealed record QuestionsPasteRequest(string DisplayName, string Text);
+
+/// <summary>The stored set; it becomes the role's questions when the interview is prepared with { "type": "uploaded" }.</summary>
+public sealed record QuestionsProcessedDto(string QuestionSetId, string DisplayName, int Count);
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(NoDocumentsDto), "none")]

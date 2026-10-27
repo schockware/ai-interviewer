@@ -7,16 +7,25 @@ import type {
   HardwareKind,
   HardwareQuality,
   JobDescriptionProcessed,
+  JobDescriptionUpload,
+  PasteQuestions,
+  PrepareInterview,
   PrepReport,
+  QuestionsProcessed,
   ResumeId,
   ResumeUploadProgress,
   ResumeUploadStep,
+  RoleDetail,
+  RoleId,
   Saved,
   SessionId,
   TranscriptSegment,
+  UploadQuestions,
 } from '../../core/contract/pageFlow.ts'
+import { parseQuestions } from '../../core/setup/questions.ts'
 import { defaultAi } from '../../core/setup/slots.ts'
 import { PREP_STEP_TOTAL } from '../../core/setup/waitingRoom.ts'
+import { SAMPLE_PERSONAS } from './samplePersonas.ts'
 
 /** What the scripted host does. The prototype's harness card edits this. */
 export interface MockHostConfig {
@@ -45,7 +54,7 @@ export const defaultMockConfig: MockHostConfig = {
 export const MOCK_STALL_STEP = 4
 
 /** Delays in the clock's milliseconds. Long enough to see each state; short enough not to wait. */
-export const MOCK_DELAYS = { load: 700, upload: 1500, preparing: 5000, retrying: 3000, verify: 2000, uploadStep: 900 } as const
+export const MOCK_DELAYS = { load: 700, upload: 1500, role: 600, preparing: 5000, retrying: 3000, verify: 2000, uploadStep: 900 } as const
 
 /** A scripted answer, said the way the two passes say it: partials, then finals that replace them, then the large model's reading. */
 const TRANSCRIPT_SCRIPT: ReadonlyArray<[number, Omit<TranscriptSegment, 'sessionId' | 'questionId'>]> = [
@@ -72,10 +81,31 @@ const SAVED_RESUMES: Saved = [
   ['res-2', 'Resume, 2026 (PDF)'],
   ['res-1', 'Resume, 2024 (PDF)'],
 ]
-const SAVED_ROLES: Saved = [
-  ['role-1', 'Software Engineer'],
-  ['role-2', 'Product Manager'],
+
+/** A role with a description but no questions, so the "existing role, no questions" case is reachable. */
+const ROLE_WITHOUT_QUESTIONS = {
+  id: 'role-pm',
+  title: 'Product Manager',
+  description: '# Product Manager\n\nOwns the roadmap for one product line, from discovery to launch. Works with design and engineering every day and with sales and support every week.',
+}
+
+/** The sample personas' roles (mocked-samples/ai-interviewer-test-personas), as the API loads them, plus the one without questions. */
+const SAVED_ROLES: Saved = [...SAMPLE_PERSONAS.map((p): [string, string] => [`role-${p.id}`, p.role]), [ROLE_WITHOUT_QUESTIONS.id, ROLE_WITHOUT_QUESTIONS.title]]
+const SAVED_DESCRIPTIONS = new Map<string, string>([...SAMPLE_PERSONAS.map((p): [string, string] => [`role-${p.id}`, p.description]), [ROLE_WITHOUT_QUESTIONS.id, ROLE_WITHOUT_QUESTIONS.description]])
+const SAVED_QUESTIONS = new Map<string, readonly string[]>(SAMPLE_PERSONAS.map((p) => [`role-${p.id}`, p.questions]))
+
+/** The same five templates as the API prototype's TemplateQuestionWriter, the stand-in for the AI writing them. */
+const templateQuestions = (title: string): string[] => [
+  `What draws you to working as a ${title}?`,
+  `Tell me about a time your work as a ${title}, or on the way to becoming one, went especially well.`,
+  'Tell me about a time you had to learn something new quickly, at work, at school, or anywhere else.',
+  'Suppose you are given more work than you can finish in a day. What would you do?',
+  `Which part of the ${title} role do you know least, and how would you get up to speed on it?`,
 ]
+
+const READABLE = ['.txt', '.md', '.json']
+const decodeText = (fileName: string, payload: Uint8Array): string | null =>
+  READABLE.some((ext) => fileName.toLowerCase().endsWith(ext)) ? new TextDecoder().decode(payload) : null
 
 const documents = (all: Saved): { type: 'none' } | { type: 'ready'; all: Saved } => (all.length === 0 ? { type: 'none' } : { type: 'ready', all })
 
@@ -87,6 +117,11 @@ export class MockSetupHost implements SetupHost {
   /** What the user has uploaded this session, newest first for resumes. A real server keeps these, and the contract suite checks it. */
   private addedResumes: Array<[string, string]> = []
   private addedRoles: Array<[string, string]> = []
+  private readonly addedDescriptions = new Map<string, string>()
+  /** Each role's current questions; the saved roles start with the samples'. Changed only by Prepare interview, as on the server. */
+  private readonly activeQuestions = new Map<string, readonly string[]>(SAVED_QUESTIONS)
+  /** Uploaded sets waiting for Prepare interview. */
+  private readonly pendingSets = new Map<string, { roleId: string; texts: string[] }>()
 
   constructor(clock: Clock, config: () => MockHostConfig = () => defaultMockConfig) {
     this.clock = clock
@@ -105,15 +140,19 @@ export class MockSetupHost implements SetupHost {
     )
   }
 
+  private roles(): Saved {
+    return [...(this.config().saved === 'some' ? SAVED_ROLES : []), ...this.addedRoles]
+  }
+
   loadPage(): Promise<ApplicationSetupPage> {
     return this.after(MOCK_DELAYS.load, (): ApplicationSetupPage => {
       const c = this.config()
       if (c.load === 'fails') return { type: 'error', message: 'The mock server is set to fail loading.' }
       return {
         type: 'ready',
-        form: { ai: defaultAi(), interviewType: { type: 'cold' }, roleFocus: 'unanswered' },
+        form: { ai: defaultAi(), interviewType: { type: 'cold' }, roleFocus: 'unanswered', questions: { type: 'generate' } },
         resumes: documents([...this.addedResumes, ...(c.saved === 'some' ? SAVED_RESUMES : [])]),
-        roles: documents([...(c.saved === 'some' ? SAVED_ROLES : []), ...this.addedRoles]),
+        roles: documents(this.roles()),
       }
     })
   }
@@ -126,23 +165,71 @@ export class MockSetupHost implements SetupHost {
     })
   }
 
-  uploadJobDescription(request: { displayName: string }): Promise<JobDescriptionProcessed> {
+  uploadJobDescription(request: JobDescriptionUpload): Promise<JobDescriptionProcessed> {
+    return this.addRole(request.displayName, decodeText(request.fileName, request.payload) ?? `[The description of ${request.displayName} appears here once the server can read ${request.fileName}.]`)
+  }
+
+  pasteJobDescription(request: { displayName: string; text: string }): Promise<JobDescriptionProcessed> {
+    return this.addRole(request.displayName, request.text)
+  }
+
+  private addRole(displayName: string, description: string): Promise<JobDescriptionProcessed> {
     return this.after(MOCK_DELAYS.upload, () => {
-      const processed = { roleId: `role-new-${++this.counter}`, displayName: request.displayName }
+      const processed = { roleId: `role-new-${++this.counter}`, displayName }
       this.addedRoles.push([processed.roleId, processed.displayName])
+      this.addedDescriptions.set(processed.roleId, description)
       return processed
     })
   }
 
-  pasteJobDescription(request: { displayName: string }): Promise<JobDescriptionProcessed> {
-    return this.uploadJobDescription(request)
+  /** The role's description and its current questions, after a short look-up so the "checking" state shows. */
+  loadRole(roleId: RoleId): Promise<RoleDetail> {
+    return this.after(MOCK_DELAYS.role, (): RoleDetail => {
+      const found = this.roles().find(([id]) => id === roleId)
+      if (!found) throw new Error(`No role "${roleId}" is saved.`)
+      const questions = this.activeQuestions.get(roleId) ?? []
+      return {
+        roleId,
+        displayName: found[1],
+        description: SAVED_DESCRIPTIONS.get(roleId) ?? this.addedDescriptions.get(roleId) ?? '',
+        questions: questions.length === 0 ? { type: 'none' } : { type: 'ready', all: questions.map((text, i) => [`${roleId}-q${i + 1}`, text] as const) },
+      }
+    })
+  }
+
+  uploadQuestions(roleId: RoleId, request: UploadQuestions): Promise<QuestionsProcessed> {
+    return this.after(MOCK_DELAYS.upload, () => {
+      const text = decodeText(request.fileName, request.payload)
+      if (text === null) throw new Error(`"${request.fileName}" cannot be read yet. Supported: ${READABLE.join(', ')}.`)
+      return this.storeQuestions(roleId, request.displayName, text)
+    })
+  }
+
+  pasteQuestions(roleId: RoleId, request: PasteQuestions): Promise<QuestionsProcessed> {
+    return this.after(MOCK_DELAYS.upload, () => this.storeQuestions(roleId, request.displayName, request.text))
+  }
+
+  private storeQuestions(roleId: string, displayName: string, text: string): QuestionsProcessed {
+    if (!this.roles().some(([id]) => id === roleId)) throw new Error(`No role "${roleId}" is saved.`)
+    const parsed = parseQuestions(text)
+    if (parsed.type === 'failed') throw new Error(parsed.message)
+    const questionSetId = `qs-${++this.counter}`
+    this.pendingSets.set(questionSetId, { roleId, texts: parsed.questions })
+    return { questionSetId, displayName, count: parsed.questions.length }
   }
 
   /**
-   * Steps land evenly across the preparing window, so the Waiting room has something to show.
-   * A retry stalls at the fifth step and then finishes; a failure stalls there and is diagnosed.
+   * Settles the role's questions as the plan says, then steps land evenly across the preparing
+   * window, so the Waiting room has something to show. A retry stalls at the fifth step and then
+   * finishes; a failure stalls there and is diagnosed. A plan the server would refuse (keeping
+   * questions the role does not have, an upload for another role) is diagnosed at once.
    */
-  prepareInterview(_request: unknown, onProgress: (report: PrepReport) => void): () => void {
+  prepareInterview(request: PrepareInterview, onProgress: (report: PrepReport) => void): () => void {
+    const refused = this.applyQuestions(request)
+    if (refused) {
+      const cancel = this.clock.schedule(0, () => onProgress({ progress: 'diagnosing', stepsDone: 0 }))
+      return cancel
+    }
     const plan = this.config().preparation
     const cancels: Array<() => void> = []
     const at = (delay: number, report: PrepReport) => cancels.push(this.clock.schedule(delay, () => onProgress(report)))
@@ -156,6 +243,28 @@ export class MockSetupHost implements SetupHost {
       at(MOCK_DELAYS.preparing + MOCK_DELAYS.retrying, plan === 'fails' ? { progress: 'diagnosing', stepsDone: stall } : { progress: 'ready', stepsDone: PREP_STEP_TOTAL })
     }
     return () => cancels.forEach((cancel) => cancel())
+  }
+
+  /** The server's rule for the question plan. Returns why it is refused, or null once applied. */
+  private applyQuestions(request: PrepareInterview): string | null {
+    const roleId = request.form.roleFocus
+    if (roleId === 'unanswered') return 'Role focus is required.'
+    const plan = request.form.questions
+    switch (plan.type) {
+      case 'keep':
+        return (this.activeQuestions.get(roleId) ?? []).length === 0 ? 'The role has no saved questions to keep.' : null
+      case 'uploaded': {
+        const set = this.pendingSets.get(plan.questionSetId)
+        if (!set) return `Questions "${plan.questionSetId}" were not found.`
+        if (set.roleId !== roleId) return `Questions "${plan.questionSetId}" belong to another role.`
+        this.activeQuestions.set(roleId, set.texts)
+        this.pendingSets.delete(plan.questionSetId)
+        return null
+      }
+      case 'generate':
+        this.activeQuestions.set(roleId, templateQuestions(this.roles().find(([id]) => id === roleId)?.[1] ?? 'this role'))
+        return null
+    }
   }
 
   /** A clean call, as placeholders: the same values as the API prototype's `CleanCallProposal`. */

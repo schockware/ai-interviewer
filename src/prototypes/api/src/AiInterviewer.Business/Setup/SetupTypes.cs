@@ -59,9 +59,10 @@ public sealed record UnansweredRole : RoleFocus;
 
 public sealed record AnsweredRole(RoleId RoleId) : RoleFocus;
 
-public sealed record ApplicationSetupForm(AiSlots Ai, InterviewType InterviewType, RoleFocus RoleFocus)
+/// <param name="Questions">What happens to the role's questions at Prepare interview (Setup/Questions.cs). PROPOSAL: not in the contract yet.</param>
+public sealed record ApplicationSetupForm(AiSlots Ai, InterviewType InterviewType, RoleFocus RoleFocus, QuestionPlan Questions)
 {
-    /// <summary>The form as first shown: every "default" option, a cold interview, no role yet.</summary>
+    /// <summary>The form as first shown: every "default" option, a cold interview, no role yet, and the AI writing the questions.</summary>
     public static ApplicationSetupForm Initial { get; } = new(
         new AiSlots(
             Listener: new NamedChoice("default"),
@@ -71,7 +72,8 @@ public sealed record ApplicationSetupForm(AiSlots Ai, InterviewType InterviewTyp
             Evaluator: new NamedChoice("interviewer"),
             Speaker: new NamedChoice("default")),
         new ColdInterview(),
-        new UnansweredRole());
+        new UnansweredRole(),
+        new GenerateQuestions());
 }
 
 public sealed record DocumentSummary<TId>(TId Id, DisplayName Name);

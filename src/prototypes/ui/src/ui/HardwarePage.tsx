@@ -43,6 +43,7 @@ export function HardwarePage({
   config,
   onConfig,
   onBack,
+  onChangeSetup,
   onReady,
   onOpenAccessibility,
 }: {
@@ -51,7 +52,10 @@ export function HardwarePage({
   initialCaptions: boolean
   config: MockHostConfig
   onConfig: (config: MockHostConfig) => void
+  /** Back to Role set up, the page before. */
   onBack: () => void
+  /** Back to Application setup, from the diagnosis card. */
+  onChangeSetup: () => void
   /** The user is ready: on to the Waiting room with the hardware form the interview will start with, and the devices it will use. */
   onReady: (start: StartInterview, captions: boolean, devices: ChosenDevices) => void
   onOpenAccessibility: () => void
@@ -167,9 +171,9 @@ export function HardwarePage({
 
   return (
     <div className="page page-with-dock">
-      <PageHeader title="Check your setup" subtitle="Step 2 of 3 · Hardware setup and verification" onOpenAccessibility={onOpenAccessibility}>
+      <PageHeader title="Check your setup" subtitle="Step 3 of 4 · Hardware setup and verification" onOpenAccessibility={onOpenAccessibility}>
         <button type="button" className="btn" onClick={onBack}>
-          Back to application setup
+          Back to role set up
         </button>
       </PageHeader>
 
@@ -183,7 +187,7 @@ export function HardwarePage({
             <button type="button" className="btn btn-primary" onClick={preparation.retry}>
               Try preparing again
             </button>
-            <button type="button" className="btn" onClick={onBack}>
+            <button type="button" className="btn" onClick={onChangeSetup}>
               Change application setup
             </button>
           </div>

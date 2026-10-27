@@ -48,6 +48,7 @@ const request = (hot: boolean): PrepareInterview => ({
     ai: { listener: 'default', transcriber: 'default', followUp: 'interviewer', interviewer: 'default', evaluator: 'interviewer', speaker: 'default' },
     interviewType: hot ? { type: 'hot', resumeId: 'r1' } : { type: 'cold' },
     roleFocus: 'role-1',
+  questions: { type: 'generate' },
   },
 })
 const startRequest: StartInterview = {
@@ -60,7 +61,7 @@ function Begin({ hot }: { hot: boolean }) {
   const { track } = useResumeUploads()
   useEffect(() => {
     if (hot) track('r1', 'CV')
-    start(request(hot), { hot, roleSource: 'saved' })
+    start(request(hot), { hot, roleSource: 'saved', questions: 'generate' })
   }, [start, track, hot])
   return null
 }
@@ -88,13 +89,13 @@ describe('Waiting room', () => {
     await prepared(host)
     report({ progress: 'preparing', stepsDone: 2 })
 
-    expect(screen.getByTestId('now')).toHaveTextContent('Planning the questions')
+    expect(screen.getByTestId('now')).toHaveTextContent('Writing the questions')
     expect(screen.getByRole('heading', { name: 'Your materials' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Interview scripts' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Voice and connection' })).toBeInTheDocument()
     expect(screen.getByText('Looking up the role', { selector: '.step-label' }).closest('li')).toHaveTextContent('Done')
-    expect(screen.getByText('Planning the questions', { selector: '.step-label' }).closest('li')).toHaveTextContent('In progress')
-    expect(screen.getByTestId('prep-progress')).toHaveTextContent('22% · Planning the questions')
+    expect(screen.getByText('Writing the questions', { selector: '.step-label' }).closest('li')).toHaveTextContent('In progress')
+    expect(screen.getByTestId('prep-progress')).toHaveTextContent('22% · Writing the questions')
     expect(screen.queryByTestId('countdown')).toBeNull()
   })
 

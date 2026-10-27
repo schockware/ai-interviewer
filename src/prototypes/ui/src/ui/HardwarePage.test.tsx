@@ -41,12 +41,13 @@ const request: PrepareInterview = {
     ai: { listener: 'default', transcriber: 'default', followUp: 'interviewer', interviewer: 'default', evaluator: 'interviewer', speaker: 'default' },
     interviewType: { type: 'cold' },
     roleFocus: 'role-1',
+  questions: { type: 'generate' },
   },
 }
 
 function StartOnMount() {
   const { start } = usePreparation()
-  useEffect(() => start(request, { hot: false, roleSource: 'saved' }), [start])
+  useEffect(() => start(request, { hot: false, roleSource: 'saved', questions: 'generate' }), [start])
   return null
 }
 
@@ -56,7 +57,8 @@ const renderPage = (host: SetupHost) => {
     <ResumeUploadProvider host={host}>
       <PreparationProvider host={host}>
         <StartOnMount />
-        <HardwarePage host={host} media={fakeDevices} initialCaptions={false} config={defaultMockConfig} onConfig={() => undefined} onBack={() => undefined} onReady={onReady} onOpenAccessibility={() => undefined} />
+        <HardwarePage host={host} media={fakeDevices} initialCaptions={false} config={defaultMockConfig} onConfig={() => undefined} onBack={() => undefined}
+      onChangeSetup={() => undefined} onReady={onReady} onOpenAccessibility={() => undefined} />
       </PreparationProvider>
     </ResumeUploadProvider>,
   )

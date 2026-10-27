@@ -123,6 +123,54 @@ PrepareInterview:
 }
 ```
 
+## Role set up (PROPOSAL, 2026-10-27)
+
+*Proposed by the API prototype for specs/page-flow.md, section 2: a role has a description and questions, and the user may add basic questions. Not ratified. The shapes below are what both prototypes implement today.*
+
+```
+QuestionSetId: string
+QuestionId: string
+
+/* Sent with PrepareInterview, inside ApplicationSetupForm. The default is "generate". */
+QuestionPlan:
+  { type: "keep" }                                   /* Use the role's saved questions. The server refuses it for a role without any. */
+| { type: "generate" }                               /* The AI writes them. Any saved questions are purged first. */
+| { type: "uploaded", questionSetId: QuestionSetId } /* The set the user loaded for this role becomes its questions. Any saved ones are purged. */
+
+ApplicationSetupForm: /* as above, plus */
+{
+  ...,
+  questions: QuestionPlan
+}
+
+LoadedQuestions: { type: "none" } | { type: "ready", all: Array<[QuestionId, string]> } /* in the order they are asked */
+
+/* GET /roles/{roleId}. Synchronous. The Setup questions button is disabled until it answers. */
+RoleDetail:
+{
+  roleId: RoleId,
+  displayName: DisplayName,
+  description: string,        /* the job description as uploaded or pasted */
+  questions: LoadedQuestions
+}
+
+/*
+Synchronous. Needs to wait for the file to completely upload and process. Stored for the role,
+but not yet its questions: PrepareInterview with { type: "uploaded" } makes them so, which is
+when the spec says saved questions are purged. Plain text is one question per line (blank lines
+and markdown headings skipped, list markers dropped); JSON is an array of strings,
+{ questions: [...] }, or one role from the sample bank ({ core: [{ text }] }).
+*/
+UploadQuestions:  { displayName: DisplayName, fileName: string, payload: byte[] }
+PasteQuestions:   { displayName: DisplayName, text: string }
+QuestionsProcessed:
+{
+  questionSetId: QuestionSetId,
+  displayName: DisplayName,
+  count: integer
+}
+```
+
 ## Hardware setup and verification
 
 ```
@@ -377,6 +425,68 @@ paths:
                 $ref: "#/components/schemas/JobDescriptionProcessed"
         default:
           $ref: "#/components/responses/Failure"
+  # Role set up (PROPOSAL, 2026-10-27; see the section above)
+  /roles/{roleId}:
+    get:
+      operationId: getRole
+      summary: The role's description and saved questions. Proposal.
+      parameters:
+        - { name: roleId, in: path, required: true, schema: { $ref: "#/components/schemas/RoleId" } }
+      responses:
+        "200":
+          description: The role.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoleDetail"
+        "404":
+          description: No such role.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /roles/{roleId}/question-uploads:
+    post:
+      operationId: uploadQuestions
+      summary: Upload basic questions for the role. Synchronous; stored until PrepareInterview uses them. Proposal.
+      parameters:
+        - { name: roleId, in: path, required: true, schema: { $ref: "#/components/schemas/RoleId" } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UploadQuestions"
+      responses:
+        "200":
+          description: Questions read and stored for the role.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuestionsProcessed"
+        default:
+          $ref: "#/components/responses/Failure"
+  /roles/{roleId}/question-pastes:
+    post:
+      operationId: pasteQuestions
+      summary: Paste basic questions for the role. Synchronous. Proposal.
+      parameters:
+        - { name: roleId, in: path, required: true, schema: { $ref: "#/components/schemas/RoleId" } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PasteQuestions"
+      responses:
+        "200":
+          description: Questions read and stored for the role.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuestionsProcessed"
+        default:
+          $ref: "#/components/responses/Failure"
   /interviews/prepare:
     post:
       operationId: prepareInterview
@@ -466,8 +576,11 @@ components:
       type: object
     ApplicationSetupForm:
       type: object
-      required: [ai, interviewType, roleFocus]
+      required: [ai, interviewType, roleFocus, questions]
       properties:
+        questions:
+          description: Proposal (Role set up). What happens to the role's questions when the interview is prepared.
+          $ref: "#/components/schemas/QuestionPlan"
         ai:
           type: object
           required: [listener, transcriber, followUp, interviewer, evaluator, speaker]
@@ -641,6 +754,71 @@ components:
       properties:
         roleId: { $ref: "#/components/schemas/RoleId" }
         displayName: { $ref: "#/components/schemas/DisplayName" }
+    # Role set up (PROPOSAL, 2026-10-27)
+    QuestionSetId: { type: string }
+    QuestionId: { type: string }
+    QuestionPlan:
+      oneOf:
+        - type: object
+          required: [type]
+          properties:
+            type: { const: keep }
+        - type: object
+          required: [type]
+          properties:
+            type: { const: generate }
+        - type: object
+          required: [type, questionSetId]
+          properties:
+            type: { const: uploaded }
+            questionSetId: { $ref: "#/components/schemas/QuestionSetId" }
+    LoadedQuestions:
+      oneOf:
+        - type: object
+          required: [type]
+          properties:
+            type: { const: none }
+        - type: object
+          required: [type, all]
+          properties:
+            type: { const: ready }
+            all:
+              type: array
+              items:
+                type: array
+                prefixItems:
+                  - { $ref: "#/components/schemas/QuestionId" }
+                  - { type: string }
+                minItems: 2
+                maxItems: 2
+    RoleDetail:
+      type: object
+      required: [roleId, displayName, description, questions]
+      properties:
+        roleId: { $ref: "#/components/schemas/RoleId" }
+        displayName: { $ref: "#/components/schemas/DisplayName" }
+        description: { type: string }
+        questions: { $ref: "#/components/schemas/LoadedQuestions" }
+    UploadQuestions:
+      type: object
+      required: [displayName, fileName, payload]
+      properties:
+        displayName: { $ref: "#/components/schemas/DisplayName" }
+        fileName: { type: string }
+        payload: { type: string, format: byte, description: Base64 file bytes. }
+    PasteQuestions:
+      type: object
+      required: [displayName, text]
+      properties:
+        displayName: { $ref: "#/components/schemas/DisplayName" }
+        text: { type: string }
+    QuestionsProcessed:
+      type: object
+      required: [questionSetId, displayName, count]
+      properties:
+        questionSetId: { $ref: "#/components/schemas/QuestionSetId" }
+        displayName: { $ref: "#/components/schemas/DisplayName" }
+        count: { type: integer, minimum: 0 }
     PrepareInterview:
       description: The server rejects this if required fields are not ready.
       type: object

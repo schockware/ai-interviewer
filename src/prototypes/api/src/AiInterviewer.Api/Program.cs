@@ -1,6 +1,7 @@
 // Authored by Claude Sonnet 5.5 (Anthropic), with Steven Chock as co-author. Prototype zone: unverified.
 using AiInterviewer.Adapters;
 using AiInterviewer.Adapters.Media;
+using AiInterviewer.Adapters.Samples;
 using AiInterviewer.Api;
 using AiInterviewer.Api.Hubs;
 using AiInterviewer.Api.Streams;
@@ -29,6 +30,9 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddStorage(builder.Configuration, builder.Environment);
 builder.Services.AddSingleton<IDocumentReader, PlainTextDocumentReader>();
+// A role's questions: the AI writer is a template stub; the sample personas load into the stores at startup when Samples:Path is set (Samples.cs).
+builder.Services.AddSingleton<IQuestionWriter, TemplateQuestionWriter>();
+builder.Services.AddSingleton<PersonaSampleLoader>();
 builder.Services.AddSingleton<IInterviewPreparer, InstantInterviewPreparer>();
 builder.Services.AddSingleton<IPreparationDiagnoser, CannedPreparationDiagnoser>();
 // Resume processing is a mock that invents steps; its progress goes out over the InterviewHub.
@@ -52,6 +56,8 @@ var app = builder.Build();
 
 // Opens the database now, so a bad Storage path fails at startup and not on the first request.
 app.Services.GetRequiredService<ISessionStore>();
+// Loads the sample personas (roles, their questions, resumes) once; a missing folder stops the app rather than running without them.
+await app.LoadSamplesAsync();
 
 app.UseCors();
 // Test headers are read, checked and either applied or refused before any endpoint runs.

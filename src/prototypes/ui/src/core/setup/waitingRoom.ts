@@ -12,7 +12,7 @@ import type { TrackedUpload } from './resumeUpload.ts'
 
 export type StepGroup = 'materials' | 'scripts' | 'connection'
 export type StepStatus = 'done' | 'running' | 'slow' | 'failed' | 'pending'
-type StepSource = 'upload-resume' | 'reading-resume' | 'upload-role' | 'prep'
+type StepSource = 'upload-resume' | 'reading-resume' | 'upload-role' | 'upload-questions' | 'prep'
 
 export interface Step {
   id: string
@@ -27,10 +27,12 @@ export interface StepView extends Step {
   status: StepStatus
 }
 
-/** What the setup page knew when it asked for the interview, which decides which steps exist. */
+/** What the setup pages knew when they asked for the interview, which decides which steps exist. */
 export interface Materials {
   hot: boolean
   roleSource: 'uploaded' | 'saved'
+  /** Where the questions come from: the AI writes them, the user's upload, or the role's saved ones kept. */
+  questions: 'generate' | 'uploaded' | 'kept'
 }
 
 /** How many steps the host reports on (PrepReport.stepsDone counts up to this). */
@@ -49,10 +51,17 @@ export function stepList(m: Materials): Step[] {
     steps.push({ id: 'read-resume', group: 'materials', label: 'Reading your resume', who: 'Interviewer model', source: 'reading-resume' })
   }
   if (m.roleSource === 'uploaded') steps.push({ id: 'upload-role', group: 'materials', label: 'Uploading your job description', who: '', source: 'upload-role' })
+  // One of the three question steps is the host's, so the host always counts to PREP_STEP_TOTAL.
+  const questionStep: [string, StepGroup, string, string] =
+    m.questions === 'uploaded'
+      ? ['read-questions', 'materials', 'Reading your questions', 'Interviewer model']
+      : m.questions === 'kept'
+        ? ['load-questions', 'materials', 'Loading the saved questions', '']
+        : ['write-questions', 'scripts', 'Writing the questions', 'Interviewer model']
   const prep: Array<[string, StepGroup, string, string]> = [
     ['read-role', 'materials', m.roleSource === 'uploaded' ? 'Reading the role and job description' : 'Looking up the role', 'Interviewer model'],
     ['role-review', 'materials', 'Preparing your role review', 'Interviewer model'],
-    ['plan', 'scripts', 'Planning the questions', 'Interviewer model'],
+    questionStep,
     ['opening', 'scripts', 'Writing the opening script', 'Interviewer model'],
     ['follow-ups', 'scripts', 'Preparing the follow-up questions', 'Follow-up model'],
     ['scoring', 'scripts', 'Preparing the scoring guide', 'Evaluator model'],
@@ -60,7 +69,10 @@ export function stepList(m: Materials): Step[] {
     ['voice', 'connection', 'Warming up the interviewer’s voice', 'Speaker model'],
     ['room', 'connection', 'Connecting to the interview room', ''],
   ]
-  for (const [id, group, label, who] of prep) steps.push({ id, group, label, who, source: 'prep' })
+  for (const [id, group, label, who] of prep) {
+    if (id === 'read-questions') steps.push({ id: 'upload-questions', group: 'materials', label: 'Uploading your questions', who: '', source: 'upload-questions' })
+    steps.push({ id, group, label, who, source: 'prep' })
+  }
   return steps
 }
 
@@ -76,7 +88,8 @@ export function stepViews(steps: Step[], input: StepInput): StepView[] {
     switch (step.source) {
       case 'upload-resume':
       case 'upload-role':
-        return { ...step, status: 'done' } // the upload answered before the user could leave the setup page
+      case 'upload-questions':
+        return { ...step, status: 'done' } // the upload answered before the user could leave the setup pages
       case 'reading-resume':
         return { ...step, status: readingStatus(input.resumeUpload) }
       case 'prep':

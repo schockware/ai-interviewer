@@ -37,6 +37,27 @@ public sealed class InstantInterviewPreparer(ISessionStore sessions) : IIntervie
         sessions.SaveAsync(session with { Status = PreparationStatus.Ok }, ct);
 }
 
+/// <summary>
+/// Stands in for the AI writing a role's questions: five templates with the role's title in them,
+/// shaped like the sample bank's core questions (motivation, experience, behavioral, scenario,
+/// growth). The interviewer model will write them from the description instead.
+/// </summary>
+public sealed class TemplateQuestionWriter : IQuestionWriter
+{
+    public Task<IReadOnlyList<string>> WriteAsync(StoredDocument<RoleId> role, CancellationToken ct)
+    {
+        var title = role.Name.Value;
+        return Task.FromResult<IReadOnlyList<string>>(
+        [
+            $"What draws you to working as a {title}?",
+            $"Tell me about a time your work as a {title}, or on the way to becoming one, went especially well.",
+            "Tell me about a time you had to learn something new quickly, at work, at school, or anywhere else.",
+            "Suppose you are given more work than you can finish in a day. What would you do?",
+            $"Which part of the {title} role do you know least, and how would you get up to speed on it?",
+        ]);
+    }
+}
+
 public sealed class CannedPreparationDiagnoser : IPreparationDiagnoser
 {
     public Task<string> DiagnoseAsync(InterviewSession session, CancellationToken ct) =>

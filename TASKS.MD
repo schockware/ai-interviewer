@@ -58,7 +58,13 @@ The first slice is built: the browser streams audio, and optional video, over pl
 
 - [x] 2026-10-27: The real-time transcription consumer forwards the audio channel to the Python worker over gRPC and raises transcript segments; the post-question pass reads the finished file with the large model (`src/prototypes/ai/transcriber`, `contracts/ai/transcription.proto`).
 - [ ] **C** C# starts and supervises the transcription worker (decision 0003, open item 4): today it is started by hand.
-- [ ] **S** Questions: one file and one stream per question is built, with a placeholder question id until the question generator exists.
+- [x] 2026-10-27: Role set up holds the role's description and its questions (specs/page-flow.md, section 2): the user keeps a role's saved questions, uploads basic questions (one per line, or JSON), or lets the AI write them; the 36 sample personas in `mocked-samples/` load into the API at startup and into the UI mock. What remains is below.
+- [ ] **S** Ratify the Role set up wire shapes in `contracts/page-flow.md` (`RoleDetail`, the questions upload, `form.questions`), marked PROPOSAL there.
+- [ ] **S/C** The AI question writer is a template stub that runs synchronously inside Prepare (`TemplateQuestionWriter`). Move it into the preparer's "Writing the questions" step once a model writes from the description.
+- [ ] **C** The interview page still streams one placeholder question (`PLACEHOLDER_QUESTION_ID`). It should walk the role's questions, one stream and one file each.
+- [ ] **C** Load the bank's follow-ups, triggers, opening and closing when the follow-up decider and the interviewer need them; today only the five core questions per role are loaded.
+- [ ] **S** Whether purging saved questions needs a confirmation step beyond the warning (specs/page-flow.md leaves it open).
+- [ ] **C** Seeded resumes are stored as processed without the mock uploader's steps; a real pipeline would process them too.
 - [ ] **S** Containers (podman) for the Python workers: deferred by Steven on 2026-10-27. Explore when, or if, the app is to live in the cloud; locally the workers run as plain processes supervised by C#. The 2026-10-27 discussion settled the shape if it comes: one container per worker type, long-lived and warmed during preparation, no extra API layer in front of them.
 - [ ] **S/C** The first-pass summary AI, reading the real-time transcript as it arrives.
 - [ ] **S/C** The post-question summary AI, reading the isolated audio file after the question, and the accuracy comparison between the two passes (what is compared, how, and where the result goes).

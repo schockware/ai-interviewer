@@ -924,6 +924,59 @@ input[type='text'] {
   color: var(--ink-idle);
 }
 
+/* Role set up (design/mockups/ui/RoleSetup, RoleQuestions) */
+.required {
+  font-size: 14px;
+  font-weight: 500;
+  color: #b42318;
+}
+.role-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 20px 32px;
+}
+.q-note {
+  flex: 1 1 200px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.about-role {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+}
+.about-role h3 {
+  margin: 0;
+  font-size: 16px;
+}
+.role-description {
+  max-height: 120px;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+.q-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.btn-outline {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: #fff;
+}
+.btn-outline[aria-expanded='true'] {
+  background: #eef3fd;
+}
+
 /* Waiting room (design/mockups/ui/Waiting) */
 .link-btn {
   min-height: 44px;

@@ -8,16 +8,21 @@ import type {
   JobDescriptionPaste,
   JobDescriptionProcessed,
   JobDescriptionUpload,
+  PasteQuestions,
   PrepareInterview,
   PrepReport,
+  QuestionsProcessed,
   ResumeId,
   ResumeProcessed,
   ResumeUploadProgress,
+  RoleDetail,
+  RoleId,
   SessionId,
   StartInterview,
   TranscriptFailure,
   TranscriptSegment,
   TranscriptSnapshot,
+  UploadQuestions,
   UploadResume,
 } from '../../core/contract/pageFlow.ts'
 
@@ -111,6 +116,19 @@ export class HttpSetupHost implements Omit<SetupHost, 'verifyHardware'> {
 
   pasteJobDescription(request: JobDescriptionPaste): Promise<JobDescriptionProcessed> {
     return this.post('/job-descriptions/pastes', request)
+  }
+
+  /** The API prototype's role detail and questions routes (its README, Endpoints). PROPOSAL: not in the contract yet. */
+  async loadRole(roleId: RoleId): Promise<RoleDetail> {
+    return (await (await this.send(`/roles/${encodeURIComponent(roleId)}`)).json()) as RoleDetail
+  }
+
+  uploadQuestions(roleId: RoleId, request: UploadQuestions): Promise<QuestionsProcessed> {
+    return this.post(`/roles/${encodeURIComponent(roleId)}/question-uploads`, { ...request, payload: toBase64(request.payload) })
+  }
+
+  pasteQuestions(roleId: RoleId, request: PasteQuestions): Promise<QuestionsProcessed> {
+    return this.post(`/roles/${encodeURIComponent(roleId)}/question-pastes`, request)
   }
 
   /**

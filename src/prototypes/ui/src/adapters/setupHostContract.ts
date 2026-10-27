@@ -3,7 +3,7 @@
 // `npm run test:integration`. If the mock passes and the real one fails, the mock is lying
 // (docs/decisions/0004). Not a spec file itself: callers register it.
 import { describe, expect, it } from 'vitest'
-import type { PrepReport, ResumeUploadProgress } from '../core/contract/pageFlow.ts'
+import type { ApplicationSetupForm, PrepReport, ResumeUploadProgress } from '../core/contract/pageFlow.ts'
 import type { SetupHost } from '../core/ports.ts'
 
 export interface HostRig {
@@ -16,6 +16,14 @@ export interface HostRig {
 
 const textFile = (text: string) => new TextEncoder().encode(text)
 
+/** A cold interview with every default, for a role each test adds. */
+const FORM: ApplicationSetupForm = {
+  ai: { listener: 'default', transcriber: 'default', followUp: 'interviewer', interviewer: 'default', evaluator: 'interviewer', speaker: 'default' },
+  interviewType: { type: 'cold' },
+  roleFocus: 'unanswered',
+  questions: { type: 'generate' },
+}
+
 export function describeSetupHostContract(name: string, makeRig: () => HostRig): void {
   describe(`SetupHost contract: ${name}`, () => {
     it('loads the application setup page in a state the page knows', async () => {
@@ -25,7 +33,49 @@ export function describeSetupHostContract(name: string, makeRig: () => HostRig):
       if (page.type !== 'ready') return
       expect(page.form.interviewType).toEqual({ type: 'cold' })
       expect(page.form.roleFocus).toBe('unanswered')
+      expect(page.form.questions).toEqual({ type: 'generate' })
       expect(page.form.ai.listener).toBe('default')
+    })
+
+    it('describes a role it just added: its description, and no questions yet', async () => {
+      const { host, run } = makeRig()
+      const added = await run(host.pasteJobDescription({ displayName: 'Described role', text: 'Build things. Test things.' }))
+      const role = await run(host.loadRole(added.roleId))
+      expect(role.roleId).toBe(added.roleId)
+      expect(role.displayName).toBe('Described role')
+      expect(role.description).toContain('Build things')
+      expect(role.questions).toEqual({ type: 'none' })
+    })
+
+    it('rejects a role it does not have, naming it', async () => {
+      const { host, run } = makeRig()
+      await expect(run(host.loadRole('never-added'))).rejects.toThrow(/never-added/)
+    })
+
+    it('keeps pasted questions aside until the interview is prepared with them; then they are the role’s questions', async () => {
+      const { host, run, until } = makeRig()
+      const role = await run(host.pasteJobDescription({ displayName: 'Questioned role', text: 'Lead the team.' }))
+      const processed = await run(host.pasteQuestions(role.roleId, { displayName: 'Mine', text: '# Mine\n- One?\n2. Two?\n' }))
+      expect(processed.count).toBe(2)
+      expect(processed.displayName).toBe('Mine')
+      expect((await run(host.loadRole(role.roleId))).questions).toEqual({ type: 'none' })
+
+      const progress: PrepReport[] = []
+      host.prepareInterview({ sessionId: `contract-q-${Math.random().toString(36).slice(2, 10)}`, form: { ...FORM, roleFocus: role.roleId, questions: { type: 'uploaded', questionSetId: processed.questionSetId } } }, (p) => progress.push(p))
+      await until(() => progress.at(-1)?.progress === 'ready' || progress.at(-1)?.progress === 'diagnosing')
+      expect(progress.at(-1)?.progress).toBe('ready')
+      const after = await run(host.loadRole(role.roleId))
+      expect(after.questions.type === 'ready' && after.questions.all.map(([, text]) => text)).toEqual(['One?', 'Two?'])
+    })
+
+    it('refuses to keep questions a role does not have, and refuses an empty questions paste with a reason', async () => {
+      const { host, run, until } = makeRig()
+      const role = await run(host.pasteJobDescription({ displayName: 'Bare role', text: 'No questions yet.' }))
+      await expect(run(host.pasteQuestions(role.roleId, { displayName: 'Nothing', text: '# only a heading' }))).rejects.toThrow(/No questions were found/)
+      const progress: PrepReport[] = []
+      host.prepareInterview({ sessionId: `contract-k-${Math.random().toString(36).slice(2, 10)}`, form: { ...FORM, roleFocus: role.roleId, questions: { type: 'keep' } } }, (p) => progress.push(p))
+      await until(() => progress.at(-1)?.progress === 'ready' || progress.at(-1)?.progress === 'diagnosing')
+      expect(progress.at(-1)?.progress).toBe('diagnosing')
     })
 
     it('processes a pasted job description and then lists it as a saved role', async () => {
@@ -77,17 +127,7 @@ export function describeSetupHostContract(name: string, makeRig: () => HostRig):
       const role = await run(host.pasteJobDescription({ displayName: 'Prepared role', text: 'Lead the team.' }))
       const sessionId = `contract-${Math.random().toString(36).slice(2, 10)}`
       const progress: PrepReport[] = []
-      host.prepareInterview(
-        {
-          sessionId,
-          form: {
-            ai: { listener: 'default', transcriber: 'default', followUp: 'interviewer', interviewer: 'default', evaluator: 'interviewer', speaker: 'default' },
-            interviewType: { type: 'cold' },
-            roleFocus: role.roleId,
-          },
-        },
-        (p) => progress.push(p),
-      )
+      host.prepareInterview({ sessionId, form: { ...FORM, roleFocus: role.roleId } }, (p) => progress.push(p))
       await until(() => progress.at(-1)?.progress === 'ready')
       expect(progress[0]).toEqual({ progress: 'preparing', stepsDone: 0 })
       // Steps only ever count up, and a ready host has finished every one.

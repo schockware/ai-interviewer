@@ -44,6 +44,22 @@ public sealed record QuestionId
     public override string ToString() => Value;
 }
 
+/// <summary>A set of questions stored for a role: an upload waiting for Prepare interview, or the role's current questions.</summary>
+public sealed record QuestionSetId
+{
+    public string Value { get; }
+    private QuestionSetId(string value) => Value = value;
+
+    public static Outcome<QuestionSetId> From(string raw) => NonBlank.Check(raw, nameof(QuestionSetId)) switch
+    {
+        Succeeded<string> ok => Outcome.Success(new QuestionSetId(ok.Value)),
+        Failed<string> bad => Outcome.Failure<QuestionSetId>(bad.Message),
+        _ => throw new InvalidOperationException(),
+    };
+
+    public override string ToString() => Value;
+}
+
 public sealed record ResumeId
 {
     public string Value { get; }

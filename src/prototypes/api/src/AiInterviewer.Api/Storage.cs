@@ -28,6 +28,7 @@ public static class Storage
                 services.AddSingleton<IResumeStore, InMemoryResumeStore>();
                 services.AddSingleton<IRoleStore, InMemoryRoleStore>();
                 services.AddSingleton<ISessionStore, InMemorySessionStore>();
+                services.AddSingleton<IQuestionStore, InMemoryQuestionStore>();
                 break;
             case Sqlite:
                 var path = configuration[SqlitePathKey] ?? DefaultSqlitePath;
@@ -37,6 +38,7 @@ public static class Storage
                 services.AddSingleton<IResumeStore, SqliteResumeStore>();
                 services.AddSingleton<IRoleStore, SqliteRoleStore>();
                 services.AddSingleton<ISessionStore, SqliteSessionStore>();
+                services.AddSingleton<IQuestionStore, SqliteQuestionStore>();
                 break;
             default:
                 throw new InvalidOperationException($"{ProviderKey} must be \"{InMemory}\" or \"{Sqlite}\", not \"{provider}\".");

@@ -9,9 +9,19 @@ const readySetup = async (page: Page) => {
   await page.goto('/')
   await expect(page.getByRole('heading', { name: 'Interview type' })).toBeVisible()
 }
-const toHardware = async (page: Page) => {
+const toRoleSetup = async (page: Page) => {
   await readySetup(page)
+  await page.getByRole('button', { name: /Role set up/ }).click()
+  await expect(page.getByRole('heading', { level: 1, name: 'Set up the role' })).toBeVisible()
+}
+/** A sample role with saved questions; waits for the look-up, so Prepare is available. */
+const pickEngineer = async (page: Page) => {
   await page.getByRole('combobox', { name: 'Role title' }).selectOption({ label: 'Software Engineer' })
+  await expect(page.getByTestId('questions-note')).toContainText('Already loaded.')
+}
+const toHardware = async (page: Page) => {
+  await toRoleSetup(page)
+  await pickEngineer(page)
   await page.getByRole('button', { name: /Prepare interview/ }).click()
   await expect(page.getByRole('heading', { level: 1, name: 'Check your setup' })).toBeVisible()
 }
@@ -55,19 +65,70 @@ test.describe('setup, hardware, waiting room and interview as one flow', () => {
     await readySetup(page)
     await page.getByRole('radio', { name: /Hot interview/ }).check()
     await page.getByTestId('resume-file').setInputFiles({ name: 'cv.pdf', mimeType: 'application/pdf', buffer: Buffer.from('x') })
-    await expect(page.getByText('Processing cv.pdf')).toBeVisible()
+    await expect(page.getByText('Uploading cv.pdf')).toBeVisible()
     await expect(page.getByTestId('status-banner')).toContainText('Uploading your resume…')
     await expect(page.getByText('cv is loaded and selected.')).toBeVisible({ timeout: 4000 })
     await expect(page.getByRole('combobox', { name: 'Use an existing resume' })).toHaveValue(/res-new/)
     await axe(page)
   })
 
-  test('Application setup: coming back while preparing shows the banner and the progress bar', async ({ page }) => {
+  test('coming back while preparing shows the banner and the progress bar on Role set up and on Application setup', async ({ page }) => {
     await toHardware(page)
+    await page.getByRole('button', { name: 'Back to role set up' }).click()
+    await expect(page.getByRole('heading', { level: 1, name: 'Set up the role' })).toBeVisible()
+    await expect(page.getByTestId('status-banner')).toContainText('Waiting for host…')
+    await expect(page.getByTestId('prep-progress')).toContainText('Preparing your interview')
+    await axe(page)
     await page.getByRole('button', { name: 'Back to application setup' }).click()
     await expect(page.getByRole('heading', { name: 'Interview type' })).toBeVisible()
     await expect(page.getByTestId('status-banner')).toContainText('Waiting for host…')
     await expect(page.getByTestId('prep-progress')).toContainText('Preparing your interview')
+    await axe(page)
+  })
+
+  test('Role set up: unanswered, checking, loaded questions and the purge warning have no axe violations', async ({ page }) => {
+    await toRoleSetup(page)
+    await expect(page.getByTestId('blockers')).toContainText('Choose a role focus.')
+    await axe(page)
+    await page.getByRole('combobox', { name: 'Role title' }).selectOption({ label: 'Software Engineer' })
+    await expect(page.getByTestId('questions-note')).toContainText('Already loaded.')
+    await expect(page.getByRole('region', { name: 'Role description' })).toContainText('Software Engineer')
+    await axe(page)
+    await page.getByRole('button', { name: 'Setup questions' }).click()
+    await page.getByRole('radio', { name: /Purge them and start over/ }).check()
+    await expect(page.getByTestId('purge-warning')).toContainText('This cannot be undone')
+    await expect(page.getByRole('radio', { name: /Have the AI write them/ })).toBeChecked()
+    await axe(page)
+  })
+
+  test('Role set up: a role without questions defaults to the AI; pasted questions are counted and unblock Prepare', async ({ page }) => {
+    await toRoleSetup(page)
+    await page.getByRole('combobox', { name: 'Role title' }).selectOption({ label: 'Product Manager' })
+    await expect(page.getByTestId('questions-note')).toContainText('The AI will write the questions.')
+    await page.getByRole('button', { name: 'Setup questions' }).click()
+    await page.getByRole('radio', { name: /Upload my own questions/ }).check()
+    await expect(page.getByTestId('blockers')).toContainText('Choose your questions file, or let the AI write them.')
+    await page.getByRole('group', { name: 'Your questions' }).getByRole('button', { name: 'Paste text' }).click()
+    await page.getByLabel('Name for these questions').fill('My list')
+    await page.getByLabel('Questions, one per line').fill('Why this team?\nTell me about a launch.')
+    await page.getByRole('button', { name: 'Add questions' }).click()
+    await expect(page.getByText('My list is loaded. 2 questions found.')).toBeVisible({ timeout: 4000 })
+    await expect(page.getByRole('button', { name: /Prepare interview/ })).toHaveAttribute('aria-disabled', 'false')
+    await axe(page)
+    await page.getByRole('button', { name: /Prepare interview/ }).click()
+    await expect(page.getByRole('heading', { level: 1, name: 'Check your setup' })).toBeVisible()
+  })
+
+  test('Role set up: a pasted job description is a new, selected role with its questions panel open', async ({ page }) => {
+    await toRoleSetup(page)
+    await page.getByRole('button', { name: 'Paste text' }).click()
+    await page.getByLabel('Name for this role').fill('Gardener')
+    await page.getByLabel('Job description', { exact: true }).fill('Tend the roses.')
+    await page.getByRole('button', { name: 'Add job description' }).click()
+    await expect(page.getByTestId('status-banner')).toContainText('Uploading your role…')
+    await expect(page.getByText('Gardener is added and selected.')).toBeVisible({ timeout: 4000 })
+    await expect(page.getByRole('region', { name: 'Role description' })).toContainText('Tend the roses.')
+    await expect(page.getByTestId('questions-panel')).toContainText('This is a new role, so it has no questions yet.')
     await axe(page)
   })
 
@@ -82,7 +143,8 @@ test.describe('setup, hardware, waiting room and interview as one flow', () => {
   test('Hardware setup: a preparation that fails shows the diagnosis, and has no axe violations', async ({ page }) => {
     await readySetup(page)
     await page.getByLabel('Preparing the interview').selectOption('fails')
-    await page.getByRole('combobox', { name: 'Role title' }).selectOption({ label: 'Software Engineer' })
+    await page.getByRole('button', { name: /Role set up/ }).click()
+    await pickEngineer(page)
     await page.getByRole('button', { name: /Prepare interview/ }).click()
     await expect(page.getByRole('heading', { name: 'What the interviewer found' })).toBeVisible({ timeout: 12000 })
     await expect(page.getByTestId('status-banner')).toContainText('The host ran into a problem')
@@ -136,7 +198,8 @@ test.describe('waiting room', () => {
     await page.getByRole('radio', { name: /Hot interview/ }).check()
     await page.getByTestId('resume-file').setInputFiles({ name: 'cv.pdf', mimeType: 'application/pdf', buffer: Buffer.from('x') })
     await expect(page.getByText('cv is loaded and selected.')).toBeVisible({ timeout: 4000 })
-    await page.getByRole('combobox', { name: 'Role title' }).selectOption({ label: 'Software Engineer' })
+    await page.getByRole('button', { name: /Role set up/ }).click()
+    await pickEngineer(page)
     await page.getByRole('button', { name: /Prepare interview/ }).click()
 
     // The upload never blocks the Hardware page.

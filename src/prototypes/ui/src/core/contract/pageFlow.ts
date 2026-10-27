@@ -18,10 +18,19 @@ export type InterviewType = { type: 'cold' } | { type: 'hot-incomplete=>cold' } 
  */
 export type SlotChoice = string | { type: 'custom-local' } | { type: 'cloud' }
 
+/**
+ * PROPOSAL (API prototype, 2026-10-27; specs/page-flow.md, Role set up): what happens to the role's
+ * questions when the interview is prepared. `keep` needs saved questions; `generate` is the default
+ * and purges any saved ones; `uploaded` names the set the user loaded for this role.
+ */
+export type QuestionSetId = string
+export type QuestionPlan = { type: 'keep' } | { type: 'generate' } | { type: 'uploaded'; questionSetId: QuestionSetId }
+
 export interface ApplicationSetupForm {
   ai: Record<AiSlot, SlotChoice>
   interviewType: InterviewType
   roleFocus: 'unanswered' | RoleId
+  questions: QuestionPlan
 }
 
 export type Saved = ReadonlyArray<readonly [id: string, displayName: DisplayName]>
@@ -57,6 +66,34 @@ export interface JobDescriptionPaste {
 export interface JobDescriptionProcessed {
   roleId: RoleId
   displayName: DisplayName
+}
+
+/** PROPOSAL (API prototype): a role's saved questions, in the order they are asked, as [id, text]. */
+export type LoadedQuestions = { type: 'none' } | { type: 'ready'; all: ReadonlyArray<readonly [id: QuestionId, text: string]> }
+
+/** PROPOSAL (API prototype): what the Role set up page shows once a role is chosen. The description is the job description as uploaded. */
+export interface RoleDetail {
+  roleId: RoleId
+  displayName: DisplayName
+  description: string
+  questions: LoadedQuestions
+}
+
+/** PROPOSAL (API prototype): basic questions for a role, one per line, or JSON. Synchronous, like the other uploads. */
+export interface UploadQuestions {
+  displayName: DisplayName
+  fileName: string
+  payload: Uint8Array
+}
+export interface PasteQuestions {
+  displayName: DisplayName
+  text: string
+}
+/** The stored set. It becomes the role's questions when the interview is prepared with `{ type: 'uploaded' }`. */
+export interface QuestionsProcessed {
+  questionSetId: QuestionSetId
+  displayName: DisplayName
+  count: number
 }
 export interface PrepareInterview {
   form: ApplicationSetupForm

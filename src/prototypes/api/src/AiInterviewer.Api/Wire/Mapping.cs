@@ -43,9 +43,18 @@ public static class Mapping
             ? Outcome.Success<RoleFocus>(new UnansweredRole())
             : RoleId.From(wire).Select<RoleId, RoleFocus>(id => new AnsweredRole(id));
 
+    public static Outcome<QuestionPlan> ToBusiness(this QuestionPlanDto dto) => dto switch
+    {
+        KeepQuestionsDto => Outcome.Success<QuestionPlan>(new KeepQuestions()),
+        GenerateQuestionsDto => Outcome.Success<QuestionPlan>(new GenerateQuestions()),
+        UploadedQuestionsDto uploaded => QuestionSetId.From(uploaded.QuestionSetId).Select<QuestionSetId, QuestionPlan>(id => new UploadedQuestions(id)),
+        _ => throw new InvalidOperationException($"Unknown question plan {dto.GetType().Name}."),
+    };
+
     public static Outcome<ApplicationSetupForm> ToBusiness(this ApplicationSetupFormDto dto) =>
         dto.InterviewType.ToBusiness().Then(type =>
-            ToRoleFocus(dto.RoleFocus).Select(focus => new ApplicationSetupForm(dto.Ai.ToBusiness(), type, focus)));
+            ToRoleFocus(dto.RoleFocus).Then(focus =>
+                dto.Questions.ToBusiness().Select(questions => new ApplicationSetupForm(dto.Ai.ToBusiness(), type, focus, questions))));
 
     public static HardwareSetupForm ToBusiness(this HardwareSetupFormDto dto) => new(
         new HardwareCheck(dto.Audio.Status, dto.Audio.Quality),
@@ -78,6 +87,14 @@ public static class Mapping
         _ => throw new InvalidOperationException($"Unknown interview type {type.GetType().Name}."),
     };
 
+    public static QuestionPlanDto ToDto(this QuestionPlan plan) => plan switch
+    {
+        KeepQuestions => new KeepQuestionsDto(),
+        GenerateQuestions => new GenerateQuestionsDto(),
+        UploadedQuestions uploaded => new UploadedQuestionsDto(uploaded.SetId.Value),
+        _ => throw new InvalidOperationException($"Unknown question plan {plan.GetType().Name}."),
+    };
+
     public static ApplicationSetupFormDto ToDto(this ApplicationSetupForm form) => new(
         form.Ai.ToDto(),
         form.InterviewType.ToDto(),
@@ -86,7 +103,16 @@ public static class Mapping
             UnansweredRole => UnansweredRoleFocus,
             AnsweredRole answered => answered.RoleId.Value,
             _ => throw new InvalidOperationException($"Unknown role focus {form.RoleFocus.GetType().Name}."),
-        });
+        },
+        form.Questions.ToDto());
+
+    public static RoleDetailDto ToDto(this RoleDetail role) => new(
+        role.Id.Value,
+        role.Name.Value,
+        role.Description,
+        role.Questions.Count == 0
+            ? new NoQuestionsDto()
+            : new ReadyQuestionsDto(role.Questions.Select(q => new[] { q.Id.Value, q.Text }).ToList()));
 
     public static LoadedDocumentsDto ToDto<TId>(this LoadedDocuments<TId> documents, Func<TId, string> idOf) => documents switch
     {

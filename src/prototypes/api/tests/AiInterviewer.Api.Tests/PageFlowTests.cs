@@ -15,14 +15,15 @@ public class PageFlowTests(ApiFactory factory) : IClassFixture<ApiFactory>
 
     private static StringContent Json(string json) => new(json, Encoding.UTF8, "application/json");
 
-    private static string FormJson(string interviewType, string roleFocus, string speaker = "\"default\"") => $$"""
+    private static string FormJson(string interviewType, string roleFocus, string speaker = "\"default\"", string questions = """{ "type": "generate" }""") => $$"""
         {
           "ai": {
             "listener": "default", "transcriber": "default", "followUp": "interviewer",
             "interviewer": "default", "evaluator": "interviewer", "speaker": {{speaker}}
           },
           "interviewType": {{interviewType}},
-          "roleFocus": "{{roleFocus}}"
+          "roleFocus": "{{roleFocus}}",
+          "questions": {{questions}}
         }
         """;
 
@@ -135,6 +136,107 @@ public class PageFlowTests(ApiFactory factory) : IClassFixture<ApiFactory>
     {
         var response = await NewClient().PostAsync("/job-descriptions/pastes",
             Json("""{ "displayName": " ", "text": "x" }"""));
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task A_role_is_described_with_its_job_description_and_no_questions_until_it_has_some()
+    {
+        var client = NewClient();
+        var roleId = await AddRole(client);
+
+        var response = await client.GetAsync($"/roles/{roleId}");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var role = await Body(response);
+        Assert.Equal(roleId, role.GetProperty("roleId").GetString());
+        Assert.Equal("Backend", role.GetProperty("displayName").GetString());
+        Assert.Equal("We need a backend developer.", role.GetProperty("description").GetString());
+        Assert.Equal("none", role.GetProperty("questions").GetProperty("type").GetString());
+    }
+
+    [Fact]
+    public async Task An_unknown_role_is_a_404_for_its_detail_and_its_questions()
+    {
+        var client = NewClient();
+        Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync("/roles/ghost")).StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, (await client.PostAsync("/roles/ghost/question-pastes", Json("""{ "displayName": "Q", "text": "One?" }"""))).StatusCode);
+    }
+
+    [Fact]
+    public async Task Pasted_questions_are_counted_and_become_the_role_s_questions_only_when_the_interview_is_prepared_with_them()
+    {
+        var client = NewClient();
+        var roleId = await AddRole(client);
+
+        var paste = await client.PostAsync($"/roles/{roleId}/question-pastes",
+            Json("""{ "displayName": "My questions", "text": "# Mine\n- Why us?\n2. Tell me about a time you led.\n\n" }"""));
+
+        Assert.Equal(HttpStatusCode.OK, paste.StatusCode);
+        var processed = await Body(paste);
+        var setId = processed.GetProperty("questionSetId").GetString()!;
+        Assert.Equal(2, processed.GetProperty("count").GetInt32());
+        Assert.Equal("none", (await Body(await client.GetAsync($"/roles/{roleId}"))).GetProperty("questions").GetProperty("type").GetString());
+
+        var prepare = await client.PostAsync("/interviews/prepare",
+            Json($$"""{ "form": {{FormJson("""{ "type": "cold" }""", roleId, questions: $$"""{ "type": "uploaded", "questionSetId": "{{setId}}" }""")}}, "sessionId": "s1" }"""));
+        Assert.Equal(HttpStatusCode.Accepted, prepare.StatusCode);
+
+        var questions = (await Body(await client.GetAsync($"/roles/{roleId}"))).GetProperty("questions");
+        Assert.Equal("ready", questions.GetProperty("type").GetString());
+        Assert.Equal(["Why us?", "Tell me about a time you led."], questions.GetProperty("all").EnumerateArray().Select(q => q[1].GetString()));
+    }
+
+    [Fact]
+    public async Task A_questions_file_that_holds_no_questions_is_a_422()
+    {
+        var client = NewClient();
+        var roleId = await AddRole(client);
+
+        var response = await client.PostAsync($"/roles/{roleId}/question-uploads",
+            Json($$"""{ "displayName": "Empty", "fileName": "q.txt", "payload": "{{Base64("# Just a heading")}}" }"""));
+
+        Assert.Equal(HttpStatusCode.UnprocessableEntity, response.StatusCode);
+        Assert.Contains("No questions were found", (await Body(response)).GetProperty("message").GetString());
+    }
+
+    [Fact]
+    public async Task Keeping_questions_a_role_does_not_have_is_a_422_and_generating_gives_it_the_template_five()
+    {
+        var client = NewClient();
+        var roleId = await AddRole(client);
+
+        var keep = await client.PostAsync("/interviews/prepare",
+            Json($$"""{ "form": {{FormJson("""{ "type": "cold" }""", roleId, questions: """{ "type": "keep" }""")}}, "sessionId": "s1" }"""));
+        Assert.Equal(HttpStatusCode.UnprocessableEntity, keep.StatusCode);
+        Assert.Contains("no saved questions to keep", (await Body(keep)).GetProperty("message").GetString());
+
+        var generate = await client.PostAsync("/interviews/prepare",
+            Json($$"""{ "form": {{FormJson("""{ "type": "cold" }""", roleId)}}, "sessionId": "s1" }"""));
+        Assert.Equal(HttpStatusCode.Accepted, generate.StatusCode);
+        var questions = (await Body(await client.GetAsync($"/roles/{roleId}"))).GetProperty("questions");
+        Assert.Equal(5, questions.GetProperty("all").GetArrayLength());
+        Assert.Contains("Backend", questions.GetProperty("all")[0][1].GetString());
+
+        var keepNow = await client.PostAsync("/interviews/prepare",
+            Json($$"""{ "form": {{FormJson("""{ "type": "cold" }""", roleId, questions: """{ "type": "keep" }""")}}, "sessionId": "s2" }"""));
+        Assert.Equal(HttpStatusCode.Accepted, keepNow.StatusCode);
+    }
+
+    [Fact]
+    public async Task A_form_without_a_question_plan_is_a_400()
+    {
+        var response = await NewClient().PostAsync("/interviews/prepare", Json("""
+            {
+              "form": {
+                "ai": { "listener": "default", "transcriber": "default", "followUp": "interviewer", "interviewer": "default", "evaluator": "interviewer", "speaker": "default" },
+                "interviewType": { "type": "cold" },
+                "roleFocus": "unanswered"
+              },
+              "sessionId": "s1"
+            }
+            """));
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }

@@ -15,12 +15,12 @@ import InterviewPage from './InterviewPage.tsx'
 import { PreparationProvider } from './PreparationProvider.tsx'
 import { usePreparation } from './preparation.ts'
 import { ResumeUploadProvider } from './ResumeUploadProvider.tsx'
-import { SetupPage } from './SetupPage.tsx'
+import { SetupFlow } from './SetupFlow.tsx'
 import { TestDrawer } from './TestDrawer.tsx'
 import { loadTestSettings, saveTestSettings } from './testSettingsStorage.ts'
 import { WaitingRoomPage } from './WaitingRoomPage.tsx'
 
-type Page = 'setup' | 'hardware' | 'waiting' | 'interview'
+type Page = 'setup' | 'role' | 'hardware' | 'waiting' | 'interview'
 
 const pageFromUrl = (): Page => {
   const wanted = new URLSearchParams(window.location.search).get('page')
@@ -28,10 +28,10 @@ const pageFromUrl = (): Page => {
 }
 
 /**
- * The page flow (specs/page-flow.md): Application setup, Hardware setup, the Waiting room, then
- * the interview. `?page=interview` opens the interview directly, for development and the e2e
- * tests. `?mode=test` opens the test drawer (composition/testMode.ts). No router: four pages in a
- * row need only a value.
+ * The page flow (specs/page-flow.md): Application setup, Role set up, Hardware setup, the Waiting
+ * room, then the interview. `?page=interview` opens the interview directly, for development and
+ * the e2e tests. `?mode=test` opens the test drawer (composition/testMode.ts). No router: five
+ * pages in a row need only a value.
  */
 export default function App() {
   // A bad mode is shown, never guessed past (decision 0004).
@@ -93,20 +93,22 @@ function Pages({ host, media, parts, config, onConfig }: { host: SetupHost; medi
 
   return (
     <>
-      {page === 'setup' && (
-        <SetupPage
-          key={`${config.saved}-${config.load}`}
-          host={host}
-          config={config}
-          onConfig={onConfig}
-          showMockServer={parts.setup === 'mock'}
-          onOpenAccessibility={openA11y}
-          onPrepare={(request, materials) => {
-            preparation.start(request, materials)
-            setPage('hardware') // straight to hardware setup; preparation continues there
-          }}
-        />
-      )}
+      {/* The two setup pages share one form, which stays mounted so coming back keeps the choices. */}
+      <SetupFlow
+        key={`${config.saved}-${config.load}`}
+        host={host}
+        step={page === 'setup' || page === 'role' ? page : 'hidden'}
+        config={config}
+        onConfig={onConfig}
+        showMockServer={parts.setup === 'mock'}
+        onOpenAccessibility={openA11y}
+        onRoleSetup={() => setPage('role')}
+        onBackToSetup={() => setPage('setup')}
+        onPrepare={(request, materials) => {
+          preparation.start(request, materials)
+          setPage('hardware') // straight to hardware setup; preparation continues there
+        }}
+      />
       {page === 'hardware' && (
         <HardwarePage
           host={host}
@@ -115,7 +117,8 @@ function Pages({ host, media, parts, config, onConfig }: { host: SetupHost; medi
           config={config}
           onConfig={onConfig}
           onOpenAccessibility={openA11y}
-          onBack={() => setPage('setup')}
+          onBack={() => setPage('role')}
+          onChangeSetup={() => setPage('setup')}
           onReady={(start, wantsCaptions, chosen) => {
             setStartRequest(start)
             setCaptions(wantsCaptions)

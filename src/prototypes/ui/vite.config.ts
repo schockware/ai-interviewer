@@ -1,7 +1,7 @@
 // Authored by Claude Sonnet 5.5 and Claude Fable 5.1 (Anthropic), with Steven Chock as co-author.
 import react from '@vitejs/plugin-react'
 import { fileURLToPath } from 'node:url'
-import { loadEnv } from 'vite'
+import { loadEnv, searchForWorkspaceRoot } from 'vite'
 import { defineConfig } from 'vitest/config'
 
 // The API prototype's address, for the dev server's /api proxy. Not secret: it comes from the
@@ -24,6 +24,8 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
+      // The mock setup host reads the sample personas straight from the repo's mocked-samples folder, which is outside this package.
+      fs: { allow: [searchForWorkspaceRoot(process.cwd()), fileURLToPath(new URL('../../../mocked-samples', import.meta.url))] },
       proxy: {
         // The browser calls /api/..., so it needs no CORS setup. The prefix is stripped on the way through.
         // ws: the InterviewHub (SignalR) upgrades /api/hubs/... to a WebSocket through the same proxy.

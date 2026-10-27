@@ -10,17 +10,22 @@ import type {
   JobDescriptionPaste,
   JobDescriptionProcessed,
   JobDescriptionUpload,
+  PasteQuestions,
   PrepareInterview,
   PrepReport,
   QuestionId,
+  QuestionsProcessed,
   ResumeId,
   ResumeProcessed,
+  RoleDetail,
+  RoleId,
   ResumeUploadProgress,
   SessionId,
   StartInterview,
   TranscriptFailure,
   TranscriptSegment,
   TranscriptSnapshot,
+  UploadQuestions,
   UploadResume,
 } from './contract/pageFlow.ts'
 
@@ -68,6 +73,11 @@ export interface SetupHost {
   uploadResume(request: UploadResume): Promise<ResumeProcessed>
   uploadJobDescription(request: JobDescriptionUpload): Promise<JobDescriptionProcessed>
   pasteJobDescription(request: JobDescriptionPaste): Promise<JobDescriptionProcessed>
+  /** The role's description and saved questions (PROPOSAL: GET /roles/{id}). Rejects for a role the server does not have. */
+  loadRole(roleId: RoleId): Promise<RoleDetail>
+  /** Stores basic questions for the role; they become its questions when the interview is prepared with them (PROPOSAL). */
+  uploadQuestions(roleId: RoleId, request: UploadQuestions): Promise<QuestionsProcessed>
+  pasteQuestions(roleId: RoleId, request: PasteQuestions): Promise<QuestionsProcessed>
   /** Asynchronous: reports arrive as it happens, each with the steps done so far. Returns a function that stops listening. */
   prepareInterview(request: PrepareInterview, onProgress: (report: PrepReport) => void): () => void
   /** Rejects with the server's reason when the interview cannot start (not prepared, hardware not ready). */

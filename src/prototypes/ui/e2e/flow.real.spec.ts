@@ -13,9 +13,19 @@ test.describe('setup pages against the real API', () => {
     await expect(page.getByText('Prototype harness: mock server')).toHaveCount(0)
   })
 
+  test('the sample personas are loaded: a seeded role shows its job description and five saved questions', async ({ page }) => {
+    await page.goto('/')
+    await expect(page.getByRole('heading', { name: 'Interview type' })).toBeVisible()
+    await page.getByRole('button', { name: /Role set up/ }).click()
+    await page.getByRole('combobox', { name: 'Role title' }).selectOption({ label: 'Software Engineer' })
+    await expect(page.getByTestId('questions-note')).toContainText('5 questions are saved for Software Engineer')
+    await expect(page.getByRole('region', { name: 'Role description' })).toContainText('What you\'ll do')
+  })
+
   test('adds a job description, prepares, checks audio, waits, and reaches the interview after the countdown', async ({ page }) => {
     await page.goto('/')
     await expect(page.getByRole('heading', { name: 'Interview type' })).toBeVisible()
+    await page.getByRole('button', { name: /Role set up/ }).click()
 
     await page.getByRole('button', { name: 'Paste text' }).click()
     const role = `Real role ${Date.now()}`
@@ -23,6 +33,8 @@ test.describe('setup pages against the real API', () => {
     await page.getByLabel('Job description', { exact: true }).fill('Build and test the interviewer.')
     await page.getByRole('button', { name: 'Add job description' }).click()
     await expect(page.getByText(`${role} is added and selected.`)).toBeVisible()
+    await expect(page.getByRole('region', { name: 'Role description' })).toContainText('Build and test the interviewer.')
+    await expect(page.getByTestId('questions-panel')).toContainText('This is a new role, so it has no questions yet.')
 
     await page.getByRole('button', { name: /Prepare interview/ }).click()
     await expect(page.getByRole('heading', { level: 1, name: 'Check your setup' })).toBeVisible()
@@ -64,6 +76,7 @@ test.describe('resume processing against the real API', () => {
     await page.getByRole('radio', { name: /Hot interview/ }).check()
     await page.getByTestId('resume-file').setInputFiles({ name: 'cv.txt', mimeType: 'text/plain', buffer: Buffer.from('Ten years of building things.') })
     await expect(page.getByText('cv is loaded and selected.')).toBeVisible({ timeout: 5000 })
+    await page.getByRole('button', { name: /Role set up/ }).click()
 
     await page.getByRole('button', { name: 'Paste text' }).click()
     await page.getByLabel('Name for this role').fill(`Real role ${Date.now()}`)
